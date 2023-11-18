@@ -1,0 +1,240 @@
+﻿<Window x:Class="Poe.UIW.Views.OrderItemInfoViews.OrderItemInfoView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:orderItemInfoViewModels="clr-namespace:Poe.UIW.ViewModels.OrderItemInfoViewModels"
+             mc:Ignorable="d"
+             d:DesignHeight="300" d:DesignWidth="300"
+             d:DataContext="{d:DesignInstance orderItemInfoViewModels:OrderItemInfoViewModel, IsDesignTimeCreatable=True}">
+    
+    <StackPanel>
+        <Canvas VerticalAlignment="Center" HorizontalAlignment="Center">
+            <StackPanel  VerticalAlignment="Center" HorizontalAlignment="Center">
+                <TextBlock Visibility="{Binding NameExists, Converter={StaticResource BooleanToVisibilityConverter}}" Text="{Binding OrderItem.Name}" ></TextBlock>
+                <TextBlock Text="{Binding OrderItem.TypeLine}" ></TextBlock>
+            </StackPanel>
+        </Canvas>
+        
+        <StackPanel Orientation="Horizontal">
+            <Grid MouseEnter="ItemImagePanel_OnMouseEnter" MouseLeave="ItemImagePanel_OnMouseLeave" x:Name="ItemImagePanel">
+                <Image x:Name="ItemBackImage">
+                </Image>
+                
+                <RelativePanel x:Name="ItemSocketImageRelativePanel">
+                </RelativePanel>
+            
+                <Canvas x:Name="ItemLinkImageCanvas">
+                </Canvas>
+            </Grid>
+            
+            <StackPanel>
+                <StackPanel Visibility="Collapsed" Name="Allocates">
+                    <ItemsControl></ItemsControl>
+                    <Separator></Separator>
+                </StackPanel>
+                
+                <StackPanel Name="Properties">
+                    <ItemsControl ItemsSource="{Binding OrderItemInfo.Properties}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    
+                                    <TextBlock Visibility="{Binding NonValue, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                        <TextBlock.Text>
+                                            <Binding Path="Name" />
+                                        </TextBlock.Text>
+                                    </TextBlock>
+                                    
+                                    <TextBlock
+                                               Visibility="{Binding NonValue, Converter={StaticResource BooleanToInvertedVisibilityConverter}}">
+                                        <TextBlock.Text>
+                                            <Binding StringFormat="{}{0}: " Path="Name" />
+                                        </TextBlock.Text>
+                                    </TextBlock>
+                                    
+                                    <TextBlock Visibility="{Binding NonValue, Converter={StaticResource BooleanToInvertedVisibilityConverter}}"
+                                               Text="{Binding Path=Value}"></TextBlock>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <Separator Width="{Binding Width, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=StackPanel}}" Height="3"></Separator>
+                </StackPanel>
+                
+                <StackPanel Name="Requirements">
+                    <TextBlock>
+                        <TextBlock.Text>
+                            <Binding StringFormat="{}Item Level: {0}" Path="OrderItemInfo.ItemLevel" />
+                        </TextBlock.Text>
+                    </TextBlock>
+
+                    <StackPanel 
+                                Visibility="{Binding RequirementsExists, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                Orientation="Horizontal">
+                        <TextBlock>
+                            Requires
+                        </TextBlock>
+                        <ItemsControl ItemsSource="{Binding OrderItemInfo.Requirements}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Horizontal"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock>
+                                            <TextBlock.Text>
+                                                <Binding StringFormat="{} {0} " Path="Name" />
+                                            </TextBlock.Text>
+                                        </TextBlock>
+                                        <TextBlock Text="{Binding Path=Value}"></TextBlock>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                    <Separator Width="{Binding Width, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=StackPanel}}" Height="3"></Separator>
+                </StackPanel>
+            </StackPanel>
+        </StackPanel>
+        
+        <StackPanel Visibility="{Binding OrderItemInfo.IsLogBook, Converter={StaticResource BooleanToVisibilityConverter}}"
+                    Name="LogbookMods">
+            <ItemsControl ItemsSource="{Binding OrderItemInfo.LogbookMods}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel>
+                            <TextBlock HorizontalAlignment="Center" Text="{Binding Name}"></TextBlock>
+                            
+                            <TextBlock HorizontalAlignment="Center" Text="{Binding FactionName}"></TextBlock>
+                            
+                            <ItemsControl ItemsSource="{Binding Mods}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock HorizontalAlignment="Center" Text="{Binding }"></TextBlock>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                            
+                            <Separator Width="{Binding Width, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=StackPanel}}" Height="3"></Separator>
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </StackPanel>
+        
+        <StackPanel Visibility="{Binding OrderItemInfo.ExistsEnchantMods, Converter={StaticResource BooleanToVisibilityConverter}}"
+                    Name="EnchantMods">
+            <ItemsControl ItemsSource="{Binding OrderItemInfo.EnchantMods}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock HorizontalAlignment="Center" Text="{Binding }"></TextBlock>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+            <Separator Width="{Binding Width, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=StackPanel}}" Height="3"></Separator>
+        </StackPanel>
+        
+        <StackPanel Visibility="{Binding OrderItemInfo.ExistsImplicitMods, Converter={StaticResource BooleanToVisibilityConverter}}"
+                    Name="ImplicitMods">
+            <ItemsControl ItemsSource="{Binding OrderItemInfo.ImplicitMods}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock HorizontalAlignment="Center" Text="{Binding }"></TextBlock>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+            <Separator Width="{Binding Width, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=StackPanel}}" Height="3"></Separator>
+        </StackPanel>
+        
+        <StackPanel Name="ExplicitMods" Visibility="{Binding OrderItemInfo.ExistsExplicitMods, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <ItemsControl ItemsSource="{Binding OrderItemInfo.FracturedMods}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock HorizontalAlignment="Center" Text="{Binding  }"></TextBlock>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+            <ItemsControl ItemsSource="{Binding OrderItemInfo.ExplicitMods}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock HorizontalAlignment="Center" Text="{Binding  }"></TextBlock>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+            <ItemsControl ItemsSource="{Binding OrderItemInfo.CraftedMods}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock HorizontalAlignment="Center" Text="{Binding  }"></TextBlock>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+            <Separator Width="{Binding Width, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=StackPanel}}" Height="3"></Separator>
+        </StackPanel>
+        
+        <StackPanel Name="Split" Visibility="{Binding OrderItemInfo.IsSplitted, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <TextBlock Foreground="Blue" >Split</TextBlock>
+            <Separator Width="{Binding Width, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=StackPanel}}" Height="3"></Separator>
+        </StackPanel>  
+        
+        <StackPanel Name="Mirrored" Visibility="{Binding OrderItemInfo.IsDuplicated, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <TextBlock Foreground="Blue" >Mirrored</TextBlock>
+            <Separator Width="{Binding Width, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=StackPanel}}" Height="3"></Separator>
+        </StackPanel>        
+        
+        <StackPanel Name="Unidentified" Visibility="{Binding OrderItemInfo.IsIdentified, Converter={StaticResource BooleanToInvertedVisibilityConverter}}">
+            <TextBlock Foreground="Red">Unidentified</TextBlock>
+            <Separator Width="{Binding Width, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=StackPanel}}" Height="3"></Separator>
+        </StackPanel>
+        
+        <StackPanel Name="Corrupted" Visibility="{Binding OrderItemInfo.IsCorrupted, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <TextBlock Foreground="Red">Corrupted</TextBlock>
+            <Separator Width="{Binding Width, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=StackPanel}}" Height="3"></Separator>
+        </StackPanel>
+        
+        <StackPanel Name="AllocateMods" Visibility="Collapsed">
+            <ItemsControl></ItemsControl>
+            <Separator Width="{Binding Width, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=StackPanel}}" Height="3"></Separator>
+        </StackPanel>
+        
+        <StackPanel Name="AdditionalProperties">
+            <ItemsControl ItemsSource="{Binding OrderItemInfo.ExtendedProperties}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding Path=Name}"></TextBlock>
+                            
+                            <TextBlock>
+                                <TextBlock.Text>
+                                    <Binding StringFormat="{}{0} " Path="Value" />
+                                </TextBlock.Text>
+                            </TextBlock>
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </StackPanel>
+        
+        <StackPanel Orientation="Horizontal">
+            <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
+                <TextBlock VerticalAlignment="Center" Text="{Binding OrderItem.Price.Amount}"></TextBlock>
+                <TextBlock VerticalAlignment="Center">x </TextBlock>
+                <Image VerticalAlignment="Center" Source="/Resources/Images/curr_chaos.png" MaxWidth="30"></Image>
+            </StackPanel>
+            <WrapPanel HorizontalAlignment="Center">
+                <Button Command="{Binding WhisperCommand}">Whisper</Button>
+            </WrapPanel>
+            <WrapPanel HorizontalAlignment="Right">
+                <Button Command="{Binding CloseCommand}">Close</Button>
+            </WrapPanel>
+        </StackPanel>
+
+    </StackPanel>
+</Window>

@@ -1,0 +1,273 @@
+﻿{
+  "result": [
+    {
+      "id": "a42688b010d04df1698ad7a89ded30524e438ad6b8c6e01dc8c4fd3f3527f1b6",
+      "listing": {
+        "method": "psapi",
+        "indexed": "2023-11-02T00:19:44Z",
+        "stash": {
+          "name": "~price 156 chaos",
+          "x": 7,
+          "y": 6
+        },
+        "account": {
+          "name": "xAtOPx",
+          "online": null,
+          "language": "en_US",
+          "realm": "pc"
+        },
+        "price": {
+          "type": "~price",
+          "amount": 156,
+          "currency": "chaos"
+        }
+      },
+      "item": {
+        "verified": true,
+        "w": 1,
+        "h": 1,
+        "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvQW11bGV0cy9UYWxpc21hbkJsYWNrNyIsInciOjEsImgiOjEsInNjYWxlIjoxfV0/c02ff6ddaf/TalismanBlack7.png",
+        "league": "Ancestor",
+        "id": "a42688b010d04df1698ad7a89ded30524e438ad6b8c6e01dc8c4fd3f3527f1b6",
+        "name": "Skull Charm",
+        "typeLine": "Primal Skull Talisman",
+        "baseType": "Primal Skull Talisman",
+        "identified": true,
+        "ilvl": 85,
+        "corrupted": true,
+        "notableProperties": [
+          {
+            "name": "Barbarism",
+            "values": [
+              [
+                "8% increased maximum Life",
+                0
+              ],
+              [
+                "+1% to maximum Fire Resistance",
+                0
+              ],
+              [
+                "+8% to Fire Resistance",
+                0
+              ]
+            ],
+            "displayMode": 0,
+            "type": 28,
+            "suffix": "53118"
+          }
+        ],
+        "requirements": [
+          {
+            "name": "Level",
+            "values": [
+              [
+                "60",
+                0
+              ]
+            ],
+            "displayMode": 0,
+            "type": 62
+          }
+        ],
+        "talismanTier": 2,
+        "enchantMods": [
+          "Allocates Barbarism"
+        ],
+        "implicitMods": [
+          "Regenerate 2% of Life per second"
+        ],
+        "explicitMods": [
+          "Adds 24 to 42 Fire Damage to Attacks",
+          "+88 to maximum Life",
+          "52% increased Mana Regeneration Rate",
+          "+11% to Fire Resistance",
+          "+31% to Cold Resistance",
+          "0.7% of Physical Attack Damage Leeched as Mana"
+        ],
+        "flavourText": [
+          "With the will of the first ones in our sinews\r",
+          "we shall tear down the walls of Sarn.\r",
+          "Yet as is the way of the wildlands,\r",
+          "Only the strong may grow stronger.\r",
+          "- The Wolven King"
+        ],
+        "frameType": 2,
+        "extended": {
+          "mods": {
+            "explicit": [
+              {
+                "name": "Cremating",
+                "tier": "P1",
+                "level": 76,
+                "magnitudes": [
+                  {
+                    "hash": "explicit.stat_1573130764",
+                    "min": 19,
+                    "max": 25
+                  },
+                  {
+                    "hash": "explicit.stat_1573130764",
+                    "min": 39,
+                    "max": 45
+                  }
+                ]
+              },
+              {
+                "name": "Parched",
+                "tier": "P1",
+                "level": 70,
+                "magnitudes": [
+                  {
+                    "hash": "explicit.stat_3237948413",
+                    "min": 0.6,
+                    "max": 0.8
+                  }
+                ]
+              },
+              {
+                "name": "of Euphoria",
+                "tier": "S2",
+                "level": 55,
+                "magnitudes": [
+                  {
+                    "hash": "explicit.stat_789117908",
+                    "min": 50,
+                    "max": 59
+                  }
+                ]
+              },
+              {
+                "name": "Athlete's",
+                "tier": "P1",
+                "level": 54,
+                "magnitudes": [
+                  {
+                    "hash": "explicit.stat_3299347043",
+                    "min": 80,
+                    "max": 89
+                  }
+                ]
+              },
+              {
+                "name": "of the Walrus",
+                "tier": "S4",
+                "level": 50,
+                "magnitudes": [
+                  {
+                    "hash": "explicit.stat_4220027924",
+                    "min": 30,
+                    "max": 35
+                  }
+                ]
+              },
+              {
+                "name": "of the Whelpling",
+                "tier": "S8",
+                "level": 1,
+                "magnitudes": [
+                  {
+                    "hash": "explicit.stat_3372524247",
+                    "min": 6,
+                    "max": 11
+                  }
+                ]
+              }
+            ],
+            "implicit": [
+              {
+                "name": "",
+                "tier": "",
+                "level": 1,
+                "magnitudes": [
+                  {
+                    "hash": "implicit.stat_836936635",
+                    "min": 2,
+                    "max": 2
+                  }
+                ]
+              },
+              {
+                "name": "",
+                "tier": "",
+                "level": 1,
+                "magnitudes": null
+              }
+            ],
+            "enchant": [
+              {
+                "name": "",
+                "tier": "",
+                "level": 1,
+                "magnitudes": [
+                  {
+                    "hash": "enchant.stat_2954116742",
+                    "min": 0,
+                    "max": 0
+                  }
+                ]
+              }
+            ]
+          },
+          "hashes": {
+            "explicit": [
+              [
+                "explicit.stat_1573130764",
+                [
+                  0
+                ]
+              ],
+              [
+                "explicit.stat_3299347043",
+                [
+                  3
+                ]
+              ],
+              [
+                "explicit.stat_789117908",
+                [
+                  2
+                ]
+              ],
+              [
+                "explicit.stat_3372524247",
+                [
+                  5
+                ]
+              ],
+              [
+                "explicit.stat_4220027924",
+                [
+                  4
+                ]
+              ],
+              [
+                "explicit.stat_3237948413",
+                [
+                  1
+                ]
+              ]
+            ],
+            "implicit": [
+              [
+                "implicit.stat_836936635",
+                [
+                  0
+                ]
+              ]
+            ],
+            "enchant": [
+              [
+                "enchant.stat_2954116742",
+                [
+                  0
+                ]
+              ]
+            ]
+          },
+          "text": "SXRlbSBDbGFzczogQW11bGV0cw0KUmFyaXR5OiBSYXJlDQpTa3VsbCBDaGFybQ0KUHJpbWFsIFNrdWxsIFRhbGlzbWFuDQotLS0tLS0tLQ0KUmVxdWlyZW1lbnRzOg0KTGV2ZWw6IDYwDQotLS0tLS0tLQ0KSXRlbSBMZXZlbDogODUNCi0tLS0tLS0tDQpUYWxpc21hbiBUaWVyOiAyDQotLS0tLS0tLQ0KQWxsb2NhdGVzIEJhcmJhcmlzbSAoZW5jaGFudCkNCi0tLS0tLS0tDQpSZWdlbmVyYXRlIDIlIG9mIExpZmUgcGVyIHNlY29uZCAoaW1wbGljaXQpDQotLS0tLS0tLQ0KQWRkcyAyNCB0byA0MiBGaXJlIERhbWFnZSB0byBBdHRhY2tzDQorODggdG8gbWF4aW11bSBMaWZlDQo1MiUgaW5jcmVhc2VkIE1hbmEgUmVnZW5lcmF0aW9uIFJhdGUNCisxMSUgdG8gRmlyZSBSZXNpc3RhbmNlDQorMzElIHRvIENvbGQgUmVzaXN0YW5jZQ0KMC43JSBvZiBQaHlzaWNhbCBBdHRhY2sgRGFtYWdlIExlZWNoZWQgYXMgTWFuYQ0KLS0tLS0tLS0NCldpdGggdGhlIHdpbGwgb2YgdGhlIGZpcnN0IG9uZXMgaW4gb3VyIHNpbmV3cw0Kd2Ugc2hhbGwgdGVhciBkb3duIHRoZSB3YWxscyBvZiBTYXJuLg0KWWV0IGFzIGlzIHRoZSB3YXkgb2YgdGhlIHdpbGRsYW5kcywNCk9ubHkgdGhlIHN0cm9uZyBtYXkgZ3JvdyBzdHJvbmdlci4NCi0gVGhlIFdvbHZlbiBLaW5nDQotLS0tLS0tLQ0KQ29ycnVwdGVkDQo="
+        }
+      }
+    }
+  ]
+}

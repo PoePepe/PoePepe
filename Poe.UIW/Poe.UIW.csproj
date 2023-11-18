@@ -1,0 +1,55 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>WinExe</OutputType>
+        <TargetFramework>net7.0-windows</TargetFramework>
+        <UseWPF>true</UseWPF>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
+      <PackageReference Include="HanumanInstitute.MvvmDialogs" Version="2.0.0" />
+      <PackageReference Include="HanumanInstitute.MvvmDialogs.Wpf" Version="2.0.0" />
+      <PackageReference Include="InputSimulatorPlus.NetStandard" Version="1.0.8" />
+      <PackageReference Include="Material.Icons.WPF" Version="2.0.0" />
+      <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
+      <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
+      <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
+      <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />
+      <PackageReference Include="Riok.Mapperly" Version="3.2.0" />
+      <PackageReference Include="Serilog" Version="3.1.1" />
+      <PackageReference Include="Serilog.Sinks.Console" Version="5.0.0" />
+      <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
+      <PackageReference Include="UniversalWPF" Version="1.0.0" />
+      <PackageReference Include="ValueConverters" Version="3.0.26" />
+      <PackageReference Include="WPF-UI" Version="2.1.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Page Update="Views\MainView.xaml">
+        <Generator>MSBuild:Compile</Generator>
+        <XamlRuntime>Wpf</XamlRuntime>
+        <SubType>Designer</SubType>
+      </Page>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Resource Include="Resources\Icons\wpfui.png" />
+      <Resource Include="Resources\Images\divinationCard.png" />
+      <Resource Include="Resources\Images\socket.png" />
+
+        <Resource Include="Resources\Images\curr_chaos.png" />
+        
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="appsettings.json">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Poe.LiveSearch\Poe.LiveSearch.csproj" />
+    </ItemGroup>
+
+</Project>

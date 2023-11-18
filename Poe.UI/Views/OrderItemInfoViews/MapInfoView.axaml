@@ -1,0 +1,121 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:Poe.UI.ViewModels"
+             xmlns:models="clr-namespace:Poe.UI.Models"
+             xmlns:system="clr-namespace:System;assembly=System.Runtime"
+             xmlns:orderItemInfoViewModels="clr-namespace:Poe.UI.ViewModels.OrderItemInfoViewModels"
+             mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="450"
+             x:Class="Poe.UI.Views.OrderItemInfoViews.MapInfoView"
+             x:DataType="orderItemInfoViewModels:MapInfoViewModel">
+
+    <Design.DataContext>
+        <!-- This only sets the DataContext for the previewer in an IDE,
+             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
+        <orderItemInfoViewModels:MapInfoViewModel />
+    </Design.DataContext>
+    
+    <UserControl.Resources>
+        <!-- <Style Selector="TextBlock.RequiresTB"> -->
+        <!--     ~1~ <Setter Property="TextBlock.FontSize" Value="110%" /> @1@ -->
+        <!--     <Setter Property="TextBlock.Foreground" Value="#FF88FF" /> -->
+        <!--     <Setter Property="TextBlock.FontFamily" Value="FontinSmallCaps, Verdana, Arial, Helvetica, sans-serif" /> -->
+        <!--     <Setter Property="TextBlock.FontWeight" Value="Normal" /> -->
+        <!--     <Setter Property="TextBlock.TextAlignment" Value="Center" /> -->
+        <!--     <Setter Property="TextBlock.LineHeight" Value="1.3" /> -->
+        <!--     <Setter Property="TextBlock.Padding" Value="0,6.08519,0,6.08519" /> -->
+        <!--     <Setter Property="TextBlock.Background"> -->
+        <!--         <Setter.Value> -->
+        <!--             <SolidColorBrush Color="#1AFFFFFF" /> -->
+        <!--         </Setter.Value> -->
+        <!--     </Setter> -->
+        <!-- </Style> -->
+    </UserControl.Resources>
+
+    <StackPanel>
+        <Panel VerticalAlignment="Center" HorizontalAlignment="Center">
+            <StackPanel  VerticalAlignment="Center" HorizontalAlignment="Center">
+                <TextBlock Text="{Binding OrderItem.Name}" ></TextBlock>
+                <TextBlock Text="{Binding OrderItem.TypeLine}" ></TextBlock>
+            </StackPanel>
+        </Panel>
+        
+        <StackPanel Orientation="Horizontal">
+            <Panel x:Name="ItemImagePanel">
+                <Image MaxHeight="47" MaxWidth="47" Height="47" Width="47" x:Name="MapImage"  Source="{Binding MapImage^}">
+                </Image>
+            </Panel>
+            
+            <StackPanel>
+                <StackPanel Name="Properties">
+                    <ItemsControl ItemsSource="{Binding OrderMapInfo.Properties}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock>
+                                        <TextBlock.Text>
+                                            <Binding x:DataType="models:ItemInfoProperty" StringFormat="{}{0}: " Path="Name" />
+                                        </TextBlock.Text>
+                                    </TextBlock>
+                                    <TextBlock Text="{Binding x:DataType=models:ItemInfoProperty, Path=Value}"></TextBlock>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <Separator Width="{Binding $parent[StackPanel].Width}" Height="3"></Separator>
+                </StackPanel>
+            </StackPanel>
+        </StackPanel>
+        
+        <TextBlock>
+            <TextBlock.Text>
+                <Binding StringFormat="{}Item Level: {0}" Path="OrderMapInfo.ItemLevel" />
+            </TextBlock.Text>
+        </TextBlock>
+        
+        <StackPanel Name="ImplicitMods">
+            <Separator Width="{Binding $parent[StackPanel].Width}" Height="3"></Separator>
+            <ItemsControl ItemsSource="{Binding OrderMapInfo.ImplicitMods}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock HorizontalAlignment="Center" Text="{Binding x:DataType=system:String}"></TextBlock>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+            <Separator Width="{Binding $parent[StackPanel].Width}" Height="3"></Separator>
+        </StackPanel>
+        
+        <StackPanel Name="ExplicitMods">
+            <ItemsControl ItemsSource="{Binding OrderMapInfo.ExplicitMods}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock HorizontalAlignment="Center" Text="{Binding x:DataType=system:String }"></TextBlock>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+            <Separator Width="{Binding $parent[StackPanel].Width}" Height="3"></Separator>
+        </StackPanel>
+        
+        <StackPanel Name="Corrupted" IsVisible="{Binding OrderMapInfo.IsCorrupted}">
+            <TextBlock>Corrupted</TextBlock>
+            <Separator Width="{Binding $parent[StackPanel].Width}" Height="3"></Separator>
+        </StackPanel>
+        
+        <StackPanel Orientation="Horizontal">
+            <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
+                <TextBlock VerticalAlignment="Center" Text="{Binding OrderItem.Price.Amount}"></TextBlock>
+                <TextBlock VerticalAlignment="Center">x </TextBlock>
+                <Image VerticalAlignment="Center" Source="/Resources/Currency/curr_chaos.png" MaxWidth="30"></Image>
+            </StackPanel>
+            <Panel HorizontalAlignment="Center">
+                <Button Classes="Primary" Command="{Binding Whisper}">Whisper</Button>
+            </Panel>
+            <Panel HorizontalAlignment="Right">
+                <Button Command="{Binding Close}">Close</Button>
+            </Panel>
+        </StackPanel>
+
+    </StackPanel>
+
+</UserControl>

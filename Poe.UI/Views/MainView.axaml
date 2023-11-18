@@ -1,0 +1,184 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:Poe.UI.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+        xmlns:viewModels="clr-namespace:Poe.UI.ViewModels"
+        mc:Ignorable="d"
+        MaxHeight="600"
+        MaxWidth="800"
+        x:Class="Poe.UI.Views.MainView"
+        x:DataType="vm:MainViewModel"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="Poe.UI">
+
+    <Design.DataContext>
+        <!-- This only sets the DataContext for the previewer in an IDE,
+             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
+        <vm:MainViewModel />
+    </Design.DataContext>
+
+    <StackPanel>
+        <TextBlock
+            FontSize="20"
+            VerticalAlignment="Center"
+            HorizontalAlignment="Left">
+            PoePePe Live Search
+        </TextBlock>
+
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button
+                Classes="Primary"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Top"
+                VerticalContentAlignment="Center"
+                Command="{Binding AddNewOrderCommand}"
+                Content="Add new order" />
+        
+            <Button
+                HorizontalAlignment="Right"
+                VerticalAlignment="Top"
+                VerticalContentAlignment="Center"
+                Command="{Binding ClearOrdersCommand}"
+                Content="Clear all" />
+
+        </StackPanel>
+
+        <DataGrid Margin="20"
+                  ItemsSource="{Binding Orders}"
+                  IsReadOnly="True">
+            <DataGrid.Styles>
+                <Style Selector="DataGridColumnHeader">
+                    <Setter Property="HorizontalContentAlignment" Value="Center" />
+                </Style>
+            </DataGrid.Styles>
+            <DataGrid.Columns>
+                <DataGridTemplateColumn Width="24">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <materialIcons:MaterialIcon IsVisible="{Binding HasValidationErrors}"
+                                                        Foreground="Red" Kind="Alert"
+                                                        Width="24" Height="24">
+                                <ToolTip.Tip>
+                                    <TextBlock Foreground="Red" Text="{Binding ValidationError}" />
+                                </ToolTip.Tip>
+                            </materialIcons:MaterialIcon>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Name">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                                <TextBlock VerticalAlignment="Center" Text="{Binding Name}"></TextBlock>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                
+                <DataGridTemplateColumn Header="Choose Mod" Width="*">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                                <ComboBox Background="Transparent"
+                                          BorderBrush="Transparent"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Bottom"
+                                          MinWidth="100"
+                                          MaxDropDownHeight="100"
+                                          SelectionChanged="SelectingItemsControl_OnSelectionChanged"
+                                          SelectedValue="{Binding Mod}"
+                                          ItemsSource="{x:Static vm:MainViewModel.AvailableMods}">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding }" />
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                
+                <DataGridTemplateColumn Width="*">
+                    <DataGridTemplateColumn.HeaderTemplate>
+                        <DataTemplate>
+                            <TextBlock HorizontalAlignment="Center">Activity</TextBlock>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.HeaderTemplate>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <Button Padding="10"
+                                        IsVisible="{Binding !IsActive}" Background="Transparent"
+                                        Command="{Binding $parent[DataGrid].((vm:MainViewModel)DataContext).EnableOrder}"
+                                        CommandParameter="{Binding Id}">
+                                    <Button.ContentTemplate>
+                                        <DataTemplate>
+                                            <materialIcons:MaterialIcon 
+                                                Kind="Play"
+                                                x:DataType="viewModels:OrderViewModel"
+                                                IsVisible="{Binding HasValidationErrors}"
+                                                Width="24" Height="24">
+                                            </materialIcons:MaterialIcon>
+                                        </DataTemplate>
+                                    </Button.ContentTemplate>
+                                </Button>
+                                
+                                <Button Padding="10"
+                                        IsVisible="{Binding IsActive}" Background="Transparent"
+                                        Command="{Binding $parent[DataGrid].((vm:MainViewModel)DataContext).DisableOrder}"
+                                        CommandParameter="{Binding Id}">
+                                    <Button.ContentTemplate>
+                                        <DataTemplate>
+                                            <materialIcons:MaterialIcon 
+                                                Kind="Pause"
+                                                x:DataType="viewModels:OrderViewModel"
+                                                IsVisible="{Binding HasValidationErrors}"
+                                                Width="24" Height="24">
+                                            </materialIcons:MaterialIcon>
+                                        </DataTemplate>
+                                    </Button.ContentTemplate>
+                                </Button>
+
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                
+                <DataGridTextColumn Width="*"/>
+
+                <DataGridTemplateColumn>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <Button VerticalContentAlignment="Center" Classes="Accent" Background="Transparent">
+                                    <Button.ContentTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Foreground="Black" FontSize="22" VerticalAlignment="Center" Text="⋯"></TextBlock>
+                                        </DataTemplate>
+                                    </Button.ContentTemplate>
+
+                                    <Button.Flyout>
+                                        <MenuFlyout>
+                                            <MenuItem Header="Copy link"
+                                                      Command="{Binding $parent[DataGrid].((vm:MainViewModel)DataContext).CopyOrderLink}"
+                                                      CommandParameter="{Binding Link}"/>
+                                            <MenuItem Header="-" />
+                                            <MenuItem Header="Edit"
+                                                      Command="{Binding $parent[DataGrid].((vm:MainViewModel)DataContext).EditOrder}"
+                                                      CommandParameter="{Binding Id}" />
+                                            <MenuItem Header="-" />
+                                            <MenuItem Header="Delete"
+                                                      Command="{Binding $parent[DataGrid].((vm:MainViewModel)DataContext).DeleteOrder}"
+                                                      CommandParameter="{Binding Id}" />
+                                        </MenuFlyout>
+                                    </Button.Flyout>
+                                    </Button>
+                            </StackPanel>
+
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+    </StackPanel>
+
+</Window>

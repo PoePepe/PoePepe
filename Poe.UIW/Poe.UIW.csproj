@@ -4,6 +4,7 @@
         <OutputType>WinExe</OutputType>
         <TargetFramework>net7.0-windows</TargetFramework>
         <UseWPF>true</UseWPF>
+        <ApplicationIcon>Resources\Icons\logoAppIcon.ico</ApplicationIcon>
     </PropertyGroup>
 
     <ItemGroup>
@@ -34,12 +35,11 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Resource Include="Resources\Icons\wpfui.png" />
-      <Resource Include="Resources\Images\divinationCard.png" />
-      <Resource Include="Resources\Images\socket.png" />
-
-        <Resource Include="Resources\Images\curr_chaos.png" />
-        
+        <Resource Include="Resources\Images\divinationCard.png"/>
+        <Resource Include="Resources\Images\socket.png"/>
+        <Resource Include="Resources\Images\curr_chaos.png"/>
+        <Resource Include="Resources\Icons\logo.png"/>
+        <Resource Include="Resources\Icons\logoAppIcon.ico"/>
     </ItemGroup>
 
     <ItemGroup>

@@ -136,7 +136,7 @@
             Grid.Row="0"
             
             FocusOnLeftClick="True"
-            Icon="pack://application:,,,/Resources/Icons/wpfui.png"
+            Icon="pack://application:,,,/Resources/Icons/logo.png"
             MenuOnRightClick="True"
             TooltipText="PoePepe">
             
@@ -163,7 +163,7 @@
             Title="PoePepe"
             Grid.Row="0"
             ForceShutdown="False"
-            Icon="pack://application:,,,/Resources/Icons/wpfui.png"
+            Icon="pack://application:,,,/Resources/Icons/logo.png"
             MinimizeToTray="False"
             ShowHelp="False"
             ShowClose="True">

@@ -35,10 +35,16 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Resource Include="Resources\Images\divinationCard.png"/>
-        <Resource Include="Resources\Images\socket.png"/>
-        <Resource Include="Resources\Icons\logo.png"/>
-        <Resource Include="Resources\Icons\logoAppIcon.ico"/>
+        <Resource Include="Resources\Images\divinationCard.png" />
+        <Resource Include="Resources\Images\header-left.png" />
+        <Resource Include="Resources\Images\header-middle.png" />
+        <Resource Include="Resources\Images\header-right.png" />
+        <Resource Include="Resources\Images\searing-symbol.png" />
+        <Resource Include="Resources\Images\socket.png" />
+        <Resource Include="Resources\Images\veiled_mod.png" />
+        <Resource Include="Resources\Fonts\Fontin-SmallCaps.otf" />
+        <Resource Include="Resources\Icons\logo.png" />
+        <Resource Include="Resources\Icons\logoAppIcon.ico" />
         <Resource Include="Resources\Images\Currencies\chaosOrb.png" />
         <Resource Include="Resources\Images\Currencies\divineOrb.png" />
         <Resource Include="Resources\Images\Currencies\exaltedOrb.png" />

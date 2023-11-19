@@ -54,6 +54,8 @@
         <Resource Include="Resources\Images\Currencies\JewellersOrb.png" />
         <Resource Include="Resources\Images\Currencies\RegalOrb.png" />
         <Resource Include="Resources\Images\Currencies\RegretOrb.png" />
+        <Resource Include="Resources\Images\Currencies\ScouringOrb.png" />
+        <Resource Include="Resources\Images\Currencies\VaalOrb.png" />
     </ItemGroup>
 
     <ItemGroup>

@@ -39,23 +39,23 @@
         <Resource Include="Resources\Images\socket.png"/>
         <Resource Include="Resources\Icons\logo.png"/>
         <Resource Include="Resources\Icons\logoAppIcon.ico"/>
-        <Resource Include="Resources\Images\Currencies\ChaosOrb.png" />
-        <Resource Include="Resources\Images\Currencies\DivineOrb.png" />
-        <Resource Include="Resources\Images\Currencies\ExaltedOrb.png" />
-        <Resource Include="Resources\Images\Currencies\AlchemyOrb.png" />
-        <Resource Include="Resources\Images\Currencies\AlterationOrb.png" />
-        <Resource Include="Resources\Images\Currencies\AwakenedSextant.png" />
-        <Resource Include="Resources\Images\Currencies\BlessedOrb.png" />
-        <Resource Include="Resources\Images\Currencies\CartographersChisel.png" />
-        <Resource Include="Resources\Images\Currencies\ChanceOrb.png" />
-        <Resource Include="Resources\Images\Currencies\ChromaticOrb.png" />
-        <Resource Include="Resources\Images\Currencies\FusingORb.png" />
-        <Resource Include="Resources\Images\Currencies\GemcuttersPrism.png" />
-        <Resource Include="Resources\Images\Currencies\JewellersOrb.png" />
-        <Resource Include="Resources\Images\Currencies\RegalOrb.png" />
-        <Resource Include="Resources\Images\Currencies\RegretOrb.png" />
-        <Resource Include="Resources\Images\Currencies\ScouringOrb.png" />
-        <Resource Include="Resources\Images\Currencies\VaalOrb.png" />
+        <Resource Include="Resources\Images\Currencies\chaosOrb.png" />
+        <Resource Include="Resources\Images\Currencies\divineOrb.png" />
+        <Resource Include="Resources\Images\Currencies\exaltedOrb.png" />
+        <Resource Include="Resources\Images\Currencies\alchemyOrb.png" />
+        <Resource Include="Resources\Images\Currencies\alterationOrb.png" />
+        <Resource Include="Resources\Images\Currencies\awakenedSextant.png" />
+        <Resource Include="Resources\Images\Currencies\blessedOrb.png" />
+        <Resource Include="Resources\Images\Currencies\cartographersChisel.png" />
+        <Resource Include="Resources\Images\Currencies\chanceOrb.png" />
+        <Resource Include="Resources\Images\Currencies\chromaticOrb.png" />
+        <Resource Include="Resources\Images\Currencies\fusingORb.png" />
+        <Resource Include="Resources\Images\Currencies\gemcuttersPrism.png" />
+        <Resource Include="Resources\Images\Currencies\jewellersOrb.png" />
+        <Resource Include="Resources\Images\Currencies\regalOrb.png" />
+        <Resource Include="Resources\Images\Currencies\regretOrb.png" />
+        <Resource Include="Resources\Images\Currencies\scouringOrb.png" />
+        <Resource Include="Resources\Images\Currencies\vaalOrb.png" />
     </ItemGroup>
 
     <ItemGroup>

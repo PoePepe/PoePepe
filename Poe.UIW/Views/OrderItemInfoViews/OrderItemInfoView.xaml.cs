@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Threading;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
-using Microsoft.Extensions.DependencyInjection;
 using Poe.UIW.Models;
 using Poe.UIW.Services;
+using Poe.UIW.Services.Currency;
 using Poe.UIW.ViewModels.OrderItemInfoViewModels;
 
 namespace Poe.UIW.Views.OrderItemInfoViews;
@@ -27,24 +26,14 @@ public partial class OrderItemInfoView : Window
         ViewModel = orderItemInfoViewModel;
         
         _bitmapImage = new BitmapImage();
-        ImageDownloaded += OnImageDownloaded;
+        Loaded += OnLoaded;
         InitializeComponent();
     }
 
-    private void OnImageDownloaded(object sender, EventArgs e)
+    private void OnLoaded(object sender, RoutedEventArgs e)
     {
-        // RenderSocketsAndLinks();
-        Dispatcher.BeginInvoke((Action)RenderSocketsAndLinks);
+        RenderPrice();
     }
-    
-    
-    public event EventHandler ImageDownloaded;
-
-    private void OnImageDownloaded()
-    {
-        ImageDownloaded?.Invoke(this, EventArgs.Empty);
-    }
-
 
     protected override void OnInitialized(EventArgs eventArgs)
     {
@@ -59,17 +48,18 @@ public partial class OrderItemInfoView : Window
 
         base.OnInitialized(eventArgs);
     }
-    
+
+    private void RenderPrice()
+    {
+        PriceImage.Source = ResourceCurrencyService.GetCurrencyImage(ViewModel.OrderItem.Price.Currency);
+    }
+
     private void RenderSocketsAndLinks()
     {
         ItemBackImage.Source = _bitmapImage;
         ItemBackImage.Width = ItemBackImage.Source.Width;
         ItemBackImage.Height = ItemBackImage.Source.Height;
-        
-        // var orderItem = ViewModel.OrderItem;
-        // var itemSockets = ((ItemInfo)orderItem.ItemInfo).Sockets;
-        
-        // // var orderItem = ((OrderItemInfoViewModel)DataContext!).OrderItem;
+
         var itemSockets = ViewModel.OrderItemInfo.Sockets;
         
         if (itemSockets == null || itemSockets.Count == 0)
@@ -140,12 +130,12 @@ public partial class OrderItemInfoView : Window
     private void ItemImagePanel_OnMouseEnter(object sender, MouseEventArgs e)
     {
         ItemLinkImageCanvas.Visibility = Visibility.Collapsed;
-        // ItemSocketImageRelativePanel.IsVisible = false;
+        ItemSocketImageRelativePanel.Visibility = Visibility.Collapsed;
     }
 
     private void ItemImagePanel_OnMouseLeave(object sender, MouseEventArgs e)
     {
         ItemLinkImageCanvas.Visibility = Visibility.Visible;
-        // ItemSocketImageRelativePanel.IsVisible = true;
+        ItemSocketImageRelativePanel.Visibility = Visibility.Visible;
     }
 }

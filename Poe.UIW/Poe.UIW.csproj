@@ -37,9 +37,23 @@
     <ItemGroup>
         <Resource Include="Resources\Images\divinationCard.png"/>
         <Resource Include="Resources\Images\socket.png"/>
-        <Resource Include="Resources\Images\curr_chaos.png"/>
         <Resource Include="Resources\Icons\logo.png"/>
         <Resource Include="Resources\Icons\logoAppIcon.ico"/>
+        <Resource Include="Resources\Images\Currencies\ChaosOrb.png" />
+        <Resource Include="Resources\Images\Currencies\DivineOrb.png" />
+        <Resource Include="Resources\Images\Currencies\ExaltedOrb.png" />
+        <Resource Include="Resources\Images\Currencies\AlchemyOrb.png" />
+        <Resource Include="Resources\Images\Currencies\AlterationOrb.png" />
+        <Resource Include="Resources\Images\Currencies\AwakenedSextant.png" />
+        <Resource Include="Resources\Images\Currencies\BlessedOrb.png" />
+        <Resource Include="Resources\Images\Currencies\CartographersChisel.png" />
+        <Resource Include="Resources\Images\Currencies\ChanceOrb.png" />
+        <Resource Include="Resources\Images\Currencies\ChromaticOrb.png" />
+        <Resource Include="Resources\Images\Currencies\FusingORb.png" />
+        <Resource Include="Resources\Images\Currencies\GemcuttersPrism.png" />
+        <Resource Include="Resources\Images\Currencies\JewellersOrb.png" />
+        <Resource Include="Resources\Images\Currencies\RegalOrb.png" />
+        <Resource Include="Resources\Images\Currencies\RegretOrb.png" />
     </ItemGroup>
 
     <ItemGroup>

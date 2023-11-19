@@ -119,8 +119,8 @@ public partial class LiveSearchViewModel : ViewModelBase
             return;
         }
 
-        da.OrderId = Enumerable.FirstOrDefault(Orders)?.Id ?? 0L;
-        da.OrderName = Enumerable.FirstOrDefault(Orders)?.Name;
+        da.OrderId = Orders.FirstOrDefault()?.Id ?? 0L;
+        da.OrderName = Orders.FirstOrDefault()?.Name;
         da.Orders = new []{new ItemLiveResponse(da.Id, da.OrderId, da.OrderName)};
         await _serviceState.FoundItemsChannel.Writer.WriteAsync(da);
     }

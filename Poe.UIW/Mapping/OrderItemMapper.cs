@@ -4,6 +4,7 @@ using System.Linq;
 using Poe.LiveSearch.Api.Trade.Models;
 using Poe.UIW.Models;
 using LogbookMods = Poe.UIW.Models.LogbookMods;
+using NotableProperty = Poe.UIW.Models.NotableProperty;
 using Socket = Poe.UIW.Models.Socket;
 
 namespace Poe.UIW.Mapping;
@@ -114,7 +115,14 @@ public static class OrderItemMapper
             
             ExplicitMods = item.ExplicitMods,
             ImplicitMods = item.ImplicitMods,
+
             EnchantMods = item.EnchantMods,
+            NotableProperties = item.NotableProperties?.Select(x => new NotableProperty
+            {
+                Name = x.Name,
+                Values = x.Values.Select(v => v.First().ToString()).ToArray()
+            }).ToArray(),
+
             FracturedMods = item.FracturedMods,
             CraftedMods = item.CraftedMods,
             LogbookMods = item.LogbookMods?.Select(itemLogbookMod => new LogbookMods
@@ -131,6 +139,7 @@ public static class OrderItemMapper
             IsSearing = item.Searing,
             IsTangled = item.Tangled,
             IsLogBook = item.LogbookMods?.Length > 0,
+            ExistsNotableProperties = item.NotableProperties?.Length > 0,
             ExistsEnchantMods = item.EnchantMods?.Length > 0,
             ExistsImplicitMods = item.ImplicitMods?.Length > 0,
             ExistsExplicitMods = item.Identified && item.ExplicitMods?.Length > 0,

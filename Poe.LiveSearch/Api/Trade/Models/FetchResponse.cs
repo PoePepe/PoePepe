@@ -112,6 +112,7 @@ public class Item
 
     [JsonPropertyName("fracturedMods")] public string[] FracturedMods { get; set; }
     [JsonPropertyName("enchantMods")] public string[] EnchantMods { get; set; }
+    [JsonPropertyName("notableProperties")] public NotableProperty[] NotableProperties { get; set; }
     [JsonPropertyName("implicitMods")] public string[] ImplicitMods { get; set; }
     [JsonPropertyName("explicitMods")] public string[] ExplicitMods { get; set; }
     [JsonPropertyName("craftedMods")] public string[] CraftedMods { get; set; }
@@ -129,6 +130,13 @@ public class Item
 
     [JsonPropertyName("sockets")]
     public List<Socket> Sockets { get; set; }
+}
+
+public class NotableProperty
+{
+    [JsonPropertyName("name")] public string Name { get; set; }
+
+    [JsonPropertyName("values")] public object[][] Values { get; set; }
 }
 
 public class LogbookMods

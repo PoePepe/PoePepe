@@ -50,13 +50,23 @@ public class StackedItemInfo : ItemInfoBase
     public Sockets Sockets { get; set; }
 }
 
+public class NotableProperty
+{
+    public string Name { get; set; }
+
+    public string[] Values { get; set; }
+}
+
 public class ItemInfo : ItemInfoBase
 {
     public ItemInfoProperty[] Properties { get; set; }
     public ItemInfoExtendedProperty[] ExtendedProperties { get; set; }
     
     public ItemInfoRequirement[] Requirements { get; set; }
+
     public string[] EnchantMods { get; set; }
+    public NotableProperty[] NotableProperties { get; set; }
+
     public string[] ImplicitMods { get; set; }
     public string[] ExplicitMods { get; set; }
     public string[] FracturedMods { get; set; }
@@ -73,6 +83,7 @@ public class ItemInfo : ItemInfoBase
     public bool IsTangled { get; set; }
     public bool IsLogBook { get; set; }
     public bool ExistsEnchantMods { get; set; }
+    public bool ExistsNotableProperties { get; set; }
     public bool ExistsImplicitMods { get; set; }
     public bool ExistsExplicitMods { get; set; }
     public string[] Influences { get; set; }

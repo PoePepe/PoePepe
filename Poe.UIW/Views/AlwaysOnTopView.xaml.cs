@@ -69,7 +69,7 @@ public partial class AlwaysOnTopView : Window
             var orderItem = result.ToOrderItemDto();
             vm.SetOrderItem(orderItem);
             vm.SetMainViewModel(DataContext as INotifyPropertyChanged);
-            var uc = new OrderItemNotificationView
+            var uc = new OrderItemNotificationView(vm)
             {
                 DataContext = vm
             };

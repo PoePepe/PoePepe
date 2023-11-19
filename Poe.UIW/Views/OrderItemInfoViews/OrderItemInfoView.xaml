@@ -4,8 +4,15 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:orderItemInfoViewModels="clr-namespace:Poe.UIW.ViewModels.OrderItemInfoViewModels"
+        xmlns:views="clr-namespace:Poe.UIW.Views"
+        xmlns:orderItemInfoViews="clr-namespace:Poe.UIW.Views.OrderItemInfoViews"
         mc:Ignorable="d"
         WindowStyle="None"
+        ResizeMode="NoResize"
+        SizeToContent="WidthAndHeight"
+        ShowInTaskbar="False"
+        WindowStartupLocation="Manual"
+        Topmost="True"
         Height="400"
         Width="400"
         d:DesignHeight="300" d:DesignWidth="300"
@@ -20,26 +27,27 @@
 
         </Grid.RowDefinitions>
         <!-- Title -->
-        <Grid>
+        <Grid MouseLeftButtonDown="UIElement_OnMouseLeftButtonDown">
             <!-- Background Images -->
-            <Grid>
+            
+            <orderItemInfoViews:ItemInfoTitle/>
+            
+            <Grid Visibility="Collapsed">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
 
-                <Image Grid.Column="0"
-                       Source="/Resources/Images/header-left.png"
-                       Name="img1" />
+                <Image Grid.Column="0" Source="/Resources/Images/header-left.png"/>
+                
                 <Grid Grid.Column="1">
                     <Grid.Background>
                         <ImageBrush ImageSource="/Resources/Images/header-middle.png" />
                     </Grid.Background>
-
                 </Grid>
-                <Image Grid.Column="2"
-                       Source="/Resources/Images/header-right.png" />
+                
+                <Image Grid.Column="2" Source="/Resources/Images/header-right.png" />
             </Grid>
             <!-- Influenses -->
             <StackPanel Orientation="Horizontal"
@@ -94,7 +102,7 @@
             <!-- Properties -->
             <StackPanel Grid.Column="1" Orientation="Vertical"
                         HorizontalAlignment="Center" x:Name="LineBaseGrid">
-                
+
                 <!-- Properties -->
                 <StackPanel Name="Properties" HorizontalAlignment="Center">
                     <ItemsControl ItemsSource="{Binding OrderItemInfo.Properties}">
@@ -361,16 +369,21 @@
                     </Grid>
                 </StackPanel>
                 <!-- NotableProperties -->
-                <StackPanel Name="NotableProperties" Visibility="{Binding OrderItemInfo.ExistsNotableProperties, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <StackPanel Name="NotableProperties"
+                            Visibility="{Binding OrderItemInfo.ExistsNotableProperties, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <ItemsControl ItemsSource="{Binding OrderItemInfo.NotableProperties}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel>
-                                    <TextBlock Style="{StaticResource notableProperties_title}" HorizontalAlignment="Center" Text="{Binding  Name}"></TextBlock>
+                                    <TextBlock Style="{StaticResource notableProperties_title}"
+                                               HorizontalAlignment="Center" Text="{Binding  Name}">
+                                    </TextBlock>
                                     <ItemsControl ItemsSource="{Binding Values}">
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate>
-                                                <TextBlock Style="{StaticResource notableProperties_desc}" HorizontalAlignment="Center" Text="{Binding }"></TextBlock>
+                                                <TextBlock Style="{StaticResource notableProperties_desc}"
+                                                           HorizontalAlignment="Center" Text="{Binding }">
+                                                </TextBlock>
                                             </DataTemplate>
                                         </ItemsControl.ItemTemplate>
                                     </ItemsControl>
@@ -379,9 +392,8 @@
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
                 </StackPanel>
-                
-                
-                
+
+
                 <!-- Logbook -->
                 <StackPanel
                     Visibility="{Binding OrderItemInfo.IsLogBook, Converter={StaticResource BooleanToVisibilityConverter}}"
@@ -395,14 +407,15 @@
                                                Text="{Binding Name}">
                                     </TextBlock>
 
-                                    <TextBlock  Style="{StaticResource logbook_faction}" HorizontalAlignment="Center"
-                                                Text="{Binding FactionName}">
+                                    <TextBlock Style="{StaticResource logbook_faction}" HorizontalAlignment="Center"
+                                               Text="{Binding FactionName}">
                                     </TextBlock>
 
                                     <ItemsControl ItemsSource="{Binding Mods}">
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate>
-                                                <TextBlock Style="{StaticResource logbook_mod}" HorizontalAlignment="Center"
+                                                <TextBlock Style="{StaticResource logbook_mod}"
+                                                           HorizontalAlignment="Center"
                                                            Text="{Binding }">
                                                 </TextBlock>
                                             </DataTemplate>
@@ -437,9 +450,9 @@
         </Grid>
         <!-- Button Panel -->
         <StackPanel Grid.Row="2" Background="#020202">
-            
+
             <!-- AdditionalProperties -->
-            <StackPanel Name="AdditionalProperties"  HorizontalAlignment="Center" Margin="5,0,5,0">
+            <StackPanel Name="AdditionalProperties" HorizontalAlignment="Center" Margin="5,0,5,0">
                 <ItemsControl ItemsSource="{Binding OrderItemInfo.ExtendedProperties}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
@@ -449,11 +462,13 @@
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                <TextBlock Style="{StaticResource additionalProperties_name}" Text="{Binding Path=Name}"></TextBlock>
-            
+                                <TextBlock Style="{StaticResource additionalProperties_name}"
+                                           Text="{Binding Path=Name}">
+                                </TextBlock>
+
                                 <TextBlock Style="{StaticResource additionalProperties_value}">
                                     <TextBlock.Text>
-                                        <Binding  StringFormat="{}{0}  " Path="Value" />
+                                        <Binding StringFormat="{}{0}  " Path="Value" />
                                     </TextBlock.Text>
                                 </TextBlock>
                             </StackPanel>
@@ -469,7 +484,7 @@
 
             <Separator Background="#232425"
                        Height="2"
-                       VerticalAlignment="Top"/>
+                       VerticalAlignment="Top" />
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="auto" />
@@ -477,19 +492,24 @@
                     <ColumnDefinition Width="auto" />
                 </Grid.ColumnDefinitions>
                 <!-- Price -->
-                <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" 
+                <StackPanel HorizontalAlignment="Left" Orientation="Horizontal"
                             Margin="5,0,0,0">
-                    <TextBlock VerticalAlignment="Center" Style="{StaticResource currencyPrice}"  Text="{Binding OrderItem.Price.Amount}"></TextBlock>
-                    <TextBlock VerticalAlignment="Center"  Style="{StaticResource currencyPrice}" >x </TextBlock>
-                    <Image x:Name="PriceImage" VerticalAlignment="Center"  Height="35"></Image>
+                    <TextBlock VerticalAlignment="Center" Style="{StaticResource currencyPrice}"
+                               Text="{Binding OrderItem.Price.Amount}">
+                    </TextBlock>
+                    <TextBlock VerticalAlignment="Center" Style="{StaticResource currencyPrice}">x </TextBlock>
+                    <Image x:Name="PriceImage" VerticalAlignment="Center" Height="35"></Image>
                 </StackPanel>
                 <!-- Whisper Button -->
                 <StackPanel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <Button Style="{StaticResource actionButtons}" Command="{Binding WhisperCommand}">Whisper</Button>
+                    <Button Style="{StaticResource actionButtons}" Click="ButtonBase_OnClick"
+                            Command="{Binding WhisperCommand}">
+                        Whisper
+                    </Button>
                 </StackPanel>
                 <!-- Close Button -->
                 <StackPanel Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center">
-                    <Button Style="{StaticResource actionButtons}" Command="{Binding CloseCommand}">Close</Button>
+                    <Button IsCancel="True" Style="{StaticResource actionButtons}">Close</Button>
                 </StackPanel>
             </Grid>
         </StackPanel>

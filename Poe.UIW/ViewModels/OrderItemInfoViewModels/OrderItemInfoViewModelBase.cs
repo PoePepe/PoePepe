@@ -30,7 +30,7 @@ public abstract partial class OrderItemInfoViewModelBase : ViewModelBase, IModal
         await _whisperService.WhisperAsync(OrderItem);
 
         DialogResult = true;
-        RequestClose?.Invoke(this, EventArgs.Empty);
+        Whispered?.Invoke(this, EventArgs.Empty);
     }
 
     [RelayCommand]
@@ -42,4 +42,5 @@ public abstract partial class OrderItemInfoViewModelBase : ViewModelBase, IModal
 
     public bool? DialogResult { get; set; }
     public event EventHandler RequestClose;
+    public event EventHandler Whispered;
 }

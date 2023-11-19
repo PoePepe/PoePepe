@@ -4,9 +4,10 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:Poe.UIW.Views"
+             xmlns:viewModels="clr-namespace:Poe.UIW.ViewModels"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
-             DataContext="{Binding Source={StaticResource Locator}, Path=OrderItemNotificationView}">
+             d:DataContext="{d:DesignInstance viewModels:OrderItemNotificationViewModel, IsDesignTimeCreatable=True}">
     
         <Grid>
             

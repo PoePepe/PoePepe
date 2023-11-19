@@ -1,0 +1,30 @@
+﻿<UserControl x:Class="Poe.UIW.Views.OrderItemInfoViews.ItemInfoTitle"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:Poe.UIW.Views.OrderItemInfoViews"
+             mc:Ignorable="d"
+             d:DesignHeight="50" d:DesignWidth="300">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        
+        <!-- <Grid.RowDefinitions> -->
+        <!--     <RowDefinition Height="50" /> -->
+        <!-- </Grid.RowDefinitions> -->
+
+        <Image Grid.Column="0" Source="/Resources/Images/header-left.png"/>
+                
+        <Grid Grid.Column="1">
+            <Grid.Background>
+                <ImageBrush ImageSource="/Resources/Images/header-middle.png" />
+            </Grid.Background>
+        </Grid>
+                
+        <Image Grid.Column="2" Source="/Resources/Images/header-right.png" />
+    </Grid>
+</UserControl>

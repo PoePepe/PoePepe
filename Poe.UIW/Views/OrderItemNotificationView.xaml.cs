@@ -7,14 +7,17 @@ namespace Poe.UIW.Views;
 
 public partial class OrderItemNotificationView
 {
-    public OrderItemNotificationView()
+    public OrderItemNotificationView(OrderItemNotificationViewModel viewModel)
     {
+        ViewModel = viewModel;
         InitializeComponent();
     }
+
+    public OrderItemNotificationViewModel ViewModel;
     
     protected override void OnInitialized(EventArgs eventArgs)
     {
-        ((OrderItemNotificationViewModel)DataContext!).ClosingRequest += CloseNotificationFromInfoView;
+        ViewModel.ClosingRequest += CloseNotificationFromInfoView;
 
         base.OnInitialized(eventArgs);
     }

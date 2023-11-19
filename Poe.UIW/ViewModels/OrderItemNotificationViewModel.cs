@@ -54,6 +54,11 @@ public partial class OrderItemNotificationViewModel  : ViewModelBase
         ClosingRequest?.Invoke(this, EventArgs.Empty);
     }
     
+    private void OnClosingRequest(object sender, EventArgs e)
+    {
+        ClosingRequest?.Invoke(sender, e);
+    }
+    
     public void CloseNotification(object sender, EventArgs e)
     {
         OnClosingRequest();
@@ -77,6 +82,7 @@ public partial class OrderItemNotificationViewModel  : ViewModelBase
                 orderItemInfoViewModel.SetOrderItem(OrderItem);
 
                 var orderItemInfoView = new OrderItemInfoView(orderItemInfoViewModel);
+                orderItemInfoView.Whispered += OnClosingRequest;
 
                 orderItemInfoView.ShowDialog();
                 // await _dialogService.ShowOrderItemInfoAsync<OrderItemInfoViewModel>(_mainViewModel, this, OrderItem);

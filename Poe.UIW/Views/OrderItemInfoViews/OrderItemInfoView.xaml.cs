@@ -14,6 +14,7 @@ public partial class OrderItemInfoView : Window
 {
     public OrderItemInfoViewModel ViewModel { get; }
     private BitmapImage _bitmapImage;
+    public event EventHandler Whispered;
 
     public OrderItemInfoView()
     {
@@ -137,5 +138,16 @@ public partial class OrderItemInfoView : Window
     {
         ItemLinkImageCanvas.Visibility = Visibility.Visible;
         ItemSocketImageRelativePanel.Visibility = Visibility.Visible;
+    }
+
+    private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+    {
+        Whispered?.Invoke(sender, e);
+        DialogResult = true;
+    }
+
+    private void UIElement_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+    {
+        DragMove();
     }
 }

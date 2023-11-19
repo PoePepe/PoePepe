@@ -51,12 +51,14 @@ public class WhisperChannelWorker
         {
             var whisperResult = await _poeTradeApiService.SendWhisperOfferAsync(request.WhisperRequest,
                 request.CancellationTokenSource?.Token ?? default);
-            if (!whisperResult.IsSuccess)
+
+            if (whisperResult.IsSuccess)
             {
-                Log.Warning("Unsuccessfully whisper request by order {OrderName}", request.OrderName);
+                request.CancellationTokenSource?.Dispose();
+                return;
             }
-            
-            request.CancellationTokenSource?.Dispose();
+
+            Log.Warning("Unsuccessfully whisper request by order {OrderName}", request.OrderName);
         }
         catch (TaskCanceledException e)
         {
@@ -67,5 +69,6 @@ public class WhisperChannelWorker
             Log.Error(e,"Error whisper request by order {OrderName}", request.OrderName);
         }
         
+        request.CancellationTokenSource?.Cancel();
     }
 }

@@ -36,10 +36,6 @@
 
     <ItemGroup>
         <Resource Include="Resources\Images\divinationCard.png" />
-        <Resource Include="Resources\Images\header-left.png" />
-        <Resource Include="Resources\Images\header-middle.png" />
-        <Resource Include="Resources\Images\header-right.png" />
-        <Resource Include="Resources\Images\searing-symbol.png" />
         <Resource Include="Resources\Images\socket.png" />
         <Resource Include="Resources\Images\veiled_mod.png" />
         <Resource Include="Resources\Fonts\Fontin-SmallCaps.otf" />
@@ -62,6 +58,61 @@
         <Resource Include="Resources\Images\Currencies\regretOrb.png" />
         <Resource Include="Resources\Images\Currencies\scouringOrb.png" />
         <Resource Include="Resources\Images\Currencies\vaalOrb.png" />
+        <Resource Include="Resources\Images\Headers\header-currency-left.png" />
+        <Resource Include="Resources\Images\Headers\header-currency-middle.png" />
+        <Resource Include="Resources\Images\Headers\header-currency-right.png" />
+        <Resource Include="Resources\Images\Headers\header-double-rare-left.png" />
+        <Resource Include="Resources\Images\Headers\header-double-rare-middle.png" />
+        <Resource Include="Resources\Images\Headers\header-double-rare-right.png" />
+        <Resource Include="Resources\Images\Headers\header-double-relic-left.png" />
+        <Resource Include="Resources\Images\Headers\header-double-relic-middle.png" />
+        <Resource Include="Resources\Images\Headers\header-double-relic-right.png" />
+        <Resource Include="Resources\Images\Headers\header-double-supporter-foil-left.png" />
+        <Resource Include="Resources\Images\Headers\header-double-supporter-foil-middle.png" />
+        <Resource Include="Resources\Images\Headers\header-double-supporter-foil-right.png" />
+        <Resource Include="Resources\Images\Headers\header-double-unique-left.png" />
+        <Resource Include="Resources\Images\Headers\header-double-unique-middle.png" />
+        <Resource Include="Resources\Images\Headers\header-double-unique-right.png" />
+        <Resource Include="Resources\Images\Headers\header-gem-left.png" />
+        <Resource Include="Resources\Images\Headers\header-gem-middle.png" />
+        <Resource Include="Resources\Images\Headers\header-gem-right.png" />
+        <Resource Include="Resources\Images\Headers\header-magic-left.png" />
+        <Resource Include="Resources\Images\Headers\header-magic-middle.png" />
+        <Resource Include="Resources\Images\Headers\header-magic-right.png" />
+        <Resource Include="Resources\Images\Headers\header-relic-left.png" />
+        <Resource Include="Resources\Images\Headers\header-relic-middle.png" />
+        <Resource Include="Resources\Images\Headers\header-relic-right.png" />
+        <Resource Include="Resources\Images\Headers\header-supporter-foil-left.png" />
+        <Resource Include="Resources\Images\Headers\header-supporter-foil-middle.png" />
+        <Resource Include="Resources\Images\Headers\header-supporter-foil-right.png" />
+        <Resource Include="Resources\Images\Headers\header-unique-left.png" />
+        <Resource Include="Resources\Images\Headers\header-unique-middle.png" />
+        <Resource Include="Resources\Images\Headers\header-unique-right.png" />
+        <Resource Include="Resources\Images\Headers\header-normal-left.png" />
+        <Resource Include="Resources\Images\Headers\header-normal-middle.png" />
+        <Resource Include="Resources\Images\Headers\header-normal-right.png" />
+        <Resource Include="Resources\Images\Headers\header-rare-left.png" />
+        <Resource Include="Resources\Images\Headers\header-rare-middle.png" />
+        <Resource Include="Resources\Images\Headers\header-rare-right.png" />
+        <Resource Include="Resources\Images\Influences\crusader-symbol.png" />
+        <Resource Include="Resources\Images\Influences\elder-symbol.png" />
+        <Resource Include="Resources\Images\Influences\experimented-symbol.png" />
+        <Resource Include="Resources\Images\Influences\fractured-symbol.png" />
+        <Resource Include="Resources\Images\Influences\hunter-symbol.png" />
+        <Resource Include="Resources\Images\Influences\redeemer-symbol.png" />
+        <Resource Include="Resources\Images\Influences\searing-symbol.png" />
+        <Resource Include="Resources\Images\Influences\shaper-symbol.png" />
+        <Resource Include="Resources\Images\Influences\synthetic-symbol.png" />
+        <Resource Include="Resources\Images\Influences\tangled-symbol.png" />
+        <Resource Include="Resources\Images\Influences\veiled-symbol.png" />
+        <Resource Include="Resources\Images\Influences\warlord-symbol.png" />
+        <Resource Include="Resources\Images\Separators\separator-currency.png" />
+        <Resource Include="Resources\Images\Separators\separator-gem.png" />
+        <Resource Include="Resources\Images\Separators\separator-magic.png" />
+        <Resource Include="Resources\Images\Separators\separator-normal.png" />
+        <Resource Include="Resources\Images\Separators\separator-relic.png" />
+        <Resource Include="Resources\Images\Separators\separator-supporter-foil.png" />
+        <Resource Include="Resources\Images\Separators\separator-unique.png" />
     </ItemGroup>
 
     <ItemGroup>
@@ -73,5 +124,7 @@
     <ItemGroup>
       <ProjectReference Include="..\Poe.LiveSearch\Poe.LiveSearch.csproj" />
     </ItemGroup>
+
+
 
 </Project>

@@ -31,34 +31,16 @@
             <Grid MouseLeftButtonDown="UIElement_OnMouseLeftButtonDown">
                 <!-- Background Images -->
 
-                <!-- <orderItemInfoViews:ItemInfoTitle x:Name="ItemTitleBackground" /> -->
-
-                <Grid Visibility="Visible" SnapsToDevicePixels="True">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-
-                    <Image Grid.Column="0" Source="/Resources/Images/header-left.png" />
-
-                    <Grid Grid.Column="1">
-                        <Grid.Background>
-                            <ImageBrush ImageSource="/Resources/Images/header-middle.png" />
-                        </Grid.Background>
-                    </Grid>
-
-                    <Image Grid.Column="2" Source="/Resources/Images/header-right.png" />
-                </Grid>
+                <orderItemInfoViews:ItemInfoTitle x:Name="ItemTitleBackground" />
                 <!-- Influenses -->
                 <Grid VerticalAlignment="Center" >
                     <StackPanel Orientation="Horizontal" 
                                 HorizontalAlignment="Left" VerticalAlignment="Center">
-                        <Image Source="/Resources/Images/searing-symbol.png"
+                        <Image Source="/Resources/Images/Influences/searing-symbol.png"
                                StretchDirection="DownOnly" />
                     </StackPanel>
                     <StackPanel HorizontalAlignment="Right" VerticalAlignment="Center">
-                        <Image Source="/Resources/Images/searing-symbol.png"
+                        <Image Source="/Resources/Images/Influences/searing-symbol.png"
                                StretchDirection="DownOnly" />
                     </StackPanel>
                 </Grid>
@@ -85,7 +67,7 @@
                 <!-- ImageColumn -->
                 <StackPanel Orientation="Horizontal" Margin="5,0,5,0">
                     <Grid MouseEnter="ItemImagePanel_OnMouseEnter" MouseLeave="ItemImagePanel_OnMouseLeave"
-                          x:Name="ItemImagePanel">
+                          x:Name="ItemImagePanel" HorizontalAlignment="Center" VerticalAlignment="Center">
                         <Image x:Name="ItemBackImage" />
 
                         <RelativePanel x:Name="ItemSocketImageRelativePanel" />
@@ -95,7 +77,7 @@
                 </StackPanel>
                 <!-- Properties -->
                 <StackPanel Grid.Column="1" Orientation="Vertical"
-                            HorizontalAlignment="Center" x:Name="LineBaseGrid" Margin="15,0,15,3">
+                            HorizontalAlignment="Center" Margin="15,0,15,3">
 
                     <!-- BasicProperties -->
                     <StackPanel Name="Properties" HorizontalAlignment="Center">
@@ -128,25 +110,10 @@
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
-                        <Grid Style="{StaticResource fadeOutLine}">
-                            <Line X1="0"
-                                  Y1="0"
-                                  X2="{Binding ActualWidth, ElementName=LineBaseGrid, Mode=OneWay}"
-                                  Y2="0"
-                                  StrokeThickness="2.5">
-                                <Line.Stroke>
-                                    <LinearGradientBrush StartPoint="0,0"
-                                                         EndPoint="1,0">
-                                        <GradientStop Color="Transparent"
-                                                      Offset="0.1" />
-                                        <GradientStop Color="#7b5b27"
-                                                      Offset="0.5" />
-                                        <GradientStop Color="Transparent"
-                                                      Offset="0.9" />
-                                    </LinearGradientBrush>
-                                </Line.Stroke>
-                            </Line>
-                        </Grid>
+                        <Image 
+                               StretchDirection="DownOnly"
+                               Source="/Resources/Images/Separators/separator-rare.png"
+                               />
                     </StackPanel>
                     <!-- Requirements -->
                     <StackPanel Name="Requirements" HorizontalAlignment="Center">
@@ -189,25 +156,10 @@
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
                         </StackPanel>
-                        <Grid Style="{StaticResource fadeOutLine}">
-                            <Line X1="0"
-                                  Y1="0"
-                                  X2="{Binding ActualWidth, ElementName=LineBaseGrid, Mode=OneWay}"
-                                  Y2="0"
-                                  StrokeThickness="2.5">
-                                <Line.Stroke>
-                                    <LinearGradientBrush StartPoint="0,0"
-                                                         EndPoint="1,0">
-                                        <GradientStop Color="Transparent"
-                                                      Offset="0.1" />
-                                        <GradientStop Color="#7b5b27"
-                                                      Offset="0.5" />
-                                        <GradientStop Color="Transparent"
-                                                      Offset="0.9" />
-                                    </LinearGradientBrush>
-                                </Line.Stroke>
-                            </Line>
-                        </Grid>
+                        <Image 
+                            StretchDirection="DownOnly"
+                            Source="/Resources/Images/Separators/separator-rare.png"
+                        />
                     </StackPanel>
                     <!-- EnchantMods -->
                     <StackPanel
@@ -223,25 +175,10 @@
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
-                        <Grid Style="{StaticResource fadeOutLine}">
-                            <Line X1="0"
-                                  Y1="0"
-                                  X2="{Binding ActualWidth, ElementName=LineBaseGrid, Mode=OneWay}"
-                                  Y2="0"
-                                  StrokeThickness="2.5">
-                                <Line.Stroke>
-                                    <LinearGradientBrush StartPoint="0,0"
-                                                         EndPoint="1,0">
-                                        <GradientStop Color="Transparent"
-                                                      Offset="0.1" />
-                                        <GradientStop Color="#7b5b27"
-                                                      Offset="0.5" />
-                                        <GradientStop Color="Transparent"
-                                                      Offset="0.9" />
-                                    </LinearGradientBrush>
-                                </Line.Stroke>
-                            </Line>
-                        </Grid>
+                        <Image 
+                            StretchDirection="DownOnly"
+                            Source="/Resources/Images/Separators/separator-rare.png"
+                        />
                     </StackPanel>
                     <!-- ImplicitMods -->
                     <StackPanel
@@ -257,25 +194,10 @@
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
-                        <Grid Style="{StaticResource fadeOutLine}">
-                            <Line X1="0"
-                                  Y1="0"
-                                  X2="{Binding ActualWidth, ElementName=LineBaseGrid, Mode=OneWay}"
-                                  Y2="0"
-                                  StrokeThickness="2.5">
-                                <Line.Stroke>
-                                    <LinearGradientBrush StartPoint="0,0"
-                                                         EndPoint="1,0">
-                                        <GradientStop Color="Transparent"
-                                                      Offset="0.1" />
-                                        <GradientStop Color="#7b5b27"
-                                                      Offset="0.5" />
-                                        <GradientStop Color="Transparent"
-                                                      Offset="0.9" />
-                                    </LinearGradientBrush>
-                                </Line.Stroke>
-                            </Line>
-                        </Grid>
+                        <Image 
+                            StretchDirection="DownOnly"
+                            Source="/Resources/Images/Separators/separator-rare.png"
+                        />
                     </StackPanel>
                     <!-- ExplicitMods -->
                     <StackPanel Name="ExplicitMods"
@@ -304,25 +226,10 @@
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
-                        <Grid Style="{StaticResource fadeOutLine}">
-                            <Line X1="0"
-                                  Y1="0"
-                                  X2="{Binding ActualWidth, ElementName=LineBaseGrid, Mode=OneWay}"
-                                  Y2="0"
-                                  StrokeThickness="2.5">
-                                <Line.Stroke>
-                                    <LinearGradientBrush StartPoint="0,0"
-                                                         EndPoint="1,0">
-                                        <GradientStop Color="Transparent"
-                                                      Offset="0.1" />
-                                        <GradientStop Color="#7b5b27"
-                                                      Offset="0.5" />
-                                        <GradientStop Color="Transparent"
-                                                      Offset="0.9" />
-                                    </LinearGradientBrush>
-                                </Line.Stroke>
-                            </Line>
-                        </Grid>
+                        <Image 
+                            StretchDirection="DownOnly"
+                            Source="/Resources/Images/Separators/separator-rare.png"
+                        />
                     </StackPanel>
                     <!-- SpecialModifiers -->
                     <StackPanel>
@@ -346,25 +253,10 @@
                                     Visibility="{Binding OrderItemInfo.IsCorrupted, Converter={StaticResource BooleanToVisibilityConverter}}">
                             <TextBlock Style="{StaticResource flag_Corrupted}">Corrupted</TextBlock>
                         </StackPanel>
-                        <Grid Style="{StaticResource fadeOutLine}">
-                            <Line X1="0"
-                                  Y1="0"
-                                  X2="{Binding ActualWidth, ElementName=LineBaseGrid, Mode=OneWay}"
-                                  Y2="0"
-                                  StrokeThickness="2.5">
-                                <Line.Stroke>
-                                    <LinearGradientBrush StartPoint="0,0"
-                                                         EndPoint="1,0">
-                                        <GradientStop Color="Transparent"
-                                                      Offset="0.1" />
-                                        <GradientStop Color="#7b5b27"
-                                                      Offset="0.5" />
-                                        <GradientStop Color="Transparent"
-                                                      Offset="0.9" />
-                                    </LinearGradientBrush>
-                                </Line.Stroke>
-                            </Line>
-                        </Grid>
+                        <Image 
+                            StretchDirection="DownOnly"
+                            Source="/Resources/Images/Separators/separator-rare.png"
+                        />
                     </StackPanel>
                     <!-- NotableProperties -->
                     <StackPanel Name="NotableProperties"
@@ -421,25 +313,10 @@
                                             </ItemsControl.ItemTemplate>
                                         </ItemsControl>
 
-                                        <Grid Style="{StaticResource fadeOutLine}">
-                                            <Line X1="0"
-                                                  Y1="0"
-                                                  X2="{Binding ActualWidth, ElementName=LineBaseGrid, Mode=OneWay}"
-                                                  Y2="0"
-                                                  StrokeThickness="2.5">
-                                                <Line.Stroke>
-                                                    <LinearGradientBrush StartPoint="0,0"
-                                                                         EndPoint="1,0">
-                                                        <GradientStop Color="Transparent"
-                                                                      Offset="0.1" />
-                                                        <GradientStop Color="#7b5b27"
-                                                                      Offset="0.5" />
-                                                        <GradientStop Color="Transparent"
-                                                                      Offset="0.9" />
-                                                    </LinearGradientBrush>
-                                                </Line.Stroke>
-                                            </Line>
-                                        </Grid>
+                                        <Image 
+                                            StretchDirection="DownOnly"
+                                            Source="/Resources/Images/Separators/separator-rare.png"
+                                        />
                                     </StackPanel>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>

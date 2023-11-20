@@ -13,14 +13,14 @@
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
         
-        <Image Grid.Column="0" Source="/Resources/Images/header-left.png"/>
+        <Image Grid.Column="0" Source="/Resources/Images/Headers/header-double-rare-left.png"/>
                 
         <Grid Grid.Column="1">
             <Grid.Background>
-                <ImageBrush ImageSource="/Resources/Images/header-middle.png" />
+                <ImageBrush ImageSource="/Resources/Images/Headers/header-double-rare-middle.png" />
             </Grid.Background>
         </Grid>
                 
-        <Image Grid.Column="2" Source="/Resources/Images/header-right.png" />
+        <Image Grid.Column="2" Source="/Resources/Images/Headers/header-double-rare-right.png" />
     </Grid>
 </UserControl>

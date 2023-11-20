@@ -72,7 +72,15 @@ public partial class OrderItemNotificationViewModel  : ViewModelBase
             case ItemType.DivinationCard:
             case ItemType.Incubator:
             case ItemType.Resonator:
-                await _dialogService.ShowOrderItemInfoAsync<StackedItemInfoViewModel>(_mainViewModel, this, OrderItem);
+                var stackedItemInfoViewModel = App.Current.Services.GetRequiredService<StackedItemInfoViewModel>();
+                stackedItemInfoViewModel.SetOrderItem(OrderItem);
+
+                var stackedItemInfoView = new StackedItemInfoView(stackedItemInfoViewModel);
+                stackedItemInfoView.Whispered += OnClosingRequest;
+
+                stackedItemInfoView.ShowDialog();
+                
+                // await _dialogService.ShowOrderItemInfoAsync<StackedItemInfoViewModel>(_mainViewModel, this, OrderItem);
                 break;
             
             case ItemType.Map:

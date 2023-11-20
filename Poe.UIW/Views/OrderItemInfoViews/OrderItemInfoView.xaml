@@ -13,8 +13,6 @@
         ShowInTaskbar="False"
         WindowStartupLocation="Manual"
         Topmost="True"
-        Height="400"
-        Width="400"
         d:DesignHeight="300" d:DesignWidth="300"
         d:DataContext="{d:DesignInstance orderItemInfoViewModels:OrderItemInfoViewModel, IsDesignTimeCreatable=True}">
 
@@ -78,26 +76,16 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto" />
                 <ColumnDefinition Width="*" />
-
             </Grid.ColumnDefinitions>
             <!-- ImageColumn -->
             <StackPanel Orientation="Horizontal">
-                <Grid MouseEnter="ItemImagePanel_OnMouseEnter" MouseLeave="ItemImagePanel_OnMouseLeave"
-                      x:Name="ItemImagePanel">
-                    <Image x:Name="ItemBackImage">
-                    </Image>
+                <Grid MouseEnter="ItemImagePanel_OnMouseEnter" MouseLeave="ItemImagePanel_OnMouseLeave" x:Name="ItemImagePanel">
+                    <Image x:Name="ItemBackImage"/>
 
-                    <RelativePanel x:Name="ItemSocketImageRelativePanel">
-                    </RelativePanel>
+                    <RelativePanel x:Name="ItemSocketImageRelativePanel"/>
 
-                    <Canvas x:Name="ItemLinkImageCanvas">
-                    </Canvas>
+                    <Canvas x:Name="ItemLinkImageCanvas"/>
                 </Grid>
-
-                <StackPanel>
-
-
-                </StackPanel>
             </StackPanel>
             <!-- Properties -->
             <StackPanel Grid.Column="1" Orientation="Vertical"

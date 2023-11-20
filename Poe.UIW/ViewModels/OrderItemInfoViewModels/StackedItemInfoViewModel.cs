@@ -11,7 +11,7 @@ public partial class StackedItemInfoViewModel : OrderItemInfoViewModelBase
 {
     [ObservableProperty] private StackedItemInfo _stackedItemInfo;
     private readonly ResourceDownloadService _resourceDownloadService;
-    public Task<BitmapImage> ItemImage => LoadItemImageAsync();
+    // public Task<BitmapImage> ItemImage => LoadItemImageAsync();
     
     public StackedItemInfoViewModel()
     {
@@ -22,14 +22,14 @@ public partial class StackedItemInfoViewModel : OrderItemInfoViewModelBase
         _resourceDownloadService = resourceDownloadService;
     }
     
-    private async Task<BitmapImage> LoadItemImageAsync()
+    public async Task<BitmapImage> LoadItemImageAsync(BitmapImage image)
     {
         if (OrderItem.ItemType == ItemType.DivinationCard)
         {
             // return new Bitmap(AssetLoader.Open(DivinationCardImagePosition.DivinationCardUri));
         }
 
-        return await _resourceDownloadService.DownloadItemImageAsync(OrderItem.ImageUrl);
+        return await _resourceDownloadService.DownloadItemImageAsync(OrderItem.ImageUrl, image);
     }
 
     public override void SetOrderItem(OrderItemDto orderItem)

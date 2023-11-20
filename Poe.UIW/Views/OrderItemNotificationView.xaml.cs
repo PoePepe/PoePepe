@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using Poe.UIW.ViewModels;
 
 namespace Poe.UIW.Views;
@@ -52,5 +53,17 @@ public partial class OrderItemNotificationView
             panel.Height = stackPanel.Children.Count * 53;
             panel.Width = 400;
         }
+    }
+
+    private void NotifyPanel_OnMouseEnter(object sender, MouseEventArgs e)
+    {
+        NotificationTitle.Visibility = Visibility.Collapsed;
+        ActionButtonsPanel.Visibility= Visibility.Visible;
+    }
+
+    private void NotifyPanel_OnMouseLeave(object sender, MouseEventArgs e)
+    {
+        NotificationTitle.Visibility = Visibility.Visible;
+        ActionButtonsPanel.Visibility = Visibility.Collapsed;
     }
 }

@@ -12,494 +12,503 @@
         SizeToContent="WidthAndHeight"
         ShowInTaskbar="False"
         WindowStartupLocation="Manual"
+        Background="Transparent"
+        AllowsTransparency="True"
+
         Topmost="True"
         d:DesignHeight="300" d:DesignWidth="300"
         d:DataContext="{d:DesignInstance orderItemInfoViewModels:OrderItemInfoViewModel, IsDesignTimeCreatable=True}">
-
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
+        <Border Background="Black" Opacity="0.8"></Border>
+        <Grid SnapsToDevicePixels="True">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+            </Grid.RowDefinitions>
+            <!-- Title -->
+            <Grid MouseLeftButtonDown="UIElement_OnMouseLeftButtonDown">
+                <!-- Background Images -->
 
-        </Grid.RowDefinitions>
-        <!-- Title -->
-        <Grid MouseLeftButtonDown="UIElement_OnMouseLeftButtonDown">
-            <!-- Background Images -->
-            
-            <orderItemInfoViews:ItemInfoTitle/>
-            
-            <Grid Visibility="Collapsed">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
+                <!-- <orderItemInfoViews:ItemInfoTitle x:Name="ItemTitleBackground" /> -->
 
-                <Image Grid.Column="0" Source="/Resources/Images/header-left.png"/>
-                
-                <Grid Grid.Column="1">
-                    <Grid.Background>
-                        <ImageBrush ImageSource="/Resources/Images/header-middle.png" />
-                    </Grid.Background>
+                <Grid Visibility="Visible" SnapsToDevicePixels="True">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <Image Grid.Column="0" Source="/Resources/Images/header-left.png" />
+
+                    <Grid Grid.Column="1">
+                        <Grid.Background>
+                            <ImageBrush ImageSource="/Resources/Images/header-middle.png" />
+                        </Grid.Background>
+                    </Grid>
+
+                    <Image Grid.Column="2" Source="/Resources/Images/header-right.png" />
                 </Grid>
-                
-                <Image Grid.Column="2" Source="/Resources/Images/header-right.png" />
+                <!-- Influenses -->
+                <Grid VerticalAlignment="Center" >
+                    <StackPanel Orientation="Horizontal" 
+                                HorizontalAlignment="Left" VerticalAlignment="Center">
+                        <Image Source="/Resources/Images/searing-symbol.png"
+                               StretchDirection="DownOnly" />
+                    </StackPanel>
+                    <StackPanel HorizontalAlignment="Right" VerticalAlignment="Center">
+                        <Image Source="/Resources/Images/searing-symbol.png"
+                               StretchDirection="DownOnly" />
+                    </StackPanel>
+                </Grid>
+                <!-- Title Name -->
+                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Margin="30,0,30,0">
+                    <TextBlock Style="{StaticResource itemName_Rare}"
+                               VerticalAlignment="Center"
+                               HorizontalAlignment="Center"
+                               Visibility="{Binding NameExists, Converter={StaticResource BooleanToVisibilityConverter}}"
+                               Text="{Binding OrderItem.Name}">
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource itemName_Rare}"
+                               VerticalAlignment="Center"
+                               HorizontalAlignment="Center" Text="{Binding OrderItem.TypeLine}">
+                    </TextBlock>
+                </StackPanel>
             </Grid>
-            <!-- Influenses -->
-            <StackPanel Orientation="Horizontal"
-                        HorizontalAlignment="Left">
-                <Image Source="/Resources/Images/searing-symbol.png"
-                       StretchDirection="DownOnly" />
-                <Image Source="/Resources/Images/searing-symbol.png"
-                       StretchDirection="DownOnly" />
-                <Image Source="/Resources/Images/searing-symbol.png"
-                       StretchDirection="DownOnly" />
-            </StackPanel>
-            <!-- Title Name -->
-            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-                <TextBlock Style="{StaticResource itemName_Rare}"
-                           VerticalAlignment="Center"
-                           HorizontalAlignment="Center"
-                           Visibility="{Binding NameExists, Converter={StaticResource BooleanToVisibilityConverter}}"
-                           Text="{Binding OrderItem.Name}">
-                </TextBlock>
-                <TextBlock Style="{StaticResource itemName_Rare}"
-                           VerticalAlignment="Center"
-                           HorizontalAlignment="Center" Text="{Binding OrderItem.TypeLine}">
-                </TextBlock>
-            </StackPanel>
-        </Grid>
-        <!--MainContent-->
-        <Grid Grid.Row="1" Background="#020202">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="auto" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-            <!-- ImageColumn -->
-            <StackPanel Orientation="Horizontal">
-                <Grid MouseEnter="ItemImagePanel_OnMouseEnter" MouseLeave="ItemImagePanel_OnMouseLeave" x:Name="ItemImagePanel">
-                    <Image x:Name="ItemBackImage"/>
+            <!--MainContent-->
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="30*" />
+                    <ColumnDefinition Width="70*" />
+                </Grid.ColumnDefinitions>
+                <!-- ImageColumn -->
+                <StackPanel Orientation="Horizontal" Margin="5,0,5,0">
+                    <Grid MouseEnter="ItemImagePanel_OnMouseEnter" MouseLeave="ItemImagePanel_OnMouseLeave"
+                          x:Name="ItemImagePanel">
+                        <Image x:Name="ItemBackImage" />
 
-                    <RelativePanel x:Name="ItemSocketImageRelativePanel"/>
+                        <RelativePanel x:Name="ItemSocketImageRelativePanel" />
 
-                    <Canvas x:Name="ItemLinkImageCanvas"/>
-                </Grid>
-            </StackPanel>
-            <!-- Properties -->
-            <StackPanel Grid.Column="1" Orientation="Vertical"
-                        HorizontalAlignment="Center" x:Name="LineBaseGrid">
-
-                <!-- Properties -->
-                <StackPanel Name="Properties" HorizontalAlignment="Center">
-                    <ItemsControl ItemsSource="{Binding OrderItemInfo.Properties}">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-
-                                    <TextBlock HorizontalAlignment="Center" Style="{StaticResource baseProperty_name}"
-                                               Visibility="{Binding NonValue, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                        <TextBlock.Text>
-                                            <Binding Path="Name" />
-                                        </TextBlock.Text>
-                                    </TextBlock>
-
-                                    <TextBlock HorizontalAlignment="Center" Style="{StaticResource baseProperty_name}"
-                                               Visibility="{Binding NonValue, Converter={StaticResource BooleanToInvertedVisibilityConverter}}">
-                                        <TextBlock.Text>
-                                            <Binding StringFormat="{}{0}:" Path="Name" />
-                                        </TextBlock.Text>
-                                    </TextBlock>
-
-                                    <TextBlock Style="{StaticResource baseProperty_value}"
-                                               Visibility="{Binding NonValue, Converter={StaticResource BooleanToInvertedVisibilityConverter}}"
-                                               Text="{Binding Path=Value}">
-                                    </TextBlock>
-                                </StackPanel>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                    <Grid Style="{StaticResource fadeOutLine}">
-                        <Line X1="0"
-                              Y1="0"
-                              X2="{Binding ActualWidth, ElementName=LineBaseGrid, Mode=OneWay}"
-                              Y2="0"
-                              StrokeThickness="2.5">
-                            <Line.Stroke>
-                                <LinearGradientBrush StartPoint="0,0"
-                                                     EndPoint="1,0">
-                                    <GradientStop Color="Transparent"
-                                                  Offset="0.1" />
-                                    <GradientStop Color="#7b5b27"
-                                                  Offset="0.5" />
-                                    <GradientStop Color="Transparent"
-                                                  Offset="0.9" />
-                                </LinearGradientBrush>
-                            </Line.Stroke>
-                        </Line>
+                        <Canvas x:Name="ItemLinkImageCanvas" />
                     </Grid>
                 </StackPanel>
-                <!-- Requirements -->
-                <StackPanel Name="Requirements" HorizontalAlignment="Center">
-                    <!-- ItemLevel -->
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                        <TextBlock Style="{StaticResource baseProperty_name}" Text="Item Level:" />
-                        <TextBlock Style="{StaticResource baseProperty_value}">
-                            <TextBlock.Text>
-                                <Binding StringFormat="{}{0}" Path="OrderItemInfo.ItemLevel" />
-                            </TextBlock.Text>
-                        </TextBlock>
-                    </StackPanel>
-                    <!-- ItemRequirements -->
-                    <StackPanel
-                        Visibility="{Binding RequirementsExists, Converter={StaticResource BooleanToVisibilityConverter}}"
-                        Orientation="Horizontal"
-                        HorizontalAlignment="Center">
-                        <TextBlock Style="{StaticResource baseProperty_name}">
-                            Requires
-                        </TextBlock>
-                        <ItemsControl ItemsSource="{Binding OrderItemInfo.Requirements}">
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <StackPanel Orientation="Horizontal" />
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
+                <!-- Properties -->
+                <StackPanel Grid.Column="1" Orientation="Vertical"
+                            HorizontalAlignment="Center" x:Name="LineBaseGrid" Margin="15,0,15,3">
+
+                    <!-- BasicProperties -->
+                    <StackPanel Name="Properties" HorizontalAlignment="Center">
+                        <ItemsControl ItemsSource="{Binding OrderItemInfo.Properties}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock Style="{StaticResource baseProperty_name}">
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+
+                                        <TextBlock HorizontalAlignment="Center"
+                                                   Style="{StaticResource baseProperty_name}"
+                                                   Visibility="{Binding NonValue, Converter={StaticResource BooleanToVisibilityConverter}}">
                                             <TextBlock.Text>
-                                                <Binding StringFormat="{} {0}" Path="Name" />
+                                                <Binding Path="Name" />
                                             </TextBlock.Text>
                                         </TextBlock>
+
+                                        <TextBlock HorizontalAlignment="Center"
+                                                   Style="{StaticResource baseProperty_name}"
+                                                   Visibility="{Binding NonValue, Converter={StaticResource BooleanToInvertedVisibilityConverter}}">
+                                            <TextBlock.Text>
+                                                <Binding StringFormat="{}{0}:" Path="Name" />
+                                            </TextBlock.Text>
+                                        </TextBlock>
+
                                         <TextBlock Style="{StaticResource baseProperty_value}"
+                                                   Visibility="{Binding NonValue, Converter={StaticResource BooleanToInvertedVisibilityConverter}}"
                                                    Text="{Binding Path=Value}">
                                         </TextBlock>
                                     </StackPanel>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
+                        <Grid Style="{StaticResource fadeOutLine}">
+                            <Line X1="0"
+                                  Y1="0"
+                                  X2="{Binding ActualWidth, ElementName=LineBaseGrid, Mode=OneWay}"
+                                  Y2="0"
+                                  StrokeThickness="2.5">
+                                <Line.Stroke>
+                                    <LinearGradientBrush StartPoint="0,0"
+                                                         EndPoint="1,0">
+                                        <GradientStop Color="Transparent"
+                                                      Offset="0.1" />
+                                        <GradientStop Color="#7b5b27"
+                                                      Offset="0.5" />
+                                        <GradientStop Color="Transparent"
+                                                      Offset="0.9" />
+                                    </LinearGradientBrush>
+                                </Line.Stroke>
+                            </Line>
+                        </Grid>
                     </StackPanel>
-                    <Grid Style="{StaticResource fadeOutLine}">
-                        <Line X1="0"
-                              Y1="0"
-                              X2="{Binding ActualWidth, ElementName=LineBaseGrid, Mode=OneWay}"
-                              Y2="0"
-                              StrokeThickness="2.5">
-                            <Line.Stroke>
-                                <LinearGradientBrush StartPoint="0,0"
-                                                     EndPoint="1,0">
-                                    <GradientStop Color="Transparent"
-                                                  Offset="0.1" />
-                                    <GradientStop Color="#7b5b27"
-                                                  Offset="0.5" />
-                                    <GradientStop Color="Transparent"
-                                                  Offset="0.9" />
-                                </LinearGradientBrush>
-                            </Line.Stroke>
-                        </Line>
-                    </Grid>
-                </StackPanel>
-                <!-- EnchantMods -->
-                <StackPanel
-                    Visibility="{Binding OrderItemInfo.ExistsEnchantMods, Converter={StaticResource BooleanToVisibilityConverter}}"
-                    Name="EnchantMods"
-                    HorizontalAlignment="Center">
-                    <ItemsControl ItemsSource="{Binding OrderItemInfo.EnchantMods}">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Style="{StaticResource enchantMods}" HorizontalAlignment="Center"
-                                           Text="{Binding }">
-                                </TextBlock>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                    <Grid Style="{StaticResource fadeOutLine}">
-                        <Line X1="0"
-                              Y1="0"
-                              X2="{Binding ActualWidth, ElementName=LineBaseGrid, Mode=OneWay}"
-                              Y2="0"
-                              StrokeThickness="2.5">
-                            <Line.Stroke>
-                                <LinearGradientBrush StartPoint="0,0"
-                                                     EndPoint="1,0">
-                                    <GradientStop Color="Transparent"
-                                                  Offset="0.1" />
-                                    <GradientStop Color="#7b5b27"
-                                                  Offset="0.5" />
-                                    <GradientStop Color="Transparent"
-                                                  Offset="0.9" />
-                                </LinearGradientBrush>
-                            </Line.Stroke>
-                        </Line>
-                    </Grid>
-                </StackPanel>
-                <!-- ImplicitMods -->
-                <StackPanel
-                    Visibility="{Binding OrderItemInfo.ExistsImplicitMods, Converter={StaticResource BooleanToVisibilityConverter}}"
-                    Name="ImplicitMods"
-                    HorizontalAlignment="Center">
-                    <ItemsControl ItemsSource="{Binding OrderItemInfo.ImplicitMods}">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Style="{StaticResource mods}" HorizontalAlignment="Center" Text="{Binding }"></TextBlock>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                    <Grid Style="{StaticResource fadeOutLine}">
-                        <Line X1="0"
-                              Y1="0"
-                              X2="{Binding ActualWidth, ElementName=LineBaseGrid, Mode=OneWay}"
-                              Y2="0"
-                              StrokeThickness="2.5">
-                            <Line.Stroke>
-                                <LinearGradientBrush StartPoint="0,0"
-                                                     EndPoint="1,0">
-                                    <GradientStop Color="Transparent"
-                                                  Offset="0.1" />
-                                    <GradientStop Color="#7b5b27"
-                                                  Offset="0.5" />
-                                    <GradientStop Color="Transparent"
-                                                  Offset="0.9" />
-                                </LinearGradientBrush>
-                            </Line.Stroke>
-                        </Line>
-                    </Grid>
-                </StackPanel>
-                <!-- ExplicitMods -->
-                <StackPanel Name="ExplicitMods"
-                            Visibility="{Binding OrderItemInfo.ExistsExplicitMods, Converter={StaticResource BooleanToVisibilityConverter}}"
+                    <!-- Requirements -->
+                    <StackPanel Name="Requirements" HorizontalAlignment="Center">
+                        <!-- ItemLevel -->
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                            <TextBlock Style="{StaticResource baseProperty_name}" Text="Item Level:" />
+                            <TextBlock Style="{StaticResource baseProperty_value}">
+                                <TextBlock.Text>
+                                    <Binding StringFormat="{}{0}" Path="OrderItemInfo.ItemLevel" />
+                                </TextBlock.Text>
+                            </TextBlock>
+                        </StackPanel>
+                        <!-- ItemRequirements -->
+                        <StackPanel
+                            Visibility="{Binding RequirementsExists, Converter={StaticResource BooleanToVisibilityConverter}}"
+                            Orientation="Horizontal"
                             HorizontalAlignment="Center">
-                    <ItemsControl ItemsSource="{Binding OrderItemInfo.FracturedMods}">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock HorizontalAlignment="Center" Text="{Binding  }"></TextBlock>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                    <ItemsControl ItemsSource="{Binding OrderItemInfo.ExplicitMods}">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Style="{StaticResource mods}" HorizontalAlignment="Center"
-                                           Text="{Binding  }">
-                                </TextBlock>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                    <ItemsControl ItemsSource="{Binding OrderItemInfo.CraftedMods}">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock HorizontalAlignment="Center" Text="{Binding  }"></TextBlock>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                    <Grid Style="{StaticResource fadeOutLine}">
-                        <Line X1="0"
-                              Y1="0"
-                              X2="{Binding ActualWidth, ElementName=LineBaseGrid, Mode=OneWay}"
-                              Y2="0"
-                              StrokeThickness="2.5">
-                            <Line.Stroke>
-                                <LinearGradientBrush StartPoint="0,0"
-                                                     EndPoint="1,0">
-                                    <GradientStop Color="Transparent"
-                                                  Offset="0.1" />
-                                    <GradientStop Color="#7b5b27"
-                                                  Offset="0.5" />
-                                    <GradientStop Color="Transparent"
-                                                  Offset="0.9" />
-                                </LinearGradientBrush>
-                            </Line.Stroke>
-                        </Line>
-                    </Grid>
-                </StackPanel>
-                <!-- SpecialModifiers -->
-                <StackPanel>
-                    <!-- Split -->
-                    <StackPanel Name="Split"
-                                Visibility="{Binding OrderItemInfo.IsSplitted, Converter={StaticResource BooleanToVisibilityConverter}}">
-                        <TextBlock Style="{StaticResource flag_Split}">Split</TextBlock>
+                            <TextBlock Style="{StaticResource baseProperty_name}">
+                                Requires
+                            </TextBlock>
+                            <ItemsControl ItemsSource="{Binding OrderItemInfo.Requirements}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Orientation="Horizontal" />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Style="{StaticResource baseProperty_name}">
+                                                <TextBlock.Text>
+                                                    <Binding StringFormat="{} {0}" Path="Name" />
+                                                </TextBlock.Text>
+                                            </TextBlock>
+                                            <TextBlock Style="{StaticResource baseProperty_value}"
+                                                       Text="{Binding Path=Value}">
+                                            </TextBlock>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                        <Grid Style="{StaticResource fadeOutLine}">
+                            <Line X1="0"
+                                  Y1="0"
+                                  X2="{Binding ActualWidth, ElementName=LineBaseGrid, Mode=OneWay}"
+                                  Y2="0"
+                                  StrokeThickness="2.5">
+                                <Line.Stroke>
+                                    <LinearGradientBrush StartPoint="0,0"
+                                                         EndPoint="1,0">
+                                        <GradientStop Color="Transparent"
+                                                      Offset="0.1" />
+                                        <GradientStop Color="#7b5b27"
+                                                      Offset="0.5" />
+                                        <GradientStop Color="Transparent"
+                                                      Offset="0.9" />
+                                    </LinearGradientBrush>
+                                </Line.Stroke>
+                            </Line>
+                        </Grid>
                     </StackPanel>
-                    <!-- Mirrored -->
-                    <StackPanel Name="Mirrored"
-                                Visibility="{Binding OrderItemInfo.IsDuplicated, Converter={StaticResource BooleanToVisibilityConverter}}">
-                        <TextBlock Style="{StaticResource flag_Mirrored}">Mirrored</TextBlock>
-                    </StackPanel>
-                    <!-- Unidentified -->
-                    <StackPanel Name="Unidentified"
-                                Visibility="{Binding OrderItemInfo.IsIdentified, Converter={StaticResource BooleanToInvertedVisibilityConverter}}">
-                        <TextBlock Style="{StaticResource flag_Unidentified}">Unidentified</TextBlock>
-                    </StackPanel>
-                    <!-- Corrupted -->
-                    <StackPanel Name="Corrupted"
-                                Visibility="{Binding OrderItemInfo.IsCorrupted, Converter={StaticResource BooleanToVisibilityConverter}}">
-                        <TextBlock Style="{StaticResource flag_Corrupted}">Corrupted</TextBlock>
-                    </StackPanel>
-                    <Grid Style="{StaticResource fadeOutLine}">
-                        <Line X1="0"
-                              Y1="0"
-                              X2="{Binding ActualWidth, ElementName=LineBaseGrid, Mode=OneWay}"
-                              Y2="0"
-                              StrokeThickness="2.5">
-                            <Line.Stroke>
-                                <LinearGradientBrush StartPoint="0,0"
-                                                     EndPoint="1,0">
-                                    <GradientStop Color="Transparent"
-                                                  Offset="0.1" />
-                                    <GradientStop Color="#7b5b27"
-                                                  Offset="0.5" />
-                                    <GradientStop Color="Transparent"
-                                                  Offset="0.9" />
-                                </LinearGradientBrush>
-                            </Line.Stroke>
-                        </Line>
-                    </Grid>
-                </StackPanel>
-                <!-- NotableProperties -->
-                <StackPanel Name="NotableProperties"
-                            Visibility="{Binding OrderItemInfo.ExistsNotableProperties, Converter={StaticResource BooleanToVisibilityConverter}}">
-                    <ItemsControl ItemsSource="{Binding OrderItemInfo.NotableProperties}">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <StackPanel>
-                                    <TextBlock Style="{StaticResource notableProperties_title}"
-                                               HorizontalAlignment="Center" Text="{Binding  Name}">
+                    <!-- EnchantMods -->
+                    <StackPanel
+                        Visibility="{Binding OrderItemInfo.ExistsEnchantMods, Converter={StaticResource BooleanToVisibilityConverter}}"
+                        Name="EnchantMods"
+                        HorizontalAlignment="Center">
+                        <ItemsControl ItemsSource="{Binding OrderItemInfo.EnchantMods}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Style="{StaticResource enchantMods}" HorizontalAlignment="Center"
+                                               Text="{Binding }">
                                     </TextBlock>
-                                    <ItemsControl ItemsSource="{Binding Values}">
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate>
-                                                <TextBlock Style="{StaticResource notableProperties_desc}"
-                                                           HorizontalAlignment="Center" Text="{Binding }">
-                                                </TextBlock>
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ItemsControl>
-                                </StackPanel>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </StackPanel>
-
-
-                <!-- Logbook -->
-                <StackPanel
-                    Visibility="{Binding OrderItemInfo.IsLogBook, Converter={StaticResource BooleanToVisibilityConverter}}"
-                    Name="LogbookMods"
-                    HorizontalAlignment="Center">
-                    <ItemsControl ItemsSource="{Binding OrderItemInfo.LogbookMods}">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <StackPanel HorizontalAlignment="Center">
-                                    <TextBlock Style="{StaticResource logbook_area}" HorizontalAlignment="Center"
-                                               Text="{Binding Name}">
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        <Grid Style="{StaticResource fadeOutLine}">
+                            <Line X1="0"
+                                  Y1="0"
+                                  X2="{Binding ActualWidth, ElementName=LineBaseGrid, Mode=OneWay}"
+                                  Y2="0"
+                                  StrokeThickness="2.5">
+                                <Line.Stroke>
+                                    <LinearGradientBrush StartPoint="0,0"
+                                                         EndPoint="1,0">
+                                        <GradientStop Color="Transparent"
+                                                      Offset="0.1" />
+                                        <GradientStop Color="#7b5b27"
+                                                      Offset="0.5" />
+                                        <GradientStop Color="Transparent"
+                                                      Offset="0.9" />
+                                    </LinearGradientBrush>
+                                </Line.Stroke>
+                            </Line>
+                        </Grid>
+                    </StackPanel>
+                    <!-- ImplicitMods -->
+                    <StackPanel
+                        Visibility="{Binding OrderItemInfo.ExistsImplicitMods, Converter={StaticResource BooleanToVisibilityConverter}}"
+                        Name="ImplicitMods"
+                        HorizontalAlignment="Center">
+                        <ItemsControl ItemsSource="{Binding OrderItemInfo.ImplicitMods}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Style="{StaticResource mods}" HorizontalAlignment="Center"
+                                               Text="{Binding }">
                                     </TextBlock>
-
-                                    <TextBlock Style="{StaticResource logbook_faction}" HorizontalAlignment="Center"
-                                               Text="{Binding FactionName}">
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        <Grid Style="{StaticResource fadeOutLine}">
+                            <Line X1="0"
+                                  Y1="0"
+                                  X2="{Binding ActualWidth, ElementName=LineBaseGrid, Mode=OneWay}"
+                                  Y2="0"
+                                  StrokeThickness="2.5">
+                                <Line.Stroke>
+                                    <LinearGradientBrush StartPoint="0,0"
+                                                         EndPoint="1,0">
+                                        <GradientStop Color="Transparent"
+                                                      Offset="0.1" />
+                                        <GradientStop Color="#7b5b27"
+                                                      Offset="0.5" />
+                                        <GradientStop Color="Transparent"
+                                                      Offset="0.9" />
+                                    </LinearGradientBrush>
+                                </Line.Stroke>
+                            </Line>
+                        </Grid>
+                    </StackPanel>
+                    <!-- ExplicitMods -->
+                    <StackPanel Name="ExplicitMods"
+                                Visibility="{Binding OrderItemInfo.ExistsExplicitMods, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                HorizontalAlignment="Center">
+                        <ItemsControl ItemsSource="{Binding OrderItemInfo.FracturedMods}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock HorizontalAlignment="Center" Text="{Binding  }"></TextBlock>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        <ItemsControl ItemsSource="{Binding OrderItemInfo.ExplicitMods}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Style="{StaticResource mods}" HorizontalAlignment="Center"
+                                               Text="{Binding  }">
                                     </TextBlock>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        <ItemsControl ItemsSource="{Binding OrderItemInfo.CraftedMods}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock HorizontalAlignment="Center" Text="{Binding  }"></TextBlock>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        <Grid Style="{StaticResource fadeOutLine}">
+                            <Line X1="0"
+                                  Y1="0"
+                                  X2="{Binding ActualWidth, ElementName=LineBaseGrid, Mode=OneWay}"
+                                  Y2="0"
+                                  StrokeThickness="2.5">
+                                <Line.Stroke>
+                                    <LinearGradientBrush StartPoint="0,0"
+                                                         EndPoint="1,0">
+                                        <GradientStop Color="Transparent"
+                                                      Offset="0.1" />
+                                        <GradientStop Color="#7b5b27"
+                                                      Offset="0.5" />
+                                        <GradientStop Color="Transparent"
+                                                      Offset="0.9" />
+                                    </LinearGradientBrush>
+                                </Line.Stroke>
+                            </Line>
+                        </Grid>
+                    </StackPanel>
+                    <!-- SpecialModifiers -->
+                    <StackPanel>
+                        <!-- Split -->
+                        <StackPanel Name="Split"
+                                    Visibility="{Binding OrderItemInfo.IsSplitted, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <TextBlock Style="{StaticResource flag_Split}">Split</TextBlock>
+                        </StackPanel>
+                        <!-- Mirrored -->
+                        <StackPanel Name="Mirrored"
+                                    Visibility="{Binding OrderItemInfo.IsDuplicated, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <TextBlock Style="{StaticResource flag_Mirrored}">Mirrored</TextBlock>
+                        </StackPanel>
+                        <!-- Unidentified -->
+                        <StackPanel Name="Unidentified"
+                                    Visibility="{Binding OrderItemInfo.IsIdentified, Converter={StaticResource BooleanToInvertedVisibilityConverter}}">
+                            <TextBlock Style="{StaticResource flag_Unidentified}">Unidentified</TextBlock>
+                        </StackPanel>
+                        <!-- Corrupted -->
+                        <StackPanel Name="Corrupted"
+                                    Visibility="{Binding OrderItemInfo.IsCorrupted, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <TextBlock Style="{StaticResource flag_Corrupted}">Corrupted</TextBlock>
+                        </StackPanel>
+                        <Grid Style="{StaticResource fadeOutLine}">
+                            <Line X1="0"
+                                  Y1="0"
+                                  X2="{Binding ActualWidth, ElementName=LineBaseGrid, Mode=OneWay}"
+                                  Y2="0"
+                                  StrokeThickness="2.5">
+                                <Line.Stroke>
+                                    <LinearGradientBrush StartPoint="0,0"
+                                                         EndPoint="1,0">
+                                        <GradientStop Color="Transparent"
+                                                      Offset="0.1" />
+                                        <GradientStop Color="#7b5b27"
+                                                      Offset="0.5" />
+                                        <GradientStop Color="Transparent"
+                                                      Offset="0.9" />
+                                    </LinearGradientBrush>
+                                </Line.Stroke>
+                            </Line>
+                        </Grid>
+                    </StackPanel>
+                    <!-- NotableProperties -->
+                    <StackPanel Name="NotableProperties"
+                                Visibility="{Binding OrderItemInfo.ExistsNotableProperties, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <ItemsControl ItemsSource="{Binding OrderItemInfo.NotableProperties}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel>
+                                        <TextBlock Style="{StaticResource notableProperties_title}"
+                                                   HorizontalAlignment="Center" Text="{Binding  Name}">
+                                        </TextBlock>
+                                        <ItemsControl ItemsSource="{Binding Values}">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Style="{StaticResource notableProperties_desc}"
+                                                               HorizontalAlignment="Center" Text="{Binding }">
+                                                    </TextBlock>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
 
-                                    <ItemsControl ItemsSource="{Binding Mods}">
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate>
-                                                <TextBlock Style="{StaticResource logbook_mod}"
-                                                           HorizontalAlignment="Center"
-                                                           Text="{Binding }">
-                                                </TextBlock>
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ItemsControl>
 
-                                    <Grid Style="{StaticResource fadeOutLine}">
-                                        <Line X1="0"
-                                              Y1="0"
-                                              X2="{Binding ActualWidth, ElementName=LineBaseGrid, Mode=OneWay}"
-                                              Y2="0"
-                                              StrokeThickness="2.5">
-                                            <Line.Stroke>
-                                                <LinearGradientBrush StartPoint="0,0"
-                                                                     EndPoint="1,0">
-                                                    <GradientStop Color="Transparent"
-                                                                  Offset="0.1" />
-                                                    <GradientStop Color="#7b5b27"
-                                                                  Offset="0.5" />
-                                                    <GradientStop Color="Transparent"
-                                                                  Offset="0.9" />
-                                                </LinearGradientBrush>
-                                            </Line.Stroke>
-                                        </Line>
-                                    </Grid>
-                                </StackPanel>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </StackPanel>
-            </StackPanel>
-        </Grid>
-        <!-- Button Panel -->
-        <StackPanel Grid.Row="2" Background="#020202">
+                    <!-- Logbook -->
+                    <StackPanel
+                        Visibility="{Binding OrderItemInfo.IsLogBook, Converter={StaticResource BooleanToVisibilityConverter}}"
+                        Name="LogbookMods"
+                        HorizontalAlignment="Center">
+                        <ItemsControl ItemsSource="{Binding OrderItemInfo.LogbookMods}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel HorizontalAlignment="Center">
+                                        <TextBlock Style="{StaticResource logbook_area}" HorizontalAlignment="Center"
+                                                   Text="{Binding Name}">
+                                        </TextBlock>
 
-            <!-- AdditionalProperties -->
-            <StackPanel Name="AdditionalProperties" HorizontalAlignment="Center" Margin="5,0,5,0">
-                <ItemsControl ItemsSource="{Binding OrderItemInfo.ExtendedProperties}">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <StackPanel Orientation="Horizontal" />
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                <TextBlock Style="{StaticResource additionalProperties_name}"
-                                           Text="{Binding Path=Name}">
-                                </TextBlock>
+                                        <TextBlock Style="{StaticResource logbook_faction}"
+                                                   HorizontalAlignment="Center"
+                                                   Text="{Binding FactionName}">
+                                        </TextBlock>
 
-                                <TextBlock Style="{StaticResource additionalProperties_value}">
-                                    <TextBlock.Text>
-                                        <Binding StringFormat="{}{0}  " Path="Value" />
-                                    </TextBlock.Text>
-                                </TextBlock>
-                            </StackPanel>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </StackPanel>
+                                        <ItemsControl ItemsSource="{Binding Mods}">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Style="{StaticResource logbook_mod}"
+                                                               HorizontalAlignment="Center"
+                                                               Text="{Binding }">
+                                                    </TextBlock>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
 
-        </StackPanel>
-
-
-        <StackPanel Grid.Row="3" Background="#020202">
-
-            <Separator Background="#232425"
-                       Height="2"
-                       VerticalAlignment="Top" />
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="auto" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="auto" />
-                </Grid.ColumnDefinitions>
-                <!-- Price -->
-                <StackPanel HorizontalAlignment="Left" Orientation="Horizontal"
-                            Margin="5,0,0,0">
-                    <TextBlock VerticalAlignment="Center" Style="{StaticResource currencyPrice}"
-                               Text="{Binding OrderItem.Price.Amount}">
-                    </TextBlock>
-                    <TextBlock VerticalAlignment="Center" Style="{StaticResource currencyPrice}">x </TextBlock>
-                    <Image x:Name="PriceImage" VerticalAlignment="Center" Height="35"></Image>
-                </StackPanel>
-                <!-- Whisper Button -->
-                <StackPanel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <Button Style="{StaticResource actionButtons}" Click="ButtonBase_OnClick"
-                            Command="{Binding WhisperCommand}">
-                        Whisper
-                    </Button>
-                </StackPanel>
-                <!-- Close Button -->
-                <StackPanel Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center">
-                    <Button IsCancel="True" Style="{StaticResource actionButtons}">Close</Button>
+                                        <Grid Style="{StaticResource fadeOutLine}">
+                                            <Line X1="0"
+                                                  Y1="0"
+                                                  X2="{Binding ActualWidth, ElementName=LineBaseGrid, Mode=OneWay}"
+                                                  Y2="0"
+                                                  StrokeThickness="2.5">
+                                                <Line.Stroke>
+                                                    <LinearGradientBrush StartPoint="0,0"
+                                                                         EndPoint="1,0">
+                                                        <GradientStop Color="Transparent"
+                                                                      Offset="0.1" />
+                                                        <GradientStop Color="#7b5b27"
+                                                                      Offset="0.5" />
+                                                        <GradientStop Color="Transparent"
+                                                                      Offset="0.9" />
+                                                    </LinearGradientBrush>
+                                                </Line.Stroke>
+                                            </Line>
+                                        </Grid>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
                 </StackPanel>
             </Grid>
-        </StackPanel>
+            <!-- AdditionalProperties -->
+            <StackPanel Grid.Row="2">
+                <StackPanel Name="AdditionalProperties" HorizontalAlignment="Center" Margin="5,0,5,0">
+                    <ItemsControl ItemsSource="{Binding OrderItemInfo.ExtendedProperties}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                    <TextBlock Style="{StaticResource additionalProperties_name}"
+                                               Text="{Binding Path=Name}">
+                                    </TextBlock>
+
+                                    <TextBlock Style="{StaticResource additionalProperties_value}">
+                                        <TextBlock.Text>
+                                            <Binding StringFormat="{}{0}  " Path="Value" />
+                                        </TextBlock.Text>
+                                    </TextBlock>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+
+            </StackPanel>
+            <!-- Button Panel -->
+            <StackPanel Grid.Row="3">
+                <Separator Background="#232425"
+                           Height="2"
+                           VerticalAlignment="Top" />
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="auto" />
+                    </Grid.ColumnDefinitions>
+                    <!-- Price -->
+                    <StackPanel HorizontalAlignment="Left" Orientation="Horizontal"
+                                Margin="5,0,0,0">
+                        <TextBlock VerticalAlignment="Center" Style="{StaticResource currencyPrice}"
+                                   Text="{Binding OrderItem.Price.Amount}">
+                        </TextBlock>
+                        <TextBlock VerticalAlignment="Center" Style="{StaticResource currencyPrice}">x </TextBlock>
+                        <Image x:Name="PriceImage" VerticalAlignment="Center" Height="35"></Image>
+                    </StackPanel>
+                    <!-- Whisper Button -->
+                    <StackPanel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <Button Style="{StaticResource actionButtons}" Click="ButtonBase_OnClick"
+                                Command="{Binding WhisperCommand}">
+                            Whisper
+                        </Button>
+                    </StackPanel>
+                    <!-- Close Button -->
+                    <StackPanel Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center">
+                        <Button IsCancel="True" Style="{StaticResource actionButtons}">Close</Button>
+                    </StackPanel>
+                </Grid>
+            </StackPanel>
+
+        </Grid>
     </Grid>
 </Window>

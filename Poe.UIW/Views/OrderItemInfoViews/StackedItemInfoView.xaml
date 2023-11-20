@@ -15,57 +15,131 @@
         Topmost="True"
         d:DataContext="{d:DesignInstance orderItemInfoViewModels:StackedItemInfoViewModel, IsDesignTimeCreatable=True}">
 
-    <StackPanel>
-        <Grid VerticalAlignment="Center" HorizontalAlignment="Center">
-            <TextBlock Text="{Binding OrderItem.TypeLine}"></TextBlock>
-        </Grid>
-        <StackPanel Orientation="Vertical" HorizontalAlignment="Center" Name="StackSize">
+    <Grid SnapsToDevicePixels="True" Background="#020202">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+        <!-- Title -->
+        <Grid MouseLeftButtonDown="UIElement_OnMouseLeftButtonDown">
+            <!-- Background Images -->
+            <!-- <orderItemInfoViews:ItemInfoTitle x:Name="ItemTitleBackground" /> -->
+            <Grid Visibility="Visible" SnapsToDevicePixels="True">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
 
+                <Image Grid.Column="0" Source="/Resources/Images/header-left.png" />
+
+                <Grid Grid.Column="1">
+                    <Grid.Background>
+                        <ImageBrush ImageSource="/Resources/Images/header-middle.png" />
+                    </Grid.Background>
+                </Grid>
+
+                <Image Grid.Column="2" Source="/Resources/Images/header-right.png" />
+            </Grid>
+            <!-- Title Name -->
+            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Margin="30,0,30,0">
+                <TextBlock Style="{StaticResource itemName_Rare}"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Center" Text="{Binding OrderItem.TypeLine}">
+                </TextBlock>
+            </StackPanel>
+        </Grid>
+        <!--MainContent-->
+
+        <StackPanel Grid.Row="1" Background="#020202" Margin="5,5,5,15" x:Name="LineBaseGrid">
+            <!-- Image and sockets -->
             <Grid x:Name="ItemImagePanel" MouseEnter="ItemImagePanel_OnMouseEnter"
                   MouseLeave="ItemImagePanel_OnMouseLeave">
                 <Image x:Name="StackedItemImage" />
-
                 <RelativePanel x:Name="ItemSocketImageRelativePanel" />
             </Grid>
 
-            <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
-                <TextBlock Text="Stack size: " />
-                <TextBlock Text="{Binding StackedItemInfo.StackSize}" />
+
+            <!-- BasicProperties -->
+            <StackPanel Name="Properties" HorizontalAlignment="Center">
+                <!-- StackSize -->
+                <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" Name="StackSize">
+                    <TextBlock Style="{StaticResource baseProperty_name}" Text="Stack size: " />
+                    <TextBlock Style="{StaticResource baseProperty_value}" Text="{Binding StackedItemInfo.StackSize}" />
+                </StackPanel>
             </StackPanel>
-
-        </StackPanel>
-
-        <StackPanel Name="ExplicitMods">
-            <TextBlock x:Name="ItemLevelTextBlock" HorizontalAlignment="Center">
-                <TextBlock.Text>
-                    <Binding StringFormat="{}Item Level: {0}" Path="StackedItemInfo.ItemLevel" />
-                </TextBlock.Text>
-            </TextBlock>
-            <ItemsControl ItemsSource="{Binding StackedItemInfo.ExplicitMods}">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <TextBlock HorizontalAlignment="Center" Text="{Binding }"></TextBlock>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-            <!-- <Separator Width="{Binding $parent[StackPanel].Width}" Height="3"></Separator> -->
-        </StackPanel>
-
-        <StackPanel Orientation="Horizontal">
-            <!-- <Separator Width="{Binding $parent[StackPanel].Width}" Height="3"></Separator> -->
-
-            <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
-                <TextBlock VerticalAlignment="Center" Text="{Binding OrderItem.Price.Amount}"></TextBlock>
-                <TextBlock VerticalAlignment="Center">x </TextBlock>
-                <Image x:Name="PriceImage" VerticalAlignment="Center" Height="35"></Image>
+            <!-- ExplicitMods -->
+            <StackPanel Name="ExplicitMods">
+                <TextBlock Style="{StaticResource baseProperty_name}" x:Name="ItemLevelTextBlock"
+                           HorizontalAlignment="Center">
+                    <TextBlock.Text>
+                        <Binding StringFormat="{}Item Level: {0}" Path="StackedItemInfo.ItemLevel" />
+                    </TextBlock.Text>
+                </TextBlock>
+                <ItemsControl ItemsSource="{Binding StackedItemInfo.ExplicitMods}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Style="{StaticResource mods}" HorizontalAlignment="Center" Text="{Binding }"></TextBlock>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <Grid Style="{StaticResource fadeOutLine}">
+                    <Line X1="0"
+                          Y1="0"
+                          X2="{Binding ActualWidth, ElementName=LineBaseGrid, Mode=OneWay}"
+                          Y2="0"
+                          StrokeThickness="2.5">
+                        <Line.Stroke>
+                            <LinearGradientBrush StartPoint="0,0"
+                                                 EndPoint="1,0">
+                                <GradientStop Color="Transparent"
+                                              Offset="0.1" />
+                                <GradientStop Color="#7b5b27"
+                                              Offset="0.5" />
+                                <GradientStop Color="Transparent"
+                                              Offset="0.9" />
+                            </LinearGradientBrush>
+                        </Line.Stroke>
+                    </Line>
+                </Grid>
+                <!-- <Separator Width="{Binding $parent[StackPanel].Width}" Height="3"></Separator> -->
             </StackPanel>
-            <Grid HorizontalAlignment="Center">
-                <Button Background="Black" Click="ButtonBase_OnClick" Command="{Binding WhisperCommand}">Whisper</Button>
-            </Grid>
-            <Grid HorizontalAlignment="Right">
-                <Button Background="Black" IsCancel="True">Close</Button>
+        </StackPanel>
+        <!-- Button Panel -->
+        <StackPanel Grid.Row="2" Background="#020202">
+            <Separator Background="#232425"
+                       Height="2"
+                       VerticalAlignment="Top" />
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="auto" />
+                </Grid.ColumnDefinitions>
+                <!-- Price -->
+                <StackPanel HorizontalAlignment="Left" Orientation="Horizontal"
+                            Margin="5,0,0,0">
+                    <TextBlock VerticalAlignment="Center" Style="{StaticResource currencyPrice}"
+                               Text="{Binding OrderItem.Price.Amount}">
+                    </TextBlock>
+                    <TextBlock VerticalAlignment="Center" Style="{StaticResource currencyPrice}">x </TextBlock>
+                    <Image x:Name="PriceImage" VerticalAlignment="Center" Height="35"></Image>
+                </StackPanel>
+                <!-- Whisper Button -->
+                <StackPanel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Button Style="{StaticResource actionButtons}" Click="ButtonBase_OnClick"
+                            Command="{Binding WhisperCommand}">
+                        Whisper
+                    </Button>
+                </StackPanel>
+                <!-- Close Button -->
+                <StackPanel Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center">
+                    <Button IsCancel="True" Style="{StaticResource actionButtons}">Close</Button>
+                </StackPanel>
             </Grid>
         </StackPanel>
 
-    </StackPanel>
+
+    </Grid>
 </Window>

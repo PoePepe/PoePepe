@@ -3,41 +3,54 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+
              xmlns:local="clr-namespace:Poe.UIW.Views"
              xmlns:viewModels="clr-namespace:Poe.UIW.ViewModels"
              mc:Ignorable="d"
+             Width="150"
+             Height="25"
+             Background="Transparent"
+
              d:DesignHeight="300" d:DesignWidth="300"
              d:DataContext="{d:DesignInstance viewModels:OrderItemNotificationViewModel, IsDesignTimeCreatable=True}">
-    
-        <Grid>
-            
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="200" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-            
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
-            
-            <Canvas Grid.Row="0" Grid.Column="0">
-                <TextBlock x:Name="NotificationTitle"
-                           Text="{Binding OrderItemNotificationTitles}"
-                           VerticalAlignment="Center"
-                           HorizontalAlignment="Left"
-                           TextAlignment="Center" />
-            </Canvas>
 
-            <Canvas Grid.Row="0" Grid.Column="1">
+    <Grid x:Name="NotifyPanel" MouseEnter="NotifyPanel_OnMouseEnter" MouseLeave="NotifyPanel_OnMouseLeave">
+        <Border Background="Black"
+                Opacity="0.8">
+        </Border>
+        <Grid>
+            <TextBlock x:Name="NotificationTitle"
+                       Text="{Binding OrderItem.OrderName}"
+                       Visibility="Visible"
+                       VerticalAlignment="Center"
+                       HorizontalAlignment="Center"
+                       Style="{StaticResource smallNotifyText}" />
+
+            <Grid x:Name="ActionButtonsPanel" Visibility="Collapsed">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="70*" />
+                    <ColumnDefinition Width="30*" />
+                </Grid.ColumnDefinitions>
+
+
                 <Button
                     Command="{Binding ShowInfoCommand}"
+                    VerticalAlignment="Stretch"
+                    HorizontalAlignment="Stretch"
+                    Margin="5,0,0,0"
+                    Style="{StaticResource smallNotifyButton}"
                     Content="Info">
-                </Button>
-            </Canvas>
 
-            <Canvas Grid.Row="0" Grid.Column="2">
-                <Button Click="CloseNotificationFromButton" Content="Close"></Button>
-            </Canvas>
+                </Button>
+                <Button  Grid.Column="1" Style="{StaticResource smallNotifyButton}"
+                         Click="CloseNotificationFromButton"
+                         HorizontalAlignment="Center"
+                         VerticalAlignment="Center" >
+                    <ui:SymbolIcon Grid.Column="1" Symbol="Dismiss24" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                   Foreground="#ff8b08" FontSize="22"  />
+                </Button>
+            </Grid>
         </Grid>
+    </Grid>
 </UserControl>

@@ -13,10 +13,6 @@
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
         
-        <!-- <Grid.RowDefinitions> -->
-        <!--     <RowDefinition Height="50" /> -->
-        <!-- </Grid.RowDefinitions> -->
-
         <Image Grid.Column="0" Source="/Resources/Images/header-left.png"/>
                 
         <Grid Grid.Column="1">

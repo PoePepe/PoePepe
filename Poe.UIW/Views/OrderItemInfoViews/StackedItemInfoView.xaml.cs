@@ -130,4 +130,9 @@ public partial class StackedItemInfoView : Window
         Whispered?.Invoke(sender, e);
         DialogResult = true;
     }
+    private void UIElement_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+    {
+        DragMove();
+    }
+    
 }

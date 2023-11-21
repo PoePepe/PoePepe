@@ -24,8 +24,6 @@ public static class OrderItemMapper
             OrderId = response.OrderId,
             OrderName = response.OrderName,
             ImageUrl = response.Item.Icon,
-            ImageName = response.GetItemImageName(),
-            OrderQueryLink = "QueryString", // Map this from your actual data
             WhisperMessage = response.Listing.Whisper,
             WhisperToken = response.Listing.WhisperToken,
             Price = new ItemPrice
@@ -33,11 +31,13 @@ public static class OrderItemMapper
                 Amount = response.Listing.Price.Amount,
                 Currency = response.Listing.Price.Currency
             },
+            NameExists = !string.IsNullOrEmpty(response.Item.Name),
             Name = response.Item.Name,
             TypeLine = response.Item.TypeLine,
+            ItemKind = response.DetectItemType()
         };
 
-        DetectItemTypeAndMapInfo(response, orderItem);
+        orderItem.ItemInfo = response.Item.ToItemInfo(orderItem.ItemKind);
 
         return orderItem;
     }
@@ -47,52 +47,32 @@ public static class OrderItemMapper
         var lastSlashIndex = response.Item.Icon.LastIndexOf('/') + 1;
         return response.Item.Icon.Substring(lastSlashIndex);
     }
-    
-    private static void DetectItemTypeAndMapInfo(FetchResponseResult response, OrderItemDto orderItem)
+
+    private static ItemKind DetectItemType(this FetchResponseResult response)
     {
-        if (orderItem.ImageName.StartsWith("Incubation"))
+        if (response.Item.TypeLine.EndsWith("Resonator"))
         {
-            orderItem.ItemType = ItemType.Incubator;
-            orderItem.ItemInfo = response.Item.ToStackedItemInfo(ItemType.Incubator);
-            return;
-        }
-        
-        if (orderItem.TypeLine.EndsWith("Resonator"))
-        {
-            orderItem.ItemType = ItemType.Resonator;
-            orderItem.ItemInfo = response.Item.ToStackedItemInfo(ItemType.Resonator);
-            return;
+            return ItemKind.Resonator;
         }
 
-        switch (orderItem.ImageName)
-        {
-            case "InventoryIcon.png":
-                orderItem.ItemType = ItemType.DivinationCard;
-                orderItem.ItemInfo = response.Item.ToStackedItemInfo(ItemType.DivinationCard);
-                break;
+        var imageName = response.GetItemImageName();
 
-            default:
-                orderItem.ItemType = ItemType.Other;
-                orderItem.ItemInfo = response.Item.ToItemInfo();
-                break;
-        }
-    }
-    
-    private static StackedItemInfo ToStackedItemInfo(this Item item, ItemType itemType)
-    {
-        return new StackedItemInfo
+        if (imageName.StartsWith("Incubation"))
         {
-            Sockets = ToItemSockets(item),
-            IsDelve = item.Delve,
-            ItemLevel = item.ItemLevel > 0 ? item.ItemLevel : null,
-            StackSize = $"{item.StackSize}/{item.MaxStackSize}",
-            ExplicitMods = GetExplicitMods(item.ExplicitMods, itemType), // todo explicit mods in div card
-        };
+            return ItemKind.Incubator;
+        }
+
+        if (imageName == "InventoryIcon.png")
+        {
+            return ItemKind.DivinationCard;
+        }
+
+        return ItemKind.Common;
     }
 
-    private static string[] GetExplicitMods(string[] explicitMods, ItemType itemType)
+    private static string[] GetExplicitMods(string[] explicitMods, ItemKind itemKind)
     {
-        if (itemType == ItemType.Incubator)
+        if (itemKind == ItemKind.Incubator)
         {
             return explicitMods?.FirstOrDefault()?.Split("\r\n");
         }
@@ -100,11 +80,26 @@ public static class OrderItemMapper
         return explicitMods;
     }
 
-    private static ItemInfo ToItemInfo(this Item item)
+    private static ItemFrameType ParseFrameType(int frameType)
+    {
+        if (Enum.IsDefined(typeof(ItemFrameType), frameType))
+        {
+            return (ItemFrameType)frameType;
+        }
+
+        return ItemFrameType.Other;
+    }
+
+    private static ItemInfo ToItemInfo(this Item item, ItemKind itemKind)
     {
         return new ItemInfo
         {
+            ItemFrameType = ParseFrameType(item.FrameType),
+            FoilVariation = item.FoilVariation,
+
+            HasItemLevel = item.ItemLevel > 0,
             ItemLevel = item.ItemLevel,
+
             Sockets = ToItemSockets(item),
             
             Properties = ToInfoProperties(item.Properties),
@@ -113,7 +108,7 @@ public static class OrderItemMapper
             Requirements = item.Requirements?.Select(r => new ItemInfoRequirement
                 { Name = r.Name, Value = r.Values?.FirstOrDefault()?.FirstOrDefault()?.ToString() }).ToArray(),
             
-            ExplicitMods = item.ExplicitMods,
+            ExplicitMods = GetExplicitMods(item.ExplicitMods, itemKind),
             ImplicitMods = item.ImplicitMods,
 
             EnchantMods = item.EnchantMods,

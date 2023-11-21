@@ -6,6 +6,7 @@ using System.Windows.Media.Imaging;
 using Poe.UIW.Models;
 using Poe.UIW.Services;
 using Poe.UIW.Services.Currency;
+using Poe.UIW.Services.ItemInfoTitle;
 using Poe.UIW.ViewModels.OrderItemInfoViewModels;
 
 namespace Poe.UIW.Views.OrderItemInfoViews;
@@ -30,14 +31,10 @@ public partial class OrderItemInfoView : Window
         Loaded += OnLoaded;
         InitializeComponent();
     }
-    
-    // private void RenderItemTitle()
-    // {
-    //     ItemTitle.LeftImageSource = new BitmapImage();
-    // }
 
     private void OnLoaded(object sender, RoutedEventArgs e)
     {
+        RenderItemTitle();
         RenderPrice();
     }
 
@@ -53,6 +50,18 @@ public partial class OrderItemInfoView : Window
         });
 
         base.OnInitialized(eventArgs);
+    }
+
+    private void RenderItemTitle()
+    {
+        var images = ResourceItemTitleService.GetItemTitleImages(ViewModel.OrderItem);
+        ItemTitleBackground.LeftImage.Source = images.LeftImageBitmap;
+        ItemTitleBackground.MiddleImageBrush.ImageSource = images.MiddleImageBitmap;
+        ItemTitleBackground.RightImage.Source = images.RightImageBitmap;
+
+        var style = FindResource(ResourceItemTitleService.GetItemTitleTextStyleName(ViewModel.OrderItem)) as Style;
+        ItemNameTextBlock.Style = style;
+        ItemTypeLineTextBlock.Style = style;
     }
 
     private void RenderPrice()

@@ -121,6 +121,7 @@ public class Item
 
     [JsonPropertyName("descrText")] public string DescrText { get; set; }
 
+    [JsonPropertyName("foilVariation")] public int FoilVariation { get; set; }
     [JsonPropertyName("frameType")] public int FrameType { get; set; }
 
     [JsonPropertyName("extended")] public Extended Extended { get; set; }

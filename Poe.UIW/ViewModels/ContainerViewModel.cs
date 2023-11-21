@@ -3,8 +3,6 @@
 // Copyright (C) Leszek Pomianowski and WPF UI Contributors.
 // All Rights Reserved.
 
-using CommunityToolkit.Mvvm.ComponentModel;
-
 namespace Poe.UIW.ViewModels;
 
 public class ContainerViewModel : ViewModelBase

@@ -1,7 +1,8 @@
 ﻿namespace Poe.UIW.Models;
 
-public enum ItemType
+public enum ItemKind
 {
+    Common,
     DivinationCard,
     LogBook,
     Resonator,

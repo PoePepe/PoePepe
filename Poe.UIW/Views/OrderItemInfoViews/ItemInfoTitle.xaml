@@ -6,21 +6,21 @@
              xmlns:local="clr-namespace:Poe.UIW.Views.OrderItemInfoViews"
              mc:Ignorable="d"
              d:DesignHeight="50" d:DesignWidth="300">
-    <Grid>
+    <Grid SnapsToDevicePixels="True">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
         
-        <Image Grid.Column="0" Source="/Resources/Images/Headers/header-double-rare-left.png"/>
+        <Image Grid.Column="0" x:Name="LeftImage"/>
                 
         <Grid Grid.Column="1">
             <Grid.Background>
-                <ImageBrush ImageSource="/Resources/Images/Headers/header-double-rare-middle.png" />
+                <ImageBrush x:Name="MiddleImageBrush"/>
             </Grid.Background>
         </Grid>
                 
-        <Image Grid.Column="2" Source="/Resources/Images/Headers/header-double-rare-right.png" />
+        <Image Grid.Column="2" x:Name="RightImage"/>
     </Grid>
 </UserControl>

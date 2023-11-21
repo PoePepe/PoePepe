@@ -5,51 +5,16 @@ public class OrderItemDto
     public string Id { get; set; }
     public string OrderName { get; set; }
     public long OrderId { get; set; }
-    public string OrderQueryLink { get; set; }
     public string WhisperMessage { get; set; }
     public string WhisperToken { get; set; }
     public ItemPrice Price { get; set; }
     public string ImageUrl { get; set; }
-    public string ImageName { get; set; }
+    public bool NameExists { get; set; }
     public string Name { get; set; }
     public string TypeLine { get; set; }
-    public ItemType ItemType { get; set; }
-    public ItemInfoBase ItemInfo { get; set; }
+    public ItemKind ItemKind { get; set; }
+    public ItemInfo ItemInfo { get; set; }
 }
-
-public class ItemInfoBase
-{
-}
-
-public class MapInfo : ItemInfoBase
-{
-    public ItemInfoProperty[] Properties { get; set; }
-    public string[] ExplicitMods { get; set; }
-    public string[] ImplicitMods { get; set; }
-
-    public bool IsCorrupted { get; set; }
-    public int ItemLevel { get; set; }
-
-}
-
-public class DivinationCardInfo : ItemInfoBase
-{
-    public string StackSize { get; set; }
-    public string[] ExplicitMods { get; set; }
-
-}
-
-public class StackedItemInfo : ItemInfoBase
-{
-    public int? ItemLevel { get; set; }
-    public string StackSize { get; set; }
-    public string[] ExplicitMods { get; set; }
-
-    public bool IsDelve { get; set; }
-
-    public Sockets Sockets { get; set; }
-}
-
 public class NotableProperty
 {
     public string Name { get; set; }
@@ -57,8 +22,11 @@ public class NotableProperty
     public string[] Values { get; set; }
 }
 
-public class ItemInfo : ItemInfoBase
+public class ItemInfo
 {
+    public ItemFrameType ItemFrameType { get; set; }
+    public int FoilVariation { get; set; }
+
     public ItemInfoProperty[] Properties { get; set; }
     public ItemInfoExtendedProperty[] ExtendedProperties { get; set; }
     
@@ -89,6 +57,8 @@ public class ItemInfo : ItemInfoBase
     public string[] Influences { get; set; }
     
     public Sockets Sockets { get; set; }
+
+    public bool HasItemLevel { get; set; }
     public int ItemLevel { get; set; }
 }
 

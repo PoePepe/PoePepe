@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -13,7 +12,7 @@ namespace Poe.UIW.Services;
 
 public static class ItemSocketImageFactory
 {
-    private static CachedBitmap SocketCachedBitmap =
+    private static readonly CachedBitmap SocketCachedBitmap =
         new CachedBitmap(new BitmapImage(ItemSocketImagePosition.SocketUri), BitmapCreateOptions.None,
             BitmapCacheOption.Default);
     

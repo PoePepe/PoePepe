@@ -40,7 +40,6 @@ public partial class LiveSearchViewModel : ViewModelBase
 
     public LiveSearchViewModel()
     {
-        Console.WriteLine("da");
     }
 
     public LiveSearchViewModel(IDialogService customDialogService, Service service, ServiceState serviceState, PoeTradeApiService poeTradeApiService,  Wpf.Ui.Mvvm.Contracts.IDialogService dialogService, ResourceDownloadService resourceDownloadService)
@@ -57,13 +56,6 @@ public partial class LiveSearchViewModel : ViewModelBase
         Orders = new ObservableCollection<OrderViewModel>(orders.ToOrderModel());
         Start(CancellationToken.None);
     }
-    
-    private async Task<BitmapImage> LoadItemImageAsync()
-    {
-        return await _resourceDownloadService.DownloadItemImageAsync("https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvV2VhcG9ucy9Ud29IYW5kV2VhcG9ucy9TdGF2ZXMvU3RhZmYyIiwidyI6MiwiaCI6NCwic2NhbGUiOjF9XQ/69ff746d86/Staff2.png");
-    }
-    
-    public Task<BitmapImage> ItemImage => LoadItemImageAsync();
 
     
     private void Start(CancellationToken token)

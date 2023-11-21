@@ -45,6 +45,15 @@
     <Style x:Key="itemName_Gem" BasedOn="{StaticResource itemName}">
         <Setter Property="TextElement.Foreground" Value="#1ba29b"/>
     </Style>
+    <Style x:Key="itemName_Foil_Rainbow" BasedOn="{StaticResource itemName}">
+        <Setter Property="TextElement.Foreground" Value="#82ad6a"/>
+    </Style>
+    <Style x:Key="itemName_Foil_Default" BasedOn="{StaticResource itemName}">
+        <Setter Property="TextElement.Foreground" Value="#7f7f7f"/>
+    </Style>
+    <Style x:Key="itemName_Currency" BasedOn="{StaticResource itemName}">
+        <Setter Property="TextElement.Foreground" Value="#aa9e82"/>
+    </Style>
     
     <!--enchantMods-->
     <Style x:Key="enchantMods"  BasedOn="{StaticResource poeFontSize}">

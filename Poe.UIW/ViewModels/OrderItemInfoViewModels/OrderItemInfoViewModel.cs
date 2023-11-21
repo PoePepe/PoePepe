@@ -1,5 +1,4 @@
-﻿using System.Drawing;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Poe.UIW.Models;
@@ -12,9 +11,6 @@ public partial class OrderItemInfoViewModel : OrderItemInfoViewModelBase
     private readonly ResourceDownloadService _resourceDownloadService;
     [ObservableProperty] private ItemInfo _orderItemInfo;
     [ObservableProperty] private bool _requirementsExists;
-    [ObservableProperty] private bool _nameExists;
-
-    // public Task<BitmapImage> ItemImage => LoadItemImageAsync();
 
     public OrderItemInfoViewModel()
     {
@@ -36,9 +32,8 @@ public partial class OrderItemInfoViewModel : OrderItemInfoViewModelBase
         if (OrderItem?.Id is null)
         {
             OrderItem = orderItem;
-            OrderItemInfo = orderItem.ItemInfo as ItemInfo;
+            OrderItemInfo = orderItem.ItemInfo;
             RequirementsExists = OrderItemInfo?.Requirements?.Length > 0;
-            NameExists = !string.IsNullOrEmpty(OrderItem.Name);
         }
     }
 }

@@ -1,6 +1,4 @@
-﻿using System.Windows;
-
-namespace Poe.UIW.Views;
+﻿namespace Poe.UIW.Views;
 
 public partial class ManageOrderView
 {
@@ -8,5 +6,4 @@ public partial class ManageOrderView
     {
         InitializeComponent();
     }
-    
 }

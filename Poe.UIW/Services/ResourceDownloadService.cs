@@ -1,13 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
-using System.Net;
 using System.Net.Http;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
-using System.Windows.Threading;
 using Serilog;
 
 namespace Poe.UIW.Services;
@@ -70,25 +66,6 @@ public class ResourceDownloadService
 
         return bitMapImage;
     }
-
-    // public async Task<BitmapImage> DownloadItemImageAsync2(string url, BitmapImage image)
-    // {
-    //     try
-    //     {
-    //         ThreadPool.QueueUserWorkItem(async o =>
-    //             {
-    //                 image = await DownloadItemImageAsync(url);
-    //
-    //                 Dispatcher.BeginInvoke((Action)(() => image.Source = bitmapImage));
-    //             });
-    //     }
-    //     catch (Exception e)
-    //     {
-    //         Log.Error(e, e.Message);
-    //
-    //         return null;
-    //     }
-    // }
     
     public async Task<BitmapImage> DownloadItemImageAsync(string url, BitmapImage image)
     {

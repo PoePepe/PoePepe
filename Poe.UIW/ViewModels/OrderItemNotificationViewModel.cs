@@ -1,34 +1,17 @@
 ﻿using System;
-using System.ComponentModel;
-using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using HanumanInstitute.MvvmDialogs;
-using Microsoft.Extensions.DependencyInjection;
 using Poe.UIW.Models;
-using Poe.UIW.ViewModels.OrderItemInfoViewModels;
-using Poe.UIW.Views.OrderItemInfoViews;
 
 namespace Poe.UIW.ViewModels;
 
 public partial class OrderItemNotificationViewModel  : ViewModelBase
 {
-    private readonly IDialogService _dialogService;
-    private INotifyPropertyChanged _mainViewModel;
-
-    [ObservableProperty]
-    public OrderItemDto _orderItem;
-
-    public string OrderItemNotificationTitles { get; set; }
-
+    [ObservableProperty] private OrderItemDto _orderItem;
 
     public OrderItemNotificationViewModel()
     {
-    }
-    
-    public OrderItemNotificationViewModel(IDialogService dialogService)
-    {
-        _dialogService = dialogService;
     }
     
     public void SetOrderItem(OrderItemDto orderItem)
@@ -36,15 +19,7 @@ public partial class OrderItemNotificationViewModel  : ViewModelBase
         if (string.IsNullOrEmpty(OrderItem?.Id))
         {
             OrderItem = orderItem;
-            
-            //todo refactor to text format in xaml
-            OrderItemNotificationTitles = $"Order {OrderItem.OrderName} has been found";
         }
-    }
-    
-    public void SetMainViewModel(INotifyPropertyChanged mainViewModel)
-    {
-        _mainViewModel = mainViewModel;
     }
     
     public event EventHandler ClosingRequest;
@@ -65,36 +40,8 @@ public partial class OrderItemNotificationViewModel  : ViewModelBase
     }
     
     [RelayCommand]
-    public async Task ShowInfo()
+    private void ShowInfo()
     {
-        switch (OrderItem.ItemType)
-        {
-            case ItemType.DivinationCard:
-            case ItemType.Incubator:
-            case ItemType.Resonator:
-                var stackedItemInfoViewModel = App.Current.Services.GetRequiredService<StackedItemInfoViewModel>();
-                stackedItemInfoViewModel.SetOrderItem(OrderItem);
-
-                var stackedItemInfoView = new StackedItemInfoView(stackedItemInfoViewModel);
-                stackedItemInfoView.Whispered += OnClosingRequest;
-
-                stackedItemInfoView.ShowDialog();
-                
-                // await _dialogService.ShowOrderItemInfoAsync<StackedItemInfoViewModel>(_mainViewModel, this, OrderItem);
-                break;
-            
-            case ItemType.Map:
-            case ItemType.Other:
-            default:
-                var orderItemInfoViewModel = App.Current.Services.GetRequiredService<OrderItemInfoViewModel>();
-                orderItemInfoViewModel.SetOrderItem(OrderItem);
-
-                var orderItemInfoView = new OrderItemInfoView(orderItemInfoViewModel);
-                orderItemInfoView.Whispered += OnClosingRequest;
-
-                orderItemInfoView.ShowDialog();
-                // await _dialogService.ShowOrderItemInfoAsync<OrderItemInfoViewModel>(_mainViewModel, this, OrderItem);
-                break;
-        }
+        DialogServiceExtensions.ShowOrderItemInfo(OrderItem, OnClosingRequest);
     }
 }

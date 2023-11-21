@@ -1,15 +1,11 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Threading;
-using HanumanInstitute.MvvmDialogs;
 using Microsoft.Extensions.DependencyInjection;
 using Poe.LiveSearch.Api.Trade.Models;
-using Poe.LiveSearch.Services;
 using Poe.UIW.Helpers;
 using Poe.UIW.Mapping;
-using Poe.UIW.Services;
 using Poe.UIW.ViewModels;
 using Serilog;
 
@@ -21,15 +17,10 @@ public partial class AlwaysOnTopView : Window
     const int WS_EX_NOACTIVATE = 134217728;
     const int LSFW_LOCK = 1;
 
-    private readonly IDialogService _dialogService;
-    private readonly Service _service;
-    
     public AlwaysOnTopView()
     {
         InitializeComponent();
         
-        _service = App.Current.Services.GetRequiredService<Service>();
-        _dialogService = App.Current.Services.GetRequiredService<IDialogService>();
         DataContext = App.Current.Services.GetService<AlwaysOnTopViewModel>();
 
         ((AlwaysOnTopViewModel)DataContext!).NotifyItem = async result =>
@@ -64,11 +55,10 @@ public partial class AlwaysOnTopView : Window
     {
         try
         {
-            var vm = new OrderItemNotificationViewModel(_dialogService);
+            var vm = new OrderItemNotificationViewModel();
 
             var orderItem = result.ToOrderItemDto();
             vm.SetOrderItem(orderItem);
-            vm.SetMainViewModel(DataContext as INotifyPropertyChanged);
             var uc = new OrderItemNotificationView(vm)
             {
                 DataContext = vm

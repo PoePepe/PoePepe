@@ -1,8 +1,6 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Threading;
 using System.Windows;
-using System.Windows.Navigation;
 using HanumanInstitute.MvvmDialogs.Wpf;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -33,8 +31,6 @@ namespace Poe.UIW
         {
             Services = ConfigureServices();
         }
-        
-        
         
         protected override void OnStartup(StartupEventArgs e)
         {
@@ -92,8 +88,6 @@ namespace Poe.UIW
             services.AddSingleton<ITaskBarService, TaskBarService>();
             services.AddSingleton<Wpf.Ui.Mvvm.Contracts.IDialogService, Wpf.Ui.Mvvm.Services.DialogService>();
 
-                            // services.AddSingleton<INotifyIconService, CustomNotifyIconService>();
-
             services.AddSingleton<INavigationService, Wpf.Ui.Mvvm.Services.NavigationService>();
 
             services.AddScoped<INavigationWindow, Views.ContainerView>();
@@ -105,27 +99,19 @@ namespace Poe.UIW
             services.AddSingleton<SettingsViewModel>();
             services.AddScoped<Views.Pages.Settings>();
 
-
             services.AddSingleton<ResourceDownloadService>();
             services.AddHttpClient<ResourceDownloadService>();
         
             services.AddTransient<ManageOrderViewModel>();
             services.AddTransient<ManageOrderView>();
             
-            // services.AddSingleton<MainView>();
-            // services.AddSingleton<MainViewModel>();
-            
             services.AddSingleton<AlwaysOnTopView>();
             services.AddSingleton<AlwaysOnTopViewModel>();
             
             services.AddTransient<OrderItemInfoView>();
             services.AddTransient<OrderItemInfoViewModel>();
-
             
             services.AddTransient<OrderItemNotificationViewModel>();
-            services.AddTransient<DivinationCardInfoViewModel>();
-            services.AddTransient<StackedItemInfoViewModel>();
-
 
             return services.BuildServiceProvider();
         }

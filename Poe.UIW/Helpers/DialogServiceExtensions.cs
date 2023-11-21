@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Threading.Tasks;
 using HanumanInstitute.MvvmDialogs.FrameworkDialogs;
 using Microsoft.Extensions.DependencyInjection;
@@ -6,10 +7,8 @@ using Poe.UIW;
 using Poe.UIW.Models;
 using Poe.UIW.ViewModels;
 using Poe.UIW.ViewModels.OrderItemInfoViewModels;
-using Wpf.Ui.Mvvm.Contracts;
+using Poe.UIW.Views.OrderItemInfoViews;
 using ManageOrderViewModel = Poe.UIW.ViewModels.ManageOrderViewModel;
-using OrderItemInfoViewModelBase = Poe.UIW.ViewModels.OrderItemInfoViewModels.OrderItemInfoViewModelBase;
-using OrderItemNotificationViewModel = Poe.UIW.ViewModels.OrderItemNotificationViewModel;
 using OrderViewModel = Poe.UIW.ViewModels.OrderViewModel;
 
 // ReSharper disable once CheckNamespace
@@ -51,38 +50,15 @@ public static class DialogServiceExtensions
             title,
             MessageBoxButton.YesNo);
     }
-
-    public static async Task ShowOrderItemInfoAsync(this IDialogService service, INotifyPropertyChanged ownerViewModel, OrderItemNotificationViewModel callingViewModel, OrderItemDto orderItem)
-    {
-        var vm = service.CreateViewModel<OrderItemInfoViewModel>();
-        vm.SetOrderItem(orderItem);
-
-        vm.RequestClose += callingViewModel.CloseNotification;
-
-        // var settings = new DialogHostSettings(vm)
-        // {
-        //     CloseOnClickAway = true
-        // };
-        //
-        // await service.ShowDialogHostAsync(ownerViewModel, settings);
-    }
     
-    public static async Task ShowOrderItemInfoAsync<T>(this IDialogService service, INotifyPropertyChanged ownerViewModel, OrderItemNotificationViewModel callingViewModel, OrderItemDto orderItem) where T : OrderItemInfoViewModelBase
+    public static void ShowOrderItemInfo(OrderItemDto orderItem, Action<object, EventArgs> onWhispered)
     {
-        var vm = service.CreateViewModel<T>();
-        vm.SetOrderItem(orderItem);
+        var orderItemInfoViewModel = App.Current.Services.GetRequiredService<OrderItemInfoViewModel>();
+        orderItemInfoViewModel.SetOrderItem(orderItem);
 
-        vm.RequestClose += callingViewModel.CloseNotification;
+        var orderItemInfoView = new OrderItemInfoView(orderItemInfoViewModel);
+        orderItemInfoView.Whispered += (sender, args) => onWhispered(sender, args);
 
-        // var settings = new DialogHostSettings(vm)
-        // {
-        //     CloseOnClickAway = true
-        // };
-        //
-        // await service.ShowDialogHostAsync(ownerViewModel, settings);
-        
-        var da = App.Current.Services.GetRequiredService<ContainerViewModel>();
-
-        await service.ShowDialogAsync(da, vm);
+        orderItemInfoView.ShowDialog();
     }
 }

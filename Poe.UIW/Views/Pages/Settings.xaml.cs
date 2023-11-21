@@ -1,5 +1,4 @@
-﻿using System.Windows.Controls;
-using Poe.UIW.ViewModels;
+﻿using Poe.UIW.ViewModels;
 using Wpf.Ui.Common.Interfaces;
 
 namespace Poe.UIW.Views.Pages;

@@ -45,7 +45,6 @@
                 Grid.Column="0"
                 Margin="6,0,6,0"
                 Frame="{Binding ElementName=RootFrame}"
-                Navigated="RootNavigation_OnNavigated"
                 Precache="False"
                 SelectedPageIndex="-1"
                 TransitionDuration="200"

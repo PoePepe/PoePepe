@@ -1,8 +1,6 @@
-using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 using Poe.UIW.ViewModels;
 using Poe.UIW.ViewModels.OrderItemInfoViewModels;
-using Poe.UIW.Views;
 
 namespace Poe.UIW;
 

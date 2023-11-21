@@ -9,12 +9,9 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using Poe.UIW.ViewModels;
-using Poe.UIW.Views.Pages;
 using Wpf.Ui.Appearance;
-using Wpf.Ui.Common;
 using Wpf.Ui.Controls.Interfaces;
 using Wpf.Ui.Mvvm.Contracts;
-using Wpf.Ui.TaskBar;
 
 namespace Poe.UIW.Views;
 
@@ -23,8 +20,6 @@ namespace Poe.UIW.Views;
 /// </summary>
 public partial class ContainerView : INavigationWindow
 {
-    private bool _initialized = false;
-
     private readonly IThemeService _themeService;
 
 
@@ -34,13 +29,11 @@ public partial class ContainerView : INavigationWindow
     {
     }
 
-    public ContainerView(
-        ContainerViewModel viewModel,
+    public ContainerView(ContainerViewModel viewModel,
         INavigationService navigationService,
         IPageService pageService,
         IThemeService themeService,
-            Wpf.Ui.Mvvm.Contracts.IDialogService dialogService
-    )
+        IDialogService dialogService)
     {
         ViewModel = viewModel;
         DataContext = this;
@@ -70,13 +63,6 @@ public partial class ContainerView : INavigationWindow
         });
     }
 
-    private static void DialogControlOnButtonRightClick(object sender, RoutedEventArgs e)
-    {
-        var dialogControl = (IDialogControl)sender;
-        dialogControl.Hide();
-    }
-
-
     /// <summary>
     /// Raises the closed event.
     /// </summary>
@@ -105,41 +91,13 @@ public partial class ContainerView : INavigationWindow
 
     #endregion INavigationWindow methods
 
-    private void InvokeSplashScreen()
-    {
-        if (_initialized)
-            return;
-
-        _initialized = true;
-
-        RootMainGrid.Visibility = Visibility.Collapsed;
-
-
-        Task.Run(async () =>
-        {
-            // Remember to always include Delays and Sleeps in
-            // your applications to be able to charge the client for optimizations later.
-            await Task.Delay(4000);
-
-            await Dispatcher.InvokeAsync(() =>
-            {
-                RootMainGrid.Visibility = Visibility.Visible;
-
-                Navigate(typeof(Settings));
-
-            });
-
-            return true;
-        });
-    }
-
     private void NavigationButtonTheme_OnClick(object sender, RoutedEventArgs e)
     {
         _themeService.SetTheme(
             _themeService.GetTheme() == ThemeType.Dark ? ThemeType.Light : ThemeType.Dark
         );
     }
-    
+
     private void MenuItem_OnClick_Open(object sender, RoutedEventArgs e)
     {
         Show();
@@ -150,34 +108,5 @@ public partial class ContainerView : INavigationWindow
     {
         Close();
         OnClosing(new CancelEventArgs());
-    }
-
-    private void TrayMenuItem_OnClick(object sender, RoutedEventArgs e)
-    {
-        if (sender is not MenuItem menuItem)
-            return;
-
-        System.Diagnostics.Debug.WriteLine(
-            $"DEBUG | WPF UI Tray clicked: {menuItem.Tag}",
-            "Wpf.Ui.Demo"
-        );
-    }
-
-    private void RootNavigation_OnNavigated(INavigation sender, RoutedNavigationEventArgs e)
-    {
-        System.Diagnostics.Debug.WriteLine(
-            $"DEBUG | WPF UI Navigated to: {sender?.Current ?? null}",
-            "Wpf.Ui.Demo"
-        );
-
-        // This funky solution allows us to impose a negative
-        // margin for Frame only for the Dashboard page, thanks
-        // to which the banner will cover the entire page nicely.
-        // RootFrame.Margin = new Thickness(
-        //     left: 0,
-        //     top: sender?.Current?.PageTag == "liveSearch" ? -69 : 0,
-        //     right: 0,
-        //     bottom: 0
-        // );
     }
 }

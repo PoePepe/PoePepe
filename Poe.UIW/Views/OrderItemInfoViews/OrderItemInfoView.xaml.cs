@@ -30,6 +30,11 @@ public partial class OrderItemInfoView : Window
         Loaded += OnLoaded;
         InitializeComponent();
     }
+    
+    // private void RenderItemTitle()
+    // {
+    //     ItemTitle.LeftImageSource = new BitmapImage();
+    // }
 
     private void OnLoaded(object sender, RoutedEventArgs e)
     {

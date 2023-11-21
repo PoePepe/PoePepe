@@ -53,10 +53,23 @@ public partial class ContainerView : INavigationWindow
 
         navigationService.SetNavigationControl(RootNavigation);
         dialogService.SetDialogControl(RootDialogYesNo);
+
+        Loaded += OnLoaded;
     }
 
-    
-    
+    private void OnLoaded(object sender, RoutedEventArgs e)
+    {
+        Task.Run(() =>
+        {
+            Dispatcher.Invoke(() =>
+            {
+                RootMainGrid.Visibility = Visibility.Visible;
+
+                Navigate(typeof(Pages.LiveSearch));
+            });
+        });
+    }
+
     private static void DialogControlOnButtonRightClick(object sender, RoutedEventArgs e)
     {
         var dialogControl = (IDialogControl)sender;
@@ -160,11 +173,11 @@ public partial class ContainerView : INavigationWindow
         // This funky solution allows us to impose a negative
         // margin for Frame only for the Dashboard page, thanks
         // to which the banner will cover the entire page nicely.
-        RootFrame.Margin = new Thickness(
-            left: 0,
-            top: sender?.Current?.PageTag == "dashboard" ? -69 : 0,
-            right: 0,
-            bottom: 0
-        );
+        // RootFrame.Margin = new Thickness(
+        //     left: 0,
+        //     top: sender?.Current?.PageTag == "liveSearch" ? -69 : 0,
+        //     right: 0,
+        //     bottom: 0
+        // );
     }
 }

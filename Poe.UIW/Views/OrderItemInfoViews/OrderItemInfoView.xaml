@@ -28,7 +28,7 @@
         <Grid MouseLeftButtonDown="UIElement_OnMouseLeftButtonDown">
             <!-- Background Images -->
             
-            <orderItemInfoViews:ItemInfoTitle/>
+            <!-- <orderItemInfoViews:ItemInfoTitle/> -->
             
             <Grid Visibility="Collapsed">
                 <Grid.ColumnDefinitions>

@@ -18,8 +18,8 @@
         <Setter Property="TextElement.FontSize" Value="14"/>
 
     </Style>
+    
     <!--line-->
-
     <Style x:Key="fadeOutLine">
         <Setter Property="Control.Margin"
                 Value="0,4,0,4" />
@@ -45,6 +45,7 @@
     <Style x:Key="itemName_Gem" BasedOn="{StaticResource itemName}">
         <Setter Property="TextElement.Foreground" Value="#1ba29b"/>
     </Style>
+    
     <!--enchantMods-->
     <Style x:Key="enchantMods"  BasedOn="{StaticResource poeFontSize}">
         <Setter Property="TextElement.Foreground" Value="#b4b4ff"/>
@@ -112,8 +113,7 @@
     <Style x:Key="notableProperties_desc" BasedOn="{StaticResource notableProperties}">
         <Setter Property="TextElement.Foreground" Value="#7f7f7f"/>
     </Style>
-
-    
+   
     <!--flag-->
     <Style x:Key="flag_Corrupted" BasedOn="{StaticResource poeFontSize}">
         <Setter Property="TextElement.Foreground" Value="#d20000"/>
@@ -127,6 +127,7 @@
     <Style x:Key="flag_Unidentified" BasedOn="{StaticResource poeFontSize}">
         <Setter Property="TextElement.Foreground" Value="#d20000"/>
     </Style>
+    
     <!--logbook-->
     <Style x:Key="logbook"  BasedOn="{StaticResource poeFontSize}">
         <Setter Property="TextElement.Foreground" Value="#b4b4ff"/>
@@ -142,6 +143,7 @@
     <Style x:Key="logbook_mod"  BasedOn="{StaticResource logbook}">
         <Setter Property="TextElement.Foreground" Value="#88f"/>
     </Style>
+    
     <!--price-->
     <Style x:Key="currencyPrice"
            BasedOn="{StaticResource poeFontFamily}">
@@ -158,22 +160,37 @@
         <Setter Property="TextElement.FontSize"
                 Value="18" />
         <Setter Property="TextElement.Foreground"
-                Value="White" />
+                Value="#e9cf9f" />
 
     </Style>
     <!--smallNotifyButton-->
-
     <Style x:Key="smallNotifyButton"
            BasedOn="{StaticResource poeFontFamily}"
            TargetType="Button">
         <Setter Property="TextElement.FontSize"
-                Value="14" />
-
+                Value="16" />
         <Setter Property="Background"
                 Value="Transparent" />
 
         <Setter Property="Foreground"
-                Value="White" />
+                Value="#e9cf9f" />
+
+        <Setter Property="BorderThickness"
+                Value="0" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border Background="{TemplateBinding Background}"
+                            Padding="{TemplateBinding Padding}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="0">
+                        <ContentPresenter HorizontalAlignment="Center"
+                                          VerticalAlignment="Center" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
 
     </Style>
     <!--actionButtons-->

@@ -26,7 +26,9 @@
                 x:Name="stk_MainPnl">
 
                 <StackPanel.Resources>
-
+                    <Style TargetType="{x:Type local:OrderItemNotificationView}">
+                        <Setter Property="Margin" Value="0,0,0,2" />
+                    </Style>
                 </StackPanel.Resources>
             </StackPanel>
         </StackPanel>

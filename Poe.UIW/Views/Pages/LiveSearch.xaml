@@ -11,21 +11,10 @@
            xmlns:helpers="clr-namespace:Poe.UIW.Helpers"
            mc:Ignorable="d"
            d:DataContext="{d:DesignInstance vm:LiveSearchViewModel, IsDesignTimeCreatable=True}"
-
            Title="LiveSearchPage" Height="450" Width="800">
+
     <Grid>
         <StackPanel>
-            <Grid x:Name="ItemImagePanel">
-                <Image x:Name="ItemBackImage">
-                </Image>
-                
-                <RelativePanel x:Name="ItemSocketImageRelativePanel">
-                </RelativePanel>
-            
-                <Canvas x:Name="ItemLinkImageCanvas">
-                </Canvas>
-            </Grid>
-            
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                 <Button
                     HorizontalAlignment="Right"

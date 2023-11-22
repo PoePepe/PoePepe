@@ -113,6 +113,7 @@
         <Resource Include="Resources\Images\Separators\separator-relic.png" />
         <Resource Include="Resources\Images\Separators\separator-supporter-foil.png" />
         <Resource Include="Resources\Images\Separators\separator-unique.png" />
+        <Resource Include="Resources\Images\Separators\separator-rare.png" />
     </ItemGroup>
 
     <ItemGroup>

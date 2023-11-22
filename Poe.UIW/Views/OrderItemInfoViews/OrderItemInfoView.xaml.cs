@@ -3,9 +3,11 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
+using Poe.UIW.Helpers;
 using Poe.UIW.Models;
 using Poe.UIW.Services;
 using Poe.UIW.Services.Currency;
+using Poe.UIW.Services.ItemInfoSeparator;
 using Poe.UIW.Services.ItemInfoTitle;
 using Poe.UIW.ViewModels.OrderItemInfoViewModels;
 
@@ -34,6 +36,7 @@ public partial class OrderItemInfoView : Window
 
     private void OnLoaded(object sender, RoutedEventArgs e)
     {
+        RenderSeparators();
         RenderItemTitle();
         RenderPrice();
     }
@@ -62,6 +65,17 @@ public partial class OrderItemInfoView : Window
         var style = FindResource(ResourceItemTitleService.GetItemTitleTextStyleName(ViewModel.OrderItem)) as Style;
         ItemNameTextBlock.Style = style;
         ItemTypeLineTextBlock.Style = style;
+    }
+
+    private void RenderSeparators()
+    {
+        var separatorImage = ResourceItemSeparatorService.GetItemSeparatorImage(ViewModel.OrderItem);
+        var separators = this.FindVisualChildren<ItemInfoSeparator>();
+
+        foreach (var itemInfoSeparator in separators)
+        {
+            itemInfoSeparator.ItemInfoSeparatorImage.Source = separatorImage;
+        }
     }
 
     private void RenderPrice()

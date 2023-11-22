@@ -42,7 +42,9 @@ public partial class LiveSearchViewModel : ViewModelBase
     {
     }
 
-    public LiveSearchViewModel(IDialogService customDialogService, Service service, ServiceState serviceState, PoeTradeApiService poeTradeApiService,  Wpf.Ui.Mvvm.Contracts.IDialogService dialogService, ResourceDownloadService resourceDownloadService)
+    public LiveSearchViewModel(IDialogService customDialogService, Service service, ServiceState serviceState,
+        PoeTradeApiService poeTradeApiService, Wpf.Ui.Mvvm.Contracts.IDialogService dialogService,
+        ResourceDownloadService resourceDownloadService)
     {
         _dialogService = customDialogService;
         DialogControl = dialogService.GetDialogControl();
@@ -57,7 +59,7 @@ public partial class LiveSearchViewModel : ViewModelBase
         Start(CancellationToken.None);
     }
 
-    
+
     private void Start(CancellationToken token)
     {
         Task.Factory.StartNew(async () =>
@@ -271,7 +273,6 @@ public partial class LiveSearchViewModel : ViewModelBase
             $"Delete order {order.Name}?", true
         );
         
-        
         switch (result)
         {
             case IDialogControl.ButtonPressed.Left:
@@ -282,14 +283,6 @@ public partial class LiveSearchViewModel : ViewModelBase
             default:
                 return;
         }
-        
-        // return;
-        // var deleteResult = await DialogServiceExtensions.ShowMessageBoxAsync(_dialogService, this, $"Delete order {order.Name}?");
-
-        // if (!deleteResult.HasValue || !deleteResult.Value)
-        // {
-        //     return;
-        // }
 
         if (!Orders.Remove(order))
         {

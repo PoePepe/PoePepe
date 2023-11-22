@@ -14,10 +14,10 @@
         WindowStartupLocation="Manual"
         Background="Transparent"
         AllowsTransparency="True"
-
         Topmost="True"
         d:DesignHeight="300" d:DesignWidth="300"
         d:DataContext="{d:DesignInstance orderItemInfoViewModels:OrderItemInfoViewModel, IsDesignTimeCreatable=True}">
+
     <Grid>
         <Border Background="Black" Opacity="0.8"></Border>
         <Grid SnapsToDevicePixels="True">
@@ -27,14 +27,16 @@
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
+
             <!-- Title -->
             <Grid MouseLeftButtonDown="UIElement_OnMouseLeftButtonDown">
+
                 <!-- Background Images -->
                 <orderItemInfoViews:ItemInfoTitle x:Name="ItemTitleBackground" />
 
                 <!-- Influences -->
-                <Grid VerticalAlignment="Center" >
-                    <StackPanel Orientation="Horizontal" 
+                <Grid VerticalAlignment="Center">
+                    <StackPanel Orientation="Horizontal"
                                 HorizontalAlignment="Left" VerticalAlignment="Center">
                         <Image Source="/Resources/Images/Influences/searing-symbol.png"
                                StretchDirection="DownOnly" />
@@ -44,26 +46,29 @@
                                StretchDirection="DownOnly" />
                     </StackPanel>
                 </Grid>
+
                 <!-- Title Name -->
                 <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Margin="30,0,30,0">
-                    <TextBlock x:Name="ItemNameTextBlock" 
+                    <TextBlock x:Name="ItemNameTextBlock"
                                VerticalAlignment="Center"
                                HorizontalAlignment="Center"
                                Visibility="{Binding OrderItem.NameExists, Converter={StaticResource BooleanToVisibilityConverter}}"
                                Text="{Binding OrderItem.Name}">
                     </TextBlock>
-                    <TextBlock x:Name="ItemTypeLineTextBlock" 
+                    <TextBlock x:Name="ItemTypeLineTextBlock"
                                VerticalAlignment="Center"
                                HorizontalAlignment="Center" Text="{Binding OrderItem.TypeLine}">
                     </TextBlock>
                 </StackPanel>
             </Grid>
+
             <!--MainContent-->
             <Grid Grid.Row="1">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="30*" />
                     <ColumnDefinition Width="70*" />
                 </Grid.ColumnDefinitions>
+
                 <!-- ImageColumn -->
                 <StackPanel Orientation="Horizontal" Margin="5,0,5,0">
                     <Grid MouseEnter="ItemImagePanel_OnMouseEnter" MouseLeave="ItemImagePanel_OnMouseLeave"
@@ -75,12 +80,13 @@
                         <Canvas x:Name="ItemLinkImageCanvas" />
                     </Grid>
                 </StackPanel>
+
                 <!-- Properties -->
                 <StackPanel Grid.Column="1" Orientation="Vertical"
                             HorizontalAlignment="Center" Margin="15,0,15,3">
 
                     <!-- BasicProperties -->
-                    <StackPanel Name="Properties" HorizontalAlignment="Center">
+                    <StackPanel HorizontalAlignment="Center">
                         <ItemsControl ItemsSource="{Binding OrderItemInfo.Properties}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
@@ -110,15 +116,17 @@
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
-                        <Image 
-                               StretchDirection="DownOnly"
-                               Source="/Resources/Images/Separators/separator-rare.png"
-                               />
                     </StackPanel>
+
                     <!-- Requirements -->
-                    <StackPanel Name="Requirements" HorizontalAlignment="Center">
+                    <StackPanel HorizontalAlignment="Center"
+                                Visibility="{Binding RequirementExists, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <orderItemInfoViews:ItemInfoSeparator />
+
                         <!-- ItemLevel -->
-                        <StackPanel Visibility="{Binding OrderItemInfo.HasItemLevel, Converter={StaticResource BooleanToVisibilityConverter}}" Orientation="Horizontal" HorizontalAlignment="Center">
+                        <StackPanel
+                            Visibility="{Binding OrderItemInfo.HasItemLevel, Converter={StaticResource BooleanToVisibilityConverter}}"
+                            Orientation="Horizontal" HorizontalAlignment="Center">
                             <TextBlock Style="{StaticResource baseProperty_name}" Text="Item Level:" />
                             <TextBlock Style="{StaticResource baseProperty_value}">
                                 <TextBlock.Text>
@@ -126,11 +134,13 @@
                                 </TextBlock.Text>
                             </TextBlock>
                         </StackPanel>
+
                         <!-- ItemRequirements -->
                         <StackPanel
-                            Visibility="{Binding RequirementsExists, Converter={StaticResource BooleanToVisibilityConverter}}"
+                            Visibility="{Binding RequirementPropertiesExists, Converter={StaticResource BooleanToVisibilityConverter}}"
                             Orientation="Horizontal"
                             HorizontalAlignment="Center">
+
                             <TextBlock Style="{StaticResource baseProperty_name}">
                                 Requires
                             </TextBlock>
@@ -156,16 +166,14 @@
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
                         </StackPanel>
-                        <Image 
-                            StretchDirection="DownOnly"
-                            Source="/Resources/Images/Separators/separator-rare.png"
-                        />
                     </StackPanel>
+
                     <!-- EnchantMods -->
                     <StackPanel
                         Visibility="{Binding OrderItemInfo.ExistsEnchantMods, Converter={StaticResource BooleanToVisibilityConverter}}"
-                        Name="EnchantMods"
                         HorizontalAlignment="Center">
+                        <orderItemInfoViews:ItemInfoSeparator />
+
                         <ItemsControl ItemsSource="{Binding OrderItemInfo.EnchantMods}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
@@ -175,16 +183,14 @@
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
-                        <Image 
-                            StretchDirection="DownOnly"
-                            Source="/Resources/Images/Separators/separator-rare.png"
-                        />
                     </StackPanel>
+
                     <!-- ImplicitMods -->
                     <StackPanel
                         Visibility="{Binding OrderItemInfo.ExistsImplicitMods, Converter={StaticResource BooleanToVisibilityConverter}}"
-                        Name="ImplicitMods"
                         HorizontalAlignment="Center">
+                        <orderItemInfoViews:ItemInfoSeparator />
+
                         <ItemsControl ItemsSource="{Binding OrderItemInfo.ImplicitMods}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
@@ -194,15 +200,14 @@
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
-                        <Image 
-                            StretchDirection="DownOnly"
-                            Source="/Resources/Images/Separators/separator-rare.png"
-                        />
                     </StackPanel>
+
                     <!-- ExplicitMods -->
-                    <StackPanel Name="ExplicitMods"
-                                Visibility="{Binding OrderItemInfo.ExistsExplicitMods, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                HorizontalAlignment="Center">
+                    <StackPanel
+                        Visibility="{Binding OrderItemInfo.ExistsExplicitMods, Converter={StaticResource BooleanToVisibilityConverter}}"
+                        HorizontalAlignment="Center">
+                        <orderItemInfoViews:ItemInfoSeparator />
+
                         <ItemsControl ItemsSource="{Binding OrderItemInfo.FracturedMods}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
@@ -226,41 +231,41 @@
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
-                        <Image 
-                            StretchDirection="DownOnly"
-                            Source="/Resources/Images/Separators/separator-rare.png"
-                        />
                     </StackPanel>
+
                     <!-- SpecialModifiers -->
-                    <StackPanel>
+                    <StackPanel
+                        Visibility="{Binding HasMiscellaneous, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <orderItemInfoViews:ItemInfoSeparator />
+
                         <!-- Split -->
-                        <StackPanel Name="Split"
-                                    Visibility="{Binding OrderItemInfo.IsSplitted, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <StackPanel
+                            Visibility="{Binding OrderItemInfo.IsSplitted, Converter={StaticResource BooleanToVisibilityConverter}}">
                             <TextBlock Style="{StaticResource flag_Split}">Split</TextBlock>
                         </StackPanel>
+
                         <!-- Mirrored -->
-                        <StackPanel Name="Mirrored"
-                                    Visibility="{Binding OrderItemInfo.IsDuplicated, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <StackPanel
+                            Visibility="{Binding OrderItemInfo.IsDuplicated, Converter={StaticResource BooleanToVisibilityConverter}}">
                             <TextBlock Style="{StaticResource flag_Mirrored}">Mirrored</TextBlock>
                         </StackPanel>
+
                         <!-- Unidentified -->
-                        <StackPanel Name="Unidentified"
-                                    Visibility="{Binding OrderItemInfo.IsIdentified, Converter={StaticResource BooleanToInvertedVisibilityConverter}}">
+                        <StackPanel
+                            Visibility="{Binding OrderItemInfo.IsIdentified, Converter={StaticResource BooleanToInvertedVisibilityConverter}}">
                             <TextBlock Style="{StaticResource flag_Unidentified}">Unidentified</TextBlock>
                         </StackPanel>
+
                         <!-- Corrupted -->
-                        <StackPanel Name="Corrupted"
-                                    Visibility="{Binding OrderItemInfo.IsCorrupted, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <StackPanel
+                            Visibility="{Binding OrderItemInfo.IsCorrupted, Converter={StaticResource BooleanToVisibilityConverter}}">
                             <TextBlock Style="{StaticResource flag_Corrupted}">Corrupted</TextBlock>
                         </StackPanel>
-                        <Image 
-                            StretchDirection="DownOnly"
-                            Source="/Resources/Images/Separators/separator-rare.png"
-                        />
                     </StackPanel>
+
                     <!-- NotableProperties -->
-                    <StackPanel Name="NotableProperties"
-                                Visibility="{Binding OrderItemInfo.ExistsNotableProperties, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <StackPanel
+                        Visibility="{Binding OrderItemInfo.ExistsNotableProperties, Converter={StaticResource BooleanToVisibilityConverter}}">
                         <ItemsControl ItemsSource="{Binding OrderItemInfo.NotableProperties}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
@@ -283,12 +288,13 @@
                         </ItemsControl>
                     </StackPanel>
 
-
                     <!-- Logbook -->
                     <StackPanel
                         Visibility="{Binding OrderItemInfo.IsLogBook, Converter={StaticResource BooleanToVisibilityConverter}}"
                         Name="LogbookMods"
                         HorizontalAlignment="Center">
+                        <orderItemInfoViews:ItemInfoSeparator />
+
                         <ItemsControl ItemsSource="{Binding OrderItemInfo.LogbookMods}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
@@ -313,10 +319,7 @@
                                             </ItemsControl.ItemTemplate>
                                         </ItemsControl>
 
-                                        <Image 
-                                            StretchDirection="DownOnly"
-                                            Source="/Resources/Images/Separators/separator-rare.png"
-                                        />
+
                                     </StackPanel>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
@@ -324,9 +327,10 @@
                     </StackPanel>
                 </StackPanel>
             </Grid>
+
             <!-- AdditionalProperties -->
             <StackPanel Grid.Row="2">
-                <StackPanel Name="AdditionalProperties" HorizontalAlignment="Center" Margin="5,0,5,0">
+                <StackPanel HorizontalAlignment="Center" Margin="5,0,5,0">
                     <ItemsControl ItemsSource="{Binding OrderItemInfo.ExtendedProperties}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
@@ -350,8 +354,8 @@
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
                 </StackPanel>
-
             </StackPanel>
+
             <!-- Button Panel -->
             <StackPanel Grid.Row="3">
                 <Separator Background="#232425"
@@ -363,6 +367,7 @@
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="auto" />
                     </Grid.ColumnDefinitions>
+
                     <!-- Price -->
                     <StackPanel HorizontalAlignment="Left" Orientation="Horizontal"
                                 Margin="5,0,0,0">
@@ -372,6 +377,7 @@
                         <TextBlock VerticalAlignment="Center" Style="{StaticResource currencyPrice}">x </TextBlock>
                         <Image x:Name="PriceImage" VerticalAlignment="Center" Height="35"></Image>
                     </StackPanel>
+
                     <!-- Whisper Button -->
                     <StackPanel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
                         <Button Style="{StaticResource actionButtons}" Click="ButtonBase_OnClick"
@@ -379,13 +385,13 @@
                             Whisper
                         </Button>
                     </StackPanel>
+
                     <!-- Close Button -->
                     <StackPanel Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center">
                         <Button IsCancel="True" Style="{StaticResource actionButtons}">Close</Button>
                     </StackPanel>
                 </Grid>
             </StackPanel>
-
         </Grid>
     </Grid>
 </Window>

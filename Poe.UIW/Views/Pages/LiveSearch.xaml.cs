@@ -70,8 +70,6 @@ public partial class LiveSearch : INavigableView<LiveSearchViewModel>
     
     protected override void OnInitialized(EventArgs eventArgs)
     {
-        ItemImagePanel.Visibility = Visibility.Collapsed;
-
         base.OnInitialized(eventArgs);
     }
 }

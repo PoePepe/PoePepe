@@ -10,7 +10,9 @@ public partial class OrderItemInfoViewModel : OrderItemInfoViewModelBase
 {
     private readonly ResourceDownloadService _resourceDownloadService;
     [ObservableProperty] private ItemInfo _orderItemInfo;
-    [ObservableProperty] private bool _requirementsExists;
+    [ObservableProperty] private bool _requirementPropertiesExists;
+    [ObservableProperty] private bool _requirementExists;
+    [ObservableProperty] private bool _hasMiscellaneous;
 
     public OrderItemInfoViewModel()
     {
@@ -33,7 +35,11 @@ public partial class OrderItemInfoViewModel : OrderItemInfoViewModelBase
         {
             OrderItem = orderItem;
             OrderItemInfo = orderItem.ItemInfo;
-            RequirementsExists = OrderItemInfo?.Requirements?.Length > 0;
+
+            RequirementPropertiesExists = OrderItemInfo.Requirements?.Length > 0;
+            RequirementExists = RequirementPropertiesExists || OrderItemInfo.HasItemLevel;
+            HasMiscellaneous = OrderItemInfo.IsCorrupted || OrderItemInfo.IsSplitted ||
+                               OrderItemInfo.IsDuplicated || !OrderItemInfo.IsIdentified;
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Poe.UIW.Services.ItemInfoSeparator;
+namespace Poe.UIW.Services.Separator;
 
 public static class ItemSeparatorImageLink
 {

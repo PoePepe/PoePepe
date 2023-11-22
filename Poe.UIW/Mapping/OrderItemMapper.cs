@@ -126,11 +126,15 @@ public static class OrderItemMapper
                 })
                 .ToArray(),
 
+            Influences = item.Influences?.Keys.ToArray(),
             IsIdentified = item.Identified,
             IsCorrupted = item.Corrupted,
             IsDuplicated = item.Duplicated,
             IsSplitted = item.Split,
             IsFractured = item.Fractured,
+            IsSynthetic = item.Synthesised,
+            IsReplica = item.Replica,
+            IsVeiled = item.Veiled,
             IsSearing = item.Searing,
             IsTangled = item.Tangled,
             IsLogBook = item.LogbookMods?.Length > 0,

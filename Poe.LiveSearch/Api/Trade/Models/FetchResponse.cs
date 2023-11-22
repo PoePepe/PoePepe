@@ -98,6 +98,10 @@ public class Item
     [JsonPropertyName("searing")] public bool Searing { get; set; }
     [JsonPropertyName("tangled")] public bool Tangled { get; set; }
     [JsonPropertyName("delve")] public bool Delve { get; set; }
+    [JsonPropertyName("synthesised")] public bool Synthesised { get; set; }
+    [JsonPropertyName("replica")] public bool Replica { get; set; }
+    [JsonPropertyName("veiled")] public bool Veiled { get; set; }
+    [JsonPropertyName("influences")] public Dictionary<string, bool> Influences { get; set; }
 
     [JsonPropertyName("ilvl")] public int ItemLevel { get; set; }
 

@@ -1,7 +1,7 @@
 ﻿using System.Windows.Media.Imaging;
 using Poe.UIW.Models;
 
-namespace Poe.UIW.Services.ItemInfoSeparator;
+namespace Poe.UIW.Services.Separator;
 
 public class ResourceItemSeparatorService
 {

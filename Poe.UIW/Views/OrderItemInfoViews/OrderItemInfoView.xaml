@@ -29,38 +29,8 @@
             </Grid.RowDefinitions>
 
             <!-- Title -->
-            <Grid MouseLeftButtonDown="UIElement_OnMouseLeftButtonDown">
-
-                <!-- Background Images -->
-                <orderItemInfoViews:ItemInfoTitle x:Name="ItemTitleBackground" />
-
-                <!-- Influences -->
-                <Grid VerticalAlignment="Center">
-                    <StackPanel Orientation="Horizontal"
-                                HorizontalAlignment="Left" VerticalAlignment="Center">
-                        <Image Source="/Resources/Images/Influences/searing-symbol.png"
-                               StretchDirection="DownOnly" />
-                    </StackPanel>
-                    <StackPanel HorizontalAlignment="Right" VerticalAlignment="Center">
-                        <Image Source="/Resources/Images/Influences/searing-symbol.png"
-                               StretchDirection="DownOnly" />
-                    </StackPanel>
-                </Grid>
-
-                <!-- Title Name -->
-                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Margin="30,0,30,0">
-                    <TextBlock x:Name="ItemNameTextBlock"
-                               VerticalAlignment="Center"
-                               HorizontalAlignment="Center"
-                               Visibility="{Binding OrderItem.NameExists, Converter={StaticResource BooleanToVisibilityConverter}}"
-                               Text="{Binding OrderItem.Name}">
-                    </TextBlock>
-                    <TextBlock x:Name="ItemTypeLineTextBlock"
-                               VerticalAlignment="Center"
-                               HorizontalAlignment="Center" Text="{Binding OrderItem.TypeLine}">
-                    </TextBlock>
-                </StackPanel>
-            </Grid>
+            <orderItemInfoViews:ItemInfoTitle OrderItem="{Binding OrderItem}"
+                                              MouseLeftButtonDown="UIElement_OnMouseLeftButtonDown" />
 
             <!--MainContent-->
             <Grid Grid.Row="1">

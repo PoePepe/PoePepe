@@ -4,23 +4,52 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:Poe.UIW.Views.OrderItemInfoViews"
+             xmlns:models="clr-namespace:Poe.UIW.Models"
              mc:Ignorable="d"
-             d:DesignHeight="50" d:DesignWidth="300">
-    <Grid SnapsToDevicePixels="True">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="Auto" />
-        </Grid.ColumnDefinitions>
-        
-        <Image Grid.Column="0" x:Name="LeftImage"/>
-                
-        <Grid Grid.Column="1">
-            <Grid.Background>
-                <ImageBrush x:Name="MiddleImageBrush"/>
-            </Grid.Background>
+             d:DesignHeight="50" d:DesignWidth="300"
+             d:DataContext="{d:DesignInstance models:OrderItemDto, IsDesignTimeCreatable=True}">
+
+    <Grid>
+        <!-- Background Images -->
+        <Grid SnapsToDevicePixels="True">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <Image Grid.Column="0" x:Name="LeftBackgroundImage" />
+
+            <Grid Grid.Column="1">
+                <Grid.Background>
+                    <ImageBrush x:Name="MiddleBackgroundImageBrush" />
+                </Grid.Background>
+            </Grid>
+
+            <Image Grid.Column="2" x:Name="RightBackgroundImage" />
         </Grid>
-                
-        <Image Grid.Column="2" x:Name="RightImage"/>
+
+        <!-- Influences -->
+        <Grid x:Name="InfluencesGrid" VerticalAlignment="Center">
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Left" VerticalAlignment="Center">
+                <Image x:Name="LeftInfluenceImage" StretchDirection="DownOnly" />
+            </StackPanel>
+            <StackPanel HorizontalAlignment="Right" VerticalAlignment="Center">
+                <Image x:Name="RightInfluenceImage" StretchDirection="DownOnly" />
+            </StackPanel>
+        </Grid>
+
+        <!-- Title Name -->
+        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Margin="30,0,30,0">
+            <TextBlock x:Name="ItemNameTextBlock"
+                       VerticalAlignment="Center"
+                       HorizontalAlignment="Center">
+            </TextBlock>
+            <TextBlock x:Name="ItemTypeLineTextBlock"
+                       VerticalAlignment="Center"
+                       HorizontalAlignment="Center">
+            </TextBlock>
+        </StackPanel>
     </Grid>
 </UserControl>

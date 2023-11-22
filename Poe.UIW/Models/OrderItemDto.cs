@@ -47,6 +47,9 @@ public class ItemInfo
     public bool IsDuplicated { get; set; }
     public bool IsSplitted { get; set; }
     public bool IsFractured { get; set; }
+    public bool IsReplica { get; set; }
+    public bool IsSynthetic { get; set; }
+    public bool IsVeiled { get; set; }
     public bool IsSearing { get; set; }
     public bool IsTangled { get; set; }
     public bool IsLogBook { get; set; }

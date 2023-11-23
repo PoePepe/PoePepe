@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Options;
 using Poe.LiveSearch.Api.Trade.Models;
+using Poe.LiveSearch.Services;
 using Refit;
 using Skreet2k.Common.Models;
 
@@ -8,12 +9,12 @@ namespace Poe.LiveSearch.Api.Trade;
 public class PoeTradeApiService
 {
     private readonly IPoeTradeApi _poeTradeApi;
-    private readonly PoeApiOptions _poeApiOptions;
+    private readonly ServiceState _serviceState;
 
-    public PoeTradeApiService(IPoeTradeApi poeTradeApi, IOptions<PoeApiOptions> poeApiOptions)
+    public PoeTradeApiService(IPoeTradeApi poeTradeApi, ServiceState serviceState)
     {
         _poeTradeApi = poeTradeApi;
-        _poeApiOptions = poeApiOptions.Value;
+        _serviceState = serviceState;
     }
     
     /// <summary>
@@ -21,9 +22,9 @@ public class PoeTradeApiService
     /// </summary>
     public async Task<Result<SearchResponse>> SearchItemsAsync(string queryHash)
     {
-        var response = await _poeTradeApi.SearchItemsAsync(_poeApiOptions.LeagueName, queryHash);
+        var response = await _poeTradeApi.SearchItemsAsync(_serviceState.LeagueName, queryHash);
 
-        return GetResult(response);
+        return response.GetResult();
     }
 
     /// <summary>
@@ -31,9 +32,9 @@ public class PoeTradeApiService
     /// </summary>
     public async Task<Result<SearchResponse>> SearchItemsAsync(SearchRequest request)
     {
-        var response = await _poeTradeApi.SearchItemsAsync(_poeApiOptions.LeagueName, request);
+        var response = await _poeTradeApi.SearchItemsAsync(_serviceState.LeagueName, request);
 
-        return GetResult(response);
+        return response.GetResult();
     }
 
     /// <summary>
@@ -43,7 +44,7 @@ public class PoeTradeApiService
     {
         var response = await _poeTradeApi.FetchItemsAsync(itemIds, queryHash);
 
-        return GetResult(response);
+        return response.GetResult();
     }
 
     /// <summary>
@@ -53,27 +54,6 @@ public class PoeTradeApiService
     {
         var response = await _poeTradeApi.SendWhisperOfferAsync(request, token);
 
-        return GetResult(response);
-    }
-
-    private Result<T> GetResult<T>(ApiResponse<T> response)
-    {
-        if (response.IsSuccessStatusCode || response.Content is not null)
-        {
-            return new Result<T>(response.Content);
-        }
-
-        if (response.Error?.Content is not null)
-        {
-            return new Result<T>
-            {
-                ErrorMessage = response.Error.Content
-            };
-        }
-
-        return new Result<T>
-        {
-            ErrorMessage = response.ReasonPhrase
-        };
+        return response.GetResult();
     }
 }

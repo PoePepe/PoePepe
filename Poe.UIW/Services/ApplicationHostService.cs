@@ -3,6 +3,8 @@ using System.Linq;
 using System.Threading;
 using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
+using Poe.LiveSearch.Services;
+using Poe.UIW.Properties;
 using Poe.UIW.Views;
 using Wpf.Ui.Mvvm.Contracts;
 
@@ -50,6 +52,16 @@ public class ApplicationHostService
         
         _alwaysOnTopView = _serviceProvider.GetRequiredService<AlwaysOnTopView>();
         _alwaysOnTopView.Show();
+
+        var serviceState = App.Current.Services.GetRequiredService<ServiceState>();
+        serviceState.Session = UserSettings.Default.Session;
+        serviceState.LeagueName = UserSettings.Default.LeagueName;
+
+        var leagueService = App.Current.Services.GetRequiredService<LeagueService>();
+        ThreadPool.QueueUserWorkItem(async _ =>
+        {
+            await leagueService.LoadActualLeagueNamesAsync(cancellationToken);
+        });
     }
     
     /// <summary>

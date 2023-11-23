@@ -89,7 +89,7 @@ public class LiveSearcherWebSocketClient
 
     private void SetHeaders()
     {
-        _clientWebSocket.Options.SetRequestHeader("Cookie", _poeApiOptions.Session);
+        _clientWebSocket.Options.SetRequestHeader("Cookie", _serviceState.Session);
         _clientWebSocket.Options.SetRequestHeader("Origin", "https://www.pathofexile.com");
         _clientWebSocket.Options.SetRequestHeader("User-Agent",
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36");
@@ -97,7 +97,7 @@ public class LiveSearcherWebSocketClient
 
     private async Task ConnectAsync(CancellationToken token = default)
     {
-        var uri = new Uri($"{_poeApiOptions.BaseWssAddress}/{_poeApiOptions.LeagueName}/{_order.QueryHash}");
+        var uri = new Uri($"{_poeApiOptions.BaseWssAddress}/{_order.LeagueName}/{_order.QueryHash}");
         try
         {
             await _clientWebSocket.ConnectAsync(uri, token);

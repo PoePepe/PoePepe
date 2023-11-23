@@ -15,6 +15,8 @@ public partial class OrderViewModel : ViewModelValidatableBase
     
     [ObservableProperty] private long _id;
 
+    [ObservableProperty] private string _leagueName;
+
     [ObservableProperty] private string _queryHash;
 
     [ObservableProperty] 
@@ -35,11 +37,7 @@ public partial class OrderViewModel : ViewModelValidatableBase
 
     [ObservableProperty] private OrderMod _mod;
 
-    [ObservableProperty] private int _orderPrice;
-
     [ObservableProperty] private bool _isActive;
-    // [ObservableProperty] private bool _isEnabled;
-    // [ObservableProperty] private bool _isDisabled;
 
     [ObservableProperty] private bool _hasValidationErrors;
     [ObservableProperty] private string _validationError;

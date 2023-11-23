@@ -5,9 +5,38 @@
            xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
            xmlns:local="clr-namespace:Poe.UIW.Views.Pages"
            xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+           xmlns:properties="clr-namespace:Poe.UIW.Properties"
            mc:Ignorable="d"
            Title="Settings" Height="450" Width="800">
-    <Grid>
-        
-    </Grid>
-</ui:UiPage >
+    <StackPanel>
+        <StackPanel
+            Margin="0,0,4,0">
+            <TextBlock Foreground="{DynamicResource TextFillColorSecondaryBrush}" Text="Poe Session Id" />
+            <ui:TextBox x:Name="SessionIdTextBox" Margin="0,8,0,0"
+                        PlaceholderText="POESESSID=*******************"
+                        Text="{Binding Source={x:Static properties:UserSettings.Default}, Path=Session}" />
+        </StackPanel>
+
+        <StackPanel
+            Margin="4,10,0,0">
+            <TextBlock Foreground="{DynamicResource TextFillColorSecondaryBrush}" Text="League Name" />
+            <ComboBox
+                Margin="0,8,0,0"
+                x:Name="LeagueNameComboBox"
+                SelectedValue="{Binding Source={x:Static properties:UserSettings.Default}, Path=LeagueName}" />
+        </StackPanel>
+
+        <StackPanel
+            Margin="4,10,0,0">
+            <CheckBox
+                Margin="0,0,0,8"
+                Content="Hide notifications if PoE not foreground?"
+                IsChecked="{Binding Source={x:Static properties:UserSettings.Default}, Path=HideIfPoeUnfocused}" />
+        </StackPanel>
+
+        <StackPanel
+            Margin="4,0,0,0">
+            <ui:Button Appearance="Primary" Click="ButtonBase_OnClick" Content="Save" />
+        </StackPanel>
+    </StackPanel>
+</ui:UiPage>

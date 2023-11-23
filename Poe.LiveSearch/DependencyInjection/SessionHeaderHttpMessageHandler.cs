@@ -1,17 +1,18 @@
 ﻿using Microsoft.Extensions.Options;
 using Poe.LiveSearch.Api;
 using Poe.LiveSearch.Api.Trade;
+using Poe.LiveSearch.Services;
 
 namespace Poe.LiveSearch.DependencyInjection;
 
 public class SessionHeaderHttpMessageHandler : DelegatingHandler
 {
-    private readonly PoeApiOptions _poeApiOptions;
+    private readonly ServiceState _serviceState;
     private const string CookieHeaderName = "Cookie";
 
-    public SessionHeaderHttpMessageHandler(IOptions<PoeApiOptions> poeApiOptions)
+    public SessionHeaderHttpMessageHandler(ServiceState serviceState)
     {
-        _poeApiOptions = poeApiOptions.Value;
+        _serviceState = serviceState;
     }
 
     /// <inheritdoc />
@@ -19,9 +20,10 @@ public class SessionHeaderHttpMessageHandler : DelegatingHandler
         HttpRequestMessage request,
         CancellationToken cancellationToken)
     {
-        if (request.RequestUri.PathAndQuery.StartsWith(PoeApiPath.ApiPathWhisper) || request.RequestUri.PathAndQuery.StartsWith(PoeApiPath.ApiPathFetch))
+        var requestPath = request.RequestUri.PathAndQuery;
+        if (requestPath.StartsWith(PoeApiPath.ApiPathWhisper) || requestPath.StartsWith(PoeApiPath.ApiPathFetch) || requestPath.StartsWith(PoeApiPath.ApiPathLeague))
         {
-            request.Headers.Add(CookieHeaderName, _poeApiOptions.Session);
+            request.Headers.Add(CookieHeaderName, _serviceState.Session);
         }
 
         var httpResponseMessage = await base.SendAsync(request, cancellationToken);

@@ -27,14 +27,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Page Update="Views\MainView.xaml">
-        <Generator>MSBuild:Compile</Generator>
-        <XamlRuntime>Wpf</XamlRuntime>
-        <SubType>Designer</SubType>
-      </Page>
-    </ItemGroup>
-
-    <ItemGroup>
         <Resource Include="Resources\Images\divinationCard.png" />
         <Resource Include="Resources\Images\socket.png" />
         <Resource Include="Resources\Images\veiled_mod.png" />
@@ -120,10 +112,22 @@
       <None Update="appsettings.json">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>
+      <None Update="Properties\UserSettings.settings">
+        <Generator>SettingsSingleFileGenerator</Generator>
+        <LastGenOutput>UserSettings.Designer.cs</LastGenOutput>
+      </None>
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\Poe.LiveSearch\Poe.LiveSearch.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="Properties\UserSettings.Designer.cs">
+        <DesignTimeSharedInput>True</DesignTimeSharedInput>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>UserSettings.settings</DependentUpon>
+      </Compile>
     </ItemGroup>
 
 </Project>

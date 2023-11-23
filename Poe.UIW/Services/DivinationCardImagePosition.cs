@@ -1,9 +1,0 @@
-﻿using System;
-
-namespace Poe.UIW.Services;
-
-public class DivinationCardImagePosition
-{
-    public static readonly Uri DivinationCardUri = new("pack://application:,,,/Resources/Images/divinationCard.png");
-
-}

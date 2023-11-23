@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Media.Imaging;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using HanumanInstitute.MvvmDialogs;
@@ -15,6 +13,7 @@ using Poe.LiveSearch.Models;
 using Poe.LiveSearch.Services;
 using Poe.LiveSearch.WebSocket;
 using Poe.UIW.Mapping;
+using Poe.UIW.Properties;
 using Poe.UIW.Services;
 using Serilog;
 using Wpf.Ui.Controls.Interfaces;
@@ -24,7 +23,6 @@ namespace Poe.UIW.ViewModels;
 public partial class LiveSearchViewModel : ViewModelBase
 {
     private readonly ResourceDownloadService _resourceDownloadService;
-
     
     private readonly PoeTradeApiService _poeTradeApiService;
     private readonly ServiceState _serviceState;
@@ -53,7 +51,7 @@ public partial class LiveSearchViewModel : ViewModelBase
         _poeTradeApiService = poeTradeApiService;
         _resourceDownloadService = resourceDownloadService;
         _orderErrorChannel = serviceState.OrderErrorChannel.Reader;
-        var orders = _service.GetOrders().ToArray();
+        var orders = _service.GetOrdersByLeague(UserSettings.Default.LeagueName).ToArray();
         // _service.StartLiveSearchAsync(orders);
         Orders = new ObservableCollection<OrderViewModel>(orders.ToOrderModel());
         Start(CancellationToken.None);
@@ -155,6 +153,7 @@ public partial class LiveSearchViewModel : ViewModelBase
         order.Id = id;
         // order.HasValidationErrors = true;
         // order.ValidationError = "Invalid link";
+        order.LeagueName = UserSettings.Default.LeagueName;
         order.IsActive = true;
         order.Activity = OrderActivity.Enabled;
 

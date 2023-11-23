@@ -45,6 +45,11 @@ public class Service
     {
         return _orderRepository.GetAll();
     }
+
+    public IEnumerable<Order> GetOrdersByLeague(string leagueName)
+    {
+        return _orderRepository.GetAll().Where(x => x.LeagueName == leagueName);
+    }
     
     public void StartLiveSearchAsync(IEnumerable<Order> orders)
     {

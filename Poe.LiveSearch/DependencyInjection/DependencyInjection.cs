@@ -4,6 +4,7 @@ using System.Text.Json.Serialization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Poe.LiveSearch.Api;
+using Poe.LiveSearch.Api.League;
 using Poe.LiveSearch.Api.Trade;
 using Poe.LiveSearch.Persistence;
 using Poe.LiveSearch.Services;
@@ -50,8 +51,14 @@ public static class DependencyInjection
         services.AddTransient<LoggingHttpMessageHandler>();
         services.AddTransient<SessionHeaderHttpMessageHandler>();
         services.AddScoped<PoeTradeApiService>();
+        services.AddScoped<PoeLeagueApiService>();
 
-        services.AddRefitClients<IRefitApi>(client => client.BaseAddress = new Uri(poeApiOptions.BaseApiAddress));
+        services.AddRefitClients<IRefitApi>(client => client.BaseAddress = new Uri(poeApiOptions.BaseInternalApiAddress));
+
+        services.AddRefitClient<IPoeLeagueApi>()
+            .ConfigureHttpClient(client => client.BaseAddress = new Uri(poeApiOptions.BaseExternalApiAddress))
+            .AddHttpMessageHandler<LoggingHttpMessageHandler>()
+            .AddHttpMessageHandler<SessionHeaderHttpMessageHandler>();
 
         return services;
     }
@@ -68,7 +75,7 @@ public static class DependencyInjection
     }
     
     private static IServiceCollection AddRefitClients<T>(this IServiceCollection services,
-        Action<HttpClient> configureClient, bool useHeaderPropagation = true, Assembly assembly = null)
+        Action<HttpClient> configureClient, Assembly assembly = null)
     {
         assembly ??= Assembly.GetExecutingAssembly();
 

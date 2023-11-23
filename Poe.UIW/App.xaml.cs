@@ -82,6 +82,7 @@ namespace Poe.UIW
                 new DialogFactory()), sp.GetService));
             services.AddScoped<WhisperService>();
 
+            services.AddSingleton<LeagueService>();
             services.AddSingleton<ApplicationHostService>();
             services.AddSingleton<IPageService, PageService>();
             services.AddSingleton<IThemeService, ThemeService>();

@@ -57,5 +57,29 @@ namespace Poe.UIW.Properties {
                 this["HideIfPoeUnfocused"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int NotificationPositionTop {
+            get {
+                return ((int)(this["NotificationPositionTop"]));
+            }
+            set {
+                this["NotificationPositionTop"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int NotificationPositionLeft {
+            get {
+                return ((int)(this["NotificationPositionLeft"]));
+            }
+            set {
+                this["NotificationPositionLeft"] = value;
+            }
+        }
     }
 }

@@ -21,7 +21,7 @@ public class SessionHeaderHttpMessageHandler : DelegatingHandler
         CancellationToken cancellationToken)
     {
         var requestPath = request.RequestUri.PathAndQuery;
-        if (requestPath.StartsWith(PoeApiPath.ApiPathWhisper) || requestPath.StartsWith(PoeApiPath.ApiPathFetch) || requestPath.StartsWith(PoeApiPath.ApiPathLeague))
+        if (requestPath.StartsWith(PoeApiPath.ApiPathWhisper) || requestPath.StartsWith(PoeApiPath.ApiPathFetch) || requestPath.StartsWith(PoeApiPath.ApiPathSearch) || requestPath.StartsWith(PoeApiPath.ApiPathLeague))
         {
             request.Headers.Add(CookieHeaderName, _serviceState.Session);
         }

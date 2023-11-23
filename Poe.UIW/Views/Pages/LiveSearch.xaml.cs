@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using Poe.LiveSearch.Models;
 using Poe.UIW.ViewModels;
 using Wpf.Ui.Common.Interfaces;
@@ -71,5 +72,14 @@ public partial class LiveSearch : INavigableView<LiveSearchViewModel>
     protected override void OnInitialized(EventArgs eventArgs)
     {
         base.OnInitialized(eventArgs);
+    }
+
+    private void MoreButton_OnClick(object sender, RoutedEventArgs e)
+    {
+        var button = sender as Wpf.Ui.Controls.Button;
+        var contextMenu = button!.ContextMenu;
+        contextMenu!.PlacementTarget = button;
+        contextMenu.Placement = PlacementMode.Bottom;
+        contextMenu.IsOpen = true;
     }
 }

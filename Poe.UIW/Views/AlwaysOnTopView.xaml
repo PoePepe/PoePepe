@@ -17,22 +17,16 @@
         mc:Ignorable="d"
         Title="AlwaysOnTopView"
         DataContext="{Binding Source={StaticResource Locator}, Path=AlwaysOnTopView}">
-    
-    <StackPanel Orientation="Horizontal">
-        <StackPanel x:Name="ResizablePanel">
-            <StackPanel
-                MinWidth="400"
-                MaxWidth="400"
-                x:Name="stk_MainPnl">
 
-                <StackPanel.Resources>
-                    <Style TargetType="{x:Type local:OrderItemNotificationView}">
-                        <Setter Property="Margin" Value="0,0,0,2" />
-                    </Style>
-                </StackPanel.Resources>
-            </StackPanel>
-        </StackPanel>
+    <StackPanel
+        MinWidth="150"
+        MaxWidth="150"
+        x:Name="NotificationStackPanel">
 
-
+        <StackPanel.Resources>
+            <Style TargetType="{x:Type local:OrderItemNotificationView}">
+                <Setter Property="Margin" Value="0,0,0,2" />
+            </Style>
+        </StackPanel.Resources>
     </StackPanel>
 </Window>

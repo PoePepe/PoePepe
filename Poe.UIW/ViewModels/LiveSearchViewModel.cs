@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
-using System.Windows;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using HanumanInstitute.MvvmDialogs;
@@ -16,7 +15,11 @@ using Poe.UIW.Mapping;
 using Poe.UIW.Properties;
 using Poe.UIW.Services;
 using Serilog;
+using Wpf.Ui.Common;
 using Wpf.Ui.Controls.Interfaces;
+using Wpf.Ui.Mvvm.Contracts;
+using Clipboard = System.Windows.Clipboard;
+using IDialogService = HanumanInstitute.MvvmDialogs.IDialogService;
 
 namespace Poe.UIW.ViewModels;
 
@@ -24,6 +27,7 @@ public partial class LiveSearchViewModel : ViewModelBase
 {
     private readonly ResourceDownloadService _resourceDownloadService;
     
+    private readonly ISnackbarService _snackbarService;
     private readonly PoeTradeApiService _poeTradeApiService;
     private readonly ServiceState _serviceState;
     private readonly Service _service;
@@ -42,7 +46,7 @@ public partial class LiveSearchViewModel : ViewModelBase
 
     public LiveSearchViewModel(IDialogService customDialogService, Service service, ServiceState serviceState,
         PoeTradeApiService poeTradeApiService, Wpf.Ui.Mvvm.Contracts.IDialogService dialogService,
-        ResourceDownloadService resourceDownloadService)
+        ResourceDownloadService resourceDownloadService, ISnackbarService snackbarService)
     {
         _dialogService = customDialogService;
         DialogControl = dialogService.GetDialogControl();
@@ -50,6 +54,7 @@ public partial class LiveSearchViewModel : ViewModelBase
         _service = service;
         _poeTradeApiService = poeTradeApiService;
         _resourceDownloadService = resourceDownloadService;
+        _snackbarService = snackbarService;
         _orderErrorChannel = serviceState.OrderErrorChannel.Reader;
         var orders = _service.GetOrdersByLeague(UserSettings.Default.LeagueName).ToArray();
         // _service.StartLiveSearchAsync(orders);
@@ -89,7 +94,7 @@ public partial class LiveSearchViewModel : ViewModelBase
 
     private async Task Da()
     {
-        var searchResponseResult = await _poeTradeApiService.SearchItemsAsync("eXEago9sL");
+        var searchResponseResult = await _poeTradeApiService.SearchItemsAsync("Ancestor","Pd8349giL");
         if (!searchResponseResult.IsSuccess || !searchResponseResult.Content.Result.Any())
         {
             return;
@@ -161,9 +166,31 @@ public partial class LiveSearchViewModel : ViewModelBase
 
         _service.CreateOrder(order.ToOrder());
 
-        await _service.StartLiveSearchAsync(order.Id);
+        // await _service.StartLiveSearchAsync(order.Id);
+
+        OpenSnackbarOrderAdded(order.Name);
         
         Log.Information("Order {OrderName} has been created", order.Name);
+    }
+    
+    private void OpenSnackbarOrderAdded(string orderName)
+    {
+        _snackbarService.Show(
+            $"Order {orderName} added.",
+            null,
+            SymbolRegular.CheckmarkCircle24,
+            ControlAppearance.Success
+        );
+    }
+    
+    private void OpenSnackbarOrderEdited(string orderName)
+    {
+        _snackbarService.Show(
+            $"Order {orderName} edited.",
+            null,
+            SymbolRegular.CheckmarkCircle24,
+            ControlAppearance.Success
+        );
     }
     
     [RelayCommand]
@@ -252,6 +279,8 @@ public partial class LiveSearchViewModel : ViewModelBase
         _service.UpdateOrder(order.ToOrder());
 
         order = updatedOrder;
+        
+        OpenSnackbarOrderEdited(order.Name);
 
         Log.Information("Order {OrderName} has been updated", order.Name);
     }

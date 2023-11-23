@@ -55,7 +55,6 @@ public class ApplicationHostService
 
         var serviceState = App.Current.Services.GetRequiredService<ServiceState>();
         serviceState.Session = UserSettings.Default.Session;
-        serviceState.LeagueName = UserSettings.Default.LeagueName;
 
         var leagueService = App.Current.Services.GetRequiredService<LeagueService>();
         ThreadPool.QueueUserWorkItem(async _ =>

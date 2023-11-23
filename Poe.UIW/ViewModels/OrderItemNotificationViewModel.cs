@@ -8,10 +8,13 @@ namespace Poe.UIW.ViewModels;
 
 public partial class OrderItemNotificationViewModel  : ViewModelBase
 {
+    [ObservableProperty] private int _timeOut;
+
     [ObservableProperty] private OrderItemDto _orderItem;
 
     public OrderItemNotificationViewModel()
     {
+        TimeOut = 100;
     }
     
     public void SetOrderItem(OrderItemDto orderItem)

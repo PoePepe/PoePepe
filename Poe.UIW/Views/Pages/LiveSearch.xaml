@@ -153,6 +153,7 @@
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
                                     <ui:Button x:Name="MoreButton" BorderThickness="0"
+                                               Click="MoreButton_OnClick"
                                                Background="Transparent"
                                                HorizontalAlignment="Left" Padding="10" Icon="MoreHorizontal28">
                                         <ui:Button.Resources>
@@ -163,7 +164,7 @@
                                                 <MenuItem Header="Copy link"
                                                           Command="{Binding Source={StaticResource Proxy}, Path=Data.CopyOrderLinkCommand}"
                                                           CommandParameter="{Binding Link}" />
-                                                <MenuItem Header="-" />
+                                                <Separator/>
                                                 <MenuItem Header="Edit"
                                                           Command="{Binding Source={StaticResource Proxy}, Path=Data.EditOrderCommand}"
                                                           CommandParameter="{Binding Id}" />

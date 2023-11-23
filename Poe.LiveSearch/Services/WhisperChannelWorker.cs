@@ -52,7 +52,7 @@ public class WhisperChannelWorker
             var whisperResult = await _poeTradeApiService.SendWhisperOfferAsync(request.WhisperRequest,
                 request.CancellationTokenSource?.Token ?? default);
 
-            if (whisperResult.IsSuccess)
+            if (whisperResult.IsSuccess && whisperResult.Content.Success)
             {
                 request.CancellationTokenSource?.Dispose();
                 return;

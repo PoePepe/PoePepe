@@ -21,6 +21,7 @@ namespace Poe.UIW.Views;
 public partial class ContainerView : INavigationWindow
 {
     private readonly IThemeService _themeService;
+    private readonly ISnackbarService _snackbarService;
 
 
     public ContainerViewModel ViewModel { get; }
@@ -33,16 +34,19 @@ public partial class ContainerView : INavigationWindow
         INavigationService navigationService,
         IPageService pageService,
         IThemeService themeService,
-        IDialogService dialogService)
+        IDialogService dialogService,
+        ISnackbarService snackbarService)
     {
         ViewModel = viewModel;
         DataContext = this;
 
         _themeService = themeService;
+        _snackbarService = snackbarService;
 
         InitializeComponent();
 
         SetPageService(pageService);
+        snackbarService.SetSnackbarControl(RootSnackbar);
 
         navigationService.SetNavigationControl(RootNavigation);
         dialogService.SetDialogControl(RootDialogYesNo);

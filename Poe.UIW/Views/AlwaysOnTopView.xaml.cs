@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Threading;
@@ -6,17 +7,19 @@ using Microsoft.Extensions.DependencyInjection;
 using Poe.LiveSearch.Api.Trade.Models;
 using Poe.UIW.Helpers;
 using Poe.UIW.Mapping;
+using Poe.UIW.Properties;
 using Poe.UIW.ViewModels;
 using Serilog;
 
 namespace Poe.UIW.Views;
 
-public partial class AlwaysOnTopView : Window
+public partial class AlwaysOnTopView
 {
-    const int GWL_EXSTYLE = -20;
-    const int WS_EX_NOACTIVATE = 134217728;
-    const int LSFW_LOCK = 1;
+    private const int GWL_EXSTYLE = -20;
+    private const int WS_EX_NOACTIVATE = 134217728;
+    private const int LSFW_LOCK = 1;
 
+    private readonly DispatcherTimer _dispatcherTimer;
     public AlwaysOnTopView()
     {
         InitializeComponent();
@@ -28,14 +31,43 @@ public partial class AlwaysOnTopView : Window
             await Dispatcher.InvokeAsync(() => Notify(result));
         };
         
-        Loaded += (_, _) => SetNoActiveWindow();
+        Loaded += OnLoaded;
         
-        var dispatcherTimer = new DispatcherTimer();
-        dispatcherTimer.Tick += CheckIfPoeIsForegroundWindow;
-        dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 200);
-        dispatcherTimer.Start();
+        UserSettings.Default.SettingsSaving += DefaultOnSettingsSaving;
+
+        _dispatcherTimer = new DispatcherTimer();
+        _dispatcherTimer.Tick += CheckIfPoeIsForegroundWindow;
+        _dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 200);
+        if (UserSettings.Default.HideIfPoeUnfocused)
+        {
+            _dispatcherTimer.Start();
+        }
     }
-    
+
+    private void OnLoaded(object sender, RoutedEventArgs e)
+    {
+        SetNoActiveWindow();
+
+        Top = UserSettings.Default.NotificationPositionTop;
+        Left = UserSettings.Default.NotificationPositionLeft;
+    }
+
+    private void DefaultOnSettingsSaving(object sender, CancelEventArgs e)
+    {
+        if (UserSettings.Default.HideIfPoeUnfocused)
+        {
+            if (!_dispatcherTimer.IsEnabled)
+            {
+                _dispatcherTimer.Start();
+            }
+
+            return;
+        }
+
+        _dispatcherTimer.Stop();
+        Show();
+    }
+
     private void SetNoActiveWindow()
     {
         var helper = new WindowInteropHelper(this);
@@ -45,10 +77,10 @@ public partial class AlwaysOnTopView : Window
 
     private void CheckIfPoeIsForegroundWindow(object sender, EventArgs eventArgs)
     {
-        // if (WindowsInternalFeatureService.GetForegroundWindow() != WindowsInternalFeatureService.FindPoeGameWindow())
-            // Hide();
-        // else
-            // Show();
+        if (WindowsInternalFeatureService.GetForegroundWindow() != WindowsInternalFeatureService.FindPoeGameWindow())
+            Hide();
+        else
+            Show();
     }
     
     private void Notify(FetchResponseResult result)
@@ -63,10 +95,9 @@ public partial class AlwaysOnTopView : Window
             {
                 DataContext = vm
             };
-            stk_MainPnl.Children.Add(uc);
-            stk_MainPnl.Height += 53;
-            ResizablePanel.Height += 53;
-            Show();
+            uc.HorizontalAlignment = HorizontalAlignment.Left;
+            NotificationStackPanel.Children.Add(uc);
+            NotificationStackPanel.Height += 25;
         }
         catch (Exception e)
         {

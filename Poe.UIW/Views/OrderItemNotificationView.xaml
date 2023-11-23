@@ -15,7 +15,7 @@
              d:DesignHeight="300" d:DesignWidth="300"
              d:DataContext="{d:DesignInstance viewModels:OrderItemNotificationViewModel, IsDesignTimeCreatable=True}">
 
-    <Grid x:Name="NotifyPanel" MouseEnter="NotifyPanel_OnMouseEnter" MouseLeave="NotifyPanel_OnMouseLeave">
+    <Grid x:Name="NotifyGrid" MouseEnter="NotifyPanel_OnMouseEnter" MouseLeave="NotifyPanel_OnMouseLeave">
         <Border Background="Black"
                 Opacity="0.8">
         </Border>
@@ -24,7 +24,6 @@
                        Text="{Binding OrderItem.OrderName}"
                        Visibility="Visible"
                        VerticalAlignment="Center"
-                       HorizontalAlignment="Center"
                        Style="{StaticResource smallNotifyText}" />
 
             <Grid x:Name="ActionButtonsPanel" Visibility="Collapsed">
@@ -52,5 +51,7 @@
                 </Button>
             </Grid>
         </Grid>
+
+        <ProgressBar Foreground="#ff8b08" Height="5" Margin="0,20,0,0" Value="{Binding TimeOut}" />
     </Grid>
 </UserControl>

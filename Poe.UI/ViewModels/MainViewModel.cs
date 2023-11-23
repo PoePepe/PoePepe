@@ -83,7 +83,7 @@ public partial class MainViewModel : ViewModelBase
 
     private async Task Da()
     {
-        var searchResponseResult = await _poeTradeApiService.SearchItemsAsync("e60ZG4hL");
+        var searchResponseResult = await _poeTradeApiService.SearchItemsAsync("Ancestor", "e60ZG4hL");
         if (!searchResponseResult.IsSuccess || !searchResponseResult.Content.Result.Any())
         {
             return;

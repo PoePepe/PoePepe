@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
+using System.Web;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using HanumanInstitute.MvvmDialogs;
@@ -20,7 +22,6 @@ public partial class ManageOrderViewModel : ViewModelBase, IModalDialogViewModel
     
     [ObservableProperty]
     private string _headerText;
-
 
     public ManageOrderViewModel()
     {
@@ -44,14 +45,14 @@ public partial class ManageOrderViewModel : ViewModelBase, IModalDialogViewModel
     public static IEnumerable<OrderMod> AvailableMods { get; } = new[] { OrderMod.Whisper, OrderMod.Notify };
 
     [RelayCommand]
-    public void Submit()
+    private void Submit()
     {
         ManageOrderModel.ReValidateAllProperties();
-        if (ManageOrderModel.HasErrors)
+        if (ManageOrderModel.HasErrors || ManageOrderModel.HasValidationErrors)
         {
             return;
         }
-        
+
         if (IsEditing)
         {
             EditOrder();
@@ -66,15 +67,26 @@ public partial class ManageOrderViewModel : ViewModelBase, IModalDialogViewModel
     {
         EditOrderModel.Name = ManageOrderModel.Name;
         EditOrderModel.Mod = ManageOrderModel.Mod;
-        
+
         DialogResult = true;
         RequestClose?.Invoke(this, EventArgs.Empty);
     }
 
     private void AddNewOrder()
     {
-        var hash = ManageOrderModel.Link[(ManageOrderModel.Link.LastIndexOf('/') + 1)..];
+        var decodedUrl = HttpUtility.UrlDecode(ManageOrderModel.Link);
 
+        var match = QueryLinkRegex().Match(decodedUrl);
+        if (!match.Success)
+        {
+            return;
+        }
+
+        var leagueName = match.Groups[1].Value;
+        var hash = match.Groups[2].Value;
+
+        ManageOrderModel.Link = decodedUrl;
+        ManageOrderModel.LeagueName = leagueName;
         ManageOrderModel.QueryHash = hash;
         ManageOrderModel.IsActive = true;
 
@@ -83,12 +95,15 @@ public partial class ManageOrderViewModel : ViewModelBase, IModalDialogViewModel
     }
     
     [RelayCommand]
-    public void Cancel()
+    private void Cancel()
     {
         DialogResult = false;
         RequestClose?.Invoke(this, EventArgs.Empty);
     }
 
     public bool? DialogResult { get; private set; }
-    public event EventHandler? RequestClose;
+    public event EventHandler RequestClose;
+
+    [GeneratedRegex(".*/trade/search/([^/]+)/([^/]+)$", RegexOptions.Compiled)]
+    private static partial Regex QueryLinkRegex();
 }

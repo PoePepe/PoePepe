@@ -84,6 +84,7 @@ namespace Poe.UIW
 
             services.AddSingleton<LeagueService>();
             services.AddSingleton<ApplicationHostService>();
+            services.AddSingleton<ISnackbarService, SnackbarService>();
             services.AddSingleton<IPageService, PageService>();
             services.AddSingleton<IThemeService, ThemeService>();
             services.AddSingleton<ITaskBarService, TaskBarService>();

@@ -30,6 +30,7 @@ public class RateLimiterHttpMessageHandler : DelegatingHandler
             
             var delay = GetDelayFromRule(policy);
             await WaitForLimitAsync(policy, delay);
+            policy.IsWaitingForLimit = false;
         }
 
         var response = await base.SendAsync(request, cancellationToken);
@@ -194,15 +195,15 @@ public class RateLimiterHttpMessageHandler : DelegatingHandler
             switch (header.Key)
             {
                 case HeaderRateLimitKeys.RateLimitPolicy:
-                    policyName = header.Value.Single();
+                    policyName = header.Value.First();
                     break;
 
                 case HeaderRateLimitKeys.RateLimitRules:
-                    rules = header.Value.Single().Split(',');
+                    rules = header.Value.First().Split(',');
                     break;
 
                 case HeaderRateLimitKeys.RateLimitRetryAfter:
-                    retryAfter = header.Value.Single();
+                    retryAfter = header.Value.First();
                     break;
             }
         }

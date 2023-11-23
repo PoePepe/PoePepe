@@ -11,56 +11,83 @@
            xmlns:helpers="clr-namespace:Poe.UIW.Helpers"
            mc:Ignorable="d"
            d:DataContext="{d:DesignInstance vm:LiveSearchViewModel, IsDesignTimeCreatable=True}"
-           Title="LiveSearchPage" Height="450" Width="800">
-
+           >
+    
     <Grid>
-        <StackPanel>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+        
+        <Grid Margin="15 0 25 0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/> <!-- Auto-sized row for your "hehe" StackPanel -->
+                <RowDefinition Height="Auto"/> <!-- Auto-sized row for your "hehe" StackPanel -->
+                <RowDefinition Height="*"/>    <!-- Star-sized row for the DataGrid -->
+            </Grid.RowDefinitions>
+            <!-- Action buttons -->
+            <Grid>
+                <TextBlock Text="Life Search" HorizontalAlignment="Left" Margin="25 25 25 20" FontSize="25" FontWeight="SemiBold"/>
+            </Grid>
+            <StackPanel Grid.Row="1" Orientation="Horizontal" 
+                        HorizontalAlignment="Right"
+                        >
+                
                 <Button
                     HorizontalAlignment="Right"
                     VerticalAlignment="Top"
                     VerticalContentAlignment="Center"
                     Command="{Binding AddNewOrderCommand}"
-                    Content="Add new order" />
-
+                    Content="Add new order"
+                    FontSize="15"
+                    FontWeight="Medium"
+                    />
                 <Button
                     HorizontalAlignment="Right"
                     VerticalAlignment="Top"
                     VerticalContentAlignment="Center"
+                    Margin="5 0 0 0"
                     Command="{Binding ClearOrdersCommand}"
-                    Content="Clear all" />
+                    Content="Clear all" 
+                    FontSize="15"
+                    FontWeight="Medium"
 
+
+                    />
             </StackPanel>
 
-            <DataGrid AutoGenerateColumns="False"
-                      Margin="20"
-                      ItemsSource="{Binding Orders}"
-                      IsReadOnly="True">
+            <DataGrid Grid.Row="2"  Name="dataGrid_LifeSearch"
+                       ItemsSource="{Binding Orders}"
+                       Style="{StaticResource DataGrid_LifeSearch}"
+                       CellStyle="{StaticResource DataGridCell_LifeSearch}"
+                       ColumnHeaderStyle="{StaticResource DataGridColumnHeaderStyle_LifeSearch}"
+                       RowStyle="{StaticResource DataGridRowStyle_LifeSearch}"
+                       
+                      
+            >
                 <DataGrid.Columns>
-                    <DataGridTemplateColumn Width="24">
-                        <DataGridTemplateColumn.CellTemplate>
+                    <!-- <DataGridTemplateColumn Width="24"> -->
+                    <!--     <DataGridTemplateColumn.CellTemplate> -->
+                    <!--         <DataTemplate> -->
+                    <!--             <ui:SymbolIcon -->
+                    <!--                  Visibility="{Binding Path=HasValidationErrors, Converter={StaticResource BooleanToVisibilityConverter}}" -->
+                    <!--                 Foreground="Red" Symbol="Warning28"> -->
+                    <!--                 <ui:SymbolIcon.ToolTip> -->
+                    <!--                     <ToolTip> -->
+                    <!--                         <TextBlock Foreground="Red" Text="{Binding ValidationError}" /> -->
+                    <!--                     </ToolTip> -->
+                    <!--                 </ui:SymbolIcon.ToolTip> -->
+                    <!--             </ui:SymbolIcon> -->
+                    <!--         </DataTemplate> -->
+                    <!--     </DataGridTemplateColumn.CellTemplate> -->
+                    <!-- </DataGridTemplateColumn> -->
+                    <DataGridTemplateColumn  Width="*" Header="Name">
+                        <DataGridTemplateColumn.CellTemplate >
                             <DataTemplate>
-                                <ui:SymbolIcon
-                                     Visibility="{Binding Path=HasValidationErrors, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                    Foreground="Red" Symbol="Warning28">
-                                    <ui:SymbolIcon.ToolTip>
-                                        <ToolTip>
-                                            <TextBlock Foreground="Red" Text="{Binding ValidationError}" />
-                                        </ToolTip>
-                                    </ui:SymbolIcon.ToolTip>
-                                </ui:SymbolIcon>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Header="Name">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
+                                
                                 <TextBlock VerticalAlignment="Center" Text="{Binding Name}"></TextBlock>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-
-                    <DataGridTemplateColumn Width="*">
+                    
+                    <!-- Choose mod -->
+                    <DataGridTemplateColumn Width="auto">
                         <DataGridTemplateColumn.HeaderTemplate>
                             <DataTemplate>
                                 <TextBlock HorizontalAlignment="Center">Choose Mod</TextBlock>
@@ -68,6 +95,7 @@
                         </DataGridTemplateColumn.HeaderTemplate>
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
+                                
                                 <ComboBox Background="Transparent"
                                           BorderBrush="Transparent"
                                           HorizontalAlignment="Center"
@@ -86,8 +114,9 @@
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-
-                    <DataGridTemplateColumn Width="*">
+                    
+                    <!-- Activity -->
+                    <DataGridTemplateColumn Width="auto">
                         <DataGridTemplateColumn.HeaderTemplate>
                             <DataTemplate>
                                 <TextBlock HorizontalAlignment="Center">Activity</TextBlock>
@@ -117,13 +146,12 @@
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
 
-                    <DataGridTextColumn Width="*" />
-
-                    <DataGridTemplateColumn>
+                    <!-- <DataGridTextColumn Width="auto" /> -->
+                    
+                    <DataGridTemplateColumn Width="auto">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
-                                    
                                     <ui:Button x:Name="MoreButton" BorderThickness="0"
                                                Background="Transparent"
                                                HorizontalAlignment="Left" Padding="10" Icon="MoreHorizontal28">
@@ -178,6 +206,6 @@
                     </DataGridTemplateColumn>
                 </DataGrid.Columns>
             </DataGrid>
-        </StackPanel>
+        </Grid>
     </Grid>
 </ui:UiPage>

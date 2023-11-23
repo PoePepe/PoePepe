@@ -7,10 +7,11 @@
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     xmlns:pages="clr-namespace:Poe.UIW.Views.Pages"
     Title="WPF UI"
-    Width="1200"
-    Height="654"
+    Width="900"
+    Height="650"
     d:DesignHeight="650"
     d:DesignWidth="900"
+    ResizeMode="NoResize"
     Background="{ui:ThemeResource ApplicationBackgroundBrush}"
     ExtendsContentIntoTitleBar="True"
     WindowBackdropType="Mica"
@@ -82,13 +83,13 @@
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
                     <Frame x:Name="RootFrame" Grid.Row="1" />
-                    <ui:Breadcrumb
-                        Grid.Row="0"
-                        Margin="18"
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Top"
-                        FontSize="24"
-                        Navigation="{Binding ElementName=RootNavigation}" />
+                    <!-- <ui:Breadcrumb -->
+                    <!--     Grid.Row="0" -->
+                    <!--     Margin="18" -->
+                    <!--     HorizontalAlignment="Left" -->
+                    <!--     VerticalAlignment="Top" -->
+                    <!--     FontSize="24" -->
+                    <!--     Navigation="{Binding ElementName=RootNavigation}" /> -->
 
                     <ui:Snackbar
                         x:Name="RootSnackbar"

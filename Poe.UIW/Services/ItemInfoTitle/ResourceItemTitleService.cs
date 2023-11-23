@@ -62,8 +62,8 @@ public class ResourceItemTitleService
         {
             case ItemFrameType.Normal:
                 itemTitleImages.LeftImageBitmap = ItemTitleCacheStore.ItemTitleNormalLeftCachedBitmap;
-                itemTitleImages.LeftImageBitmap = ItemTitleCacheStore.ItemTitleNormalMiddleCachedBitmap;
-                itemTitleImages.LeftImageBitmap = ItemTitleCacheStore.ItemTitleNormalRightCachedBitmap;
+                itemTitleImages.MiddleImageBitmap = ItemTitleCacheStore.ItemTitleNormalMiddleCachedBitmap;
+                itemTitleImages.RightImageBitmap = ItemTitleCacheStore.ItemTitleNormalRightCachedBitmap;
                 break;
 
             case ItemFrameType.Magic:

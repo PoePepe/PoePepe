@@ -18,6 +18,15 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
+            <Grid Visibility="Hidden">
+                <Grid.Background>
+                    <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                        <GradientStop Color="#6CFF47" Offset="0.0" />
+                        <GradientStop Color="#045A52" Offset="1.0" />
+                    </LinearGradientBrush>
+                </Grid.Background>
+            </Grid>
+            
             <Image Grid.Column="0" x:Name="LeftBackgroundImage" />
 
             <Grid Grid.Column="1">

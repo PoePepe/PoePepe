@@ -39,7 +39,7 @@
 
         <StackPanel
             Margin="4,0,0,0">
-            <ui:Button Appearance="Primary" Click="ButtonBase_OnClick" Command="{Binding SaveCommand}" Content="Save" />
+            <ui:Button Appearance="Primary" Command="{Binding SaveCommand}" Content="Save" />
         </StackPanel>
     </StackPanel>
 </ui:UiPage>

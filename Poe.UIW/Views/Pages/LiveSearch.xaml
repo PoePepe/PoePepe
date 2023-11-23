@@ -9,6 +9,7 @@
            xmlns:vm="clr-namespace:Poe.UIW.ViewModels"
            xmlns:wpfuicontrolstyles="clr-namespace:Wpf.Ui.Styles.Controls;assembly=Wpf.Ui"
            xmlns:helpers="clr-namespace:Poe.UIW.Helpers"
+           xmlns:properties="clr-namespace:Poe.UIW.Properties"
            mc:Ignorable="d"
            d:DataContext="{d:DesignInstance vm:LiveSearchViewModel, IsDesignTimeCreatable=True}"
            >
@@ -22,12 +23,17 @@
                 <RowDefinition Height="*"/>    <!-- Star-sized row for the DataGrid -->
             </Grid.RowDefinitions>
             <!-- Action buttons -->
-            <Grid>
+            <StackPanel Orientation="Horizontal">
                 <TextBlock Text="Life Search" HorizontalAlignment="Left" Margin="25 25 25 20" FontSize="25" FontWeight="SemiBold"/>
-            </Grid>
+                <ComboBox
+                    MaxWidth="200"
+                    Margin="0,8,0,0"
+                    x:Name="LeagueNameComboBox"
+                    SelectionChanged="LeagueNameComboBox_OnSelectionChanged"
+                    SelectedValue="{Binding Source={x:Static properties:UserSettings.Default}, Path=LeagueName}"/>
+            </StackPanel>
             <StackPanel Grid.Row="1" Orientation="Horizontal" 
-                        HorizontalAlignment="Right"
-                        >
+                        HorizontalAlignment="Right">
                 
                 <Button
                     HorizontalAlignment="Right"
@@ -57,10 +63,7 @@
                        Style="{StaticResource DataGrid_LifeSearch}"
                        CellStyle="{StaticResource DataGridCell_LifeSearch}"
                        ColumnHeaderStyle="{StaticResource DataGridColumnHeaderStyle_LifeSearch}"
-                       RowStyle="{StaticResource DataGridRowStyle_LifeSearch}"
-                       
-                      
-            >
+                       RowStyle="{StaticResource DataGridRowStyle_LifeSearch}">
                 <DataGrid.Columns>
                     <!-- <DataGridTemplateColumn Width="24"> -->
                     <!--     <DataGridTemplateColumn.CellTemplate> -->
@@ -174,32 +177,6 @@
                                             </ContextMenu>
                                         </ui:Button.ContextMenu>
                                     </ui:Button>
-
-                                    <!-- <Button VerticalContentAlignment="Center" Background="Transparent"> -->
-                                    <!--     <Button.ContentTemplate> -->
-                                    <!--         <DataTemplate> -->
-                                    <!--             <TextBlock Foreground="Black" FontSize="22" VerticalAlignment="Center" -->
-                                    <!--                        Text="⋯"> -->
-                                    <!--             </TextBlock> -->
-                                    <!--         </DataTemplate> -->
-                                    <!--     </Button.ContentTemplate> -->
-                                    <!-- -->
-                                    <!--     ~1~ <Button.Flyout> @1@ -->
-                                    <!--     ~1~     <MenuFlyout> @1@ -->
-                                    <!--     ~1~         <MenuItem Header="Copy link" @1@ -->
-                                    <!--     ~1~                   Command="{Binding $parent[DataGrid].((vm:MainViewModel)DataContext).CopyOrderLink}" @1@ -->
-                                    <!--     ~1~                   CommandParameter="{Binding Link}"/> @1@ -->
-                                    <!--     ~1~         <MenuItem Header="-" /> @1@ -->
-                                    <!--     ~1~         <MenuItem Header="Edit" @1@ -->
-                                    <!--     ~1~                   Command="{Binding $parent[DataGrid].((vm:MainViewModel)DataContext).EditOrder}" @1@ -->
-                                    <!--     ~1~                   CommandParameter="{Binding Id}" /> @1@ -->
-                                    <!--     ~1~         <MenuItem Header="-" /> @1@ -->
-                                    <!--     ~1~         <MenuItem Header="Delete" @1@ -->
-                                    <!--     ~1~                   Command="{Binding $parent[DataGrid].((vm:MainViewModel)DataContext).DeleteOrder}" @1@ -->
-                                    <!--     ~1~                   CommandParameter="{Binding Id}" /> @1@ -->
-                                    <!--     ~1~     </MenuFlyout> @1@ -->
-                                    <!--     ~1~ </Button.Flyout> @1@ -->
-                                    <!-- </Button> -->
                                 </StackPanel>
 
                             </DataTemplate>

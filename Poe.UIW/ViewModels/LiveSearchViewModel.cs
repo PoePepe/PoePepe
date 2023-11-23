@@ -25,8 +25,6 @@ namespace Poe.UIW.ViewModels;
 
 public partial class LiveSearchViewModel : ViewModelBase
 {
-    private readonly ResourceDownloadService _resourceDownloadService;
-    
     private readonly ISnackbarService _snackbarService;
     private readonly PoeTradeApiService _poeTradeApiService;
     private readonly ServiceState _serviceState;
@@ -45,23 +43,31 @@ public partial class LiveSearchViewModel : ViewModelBase
     }
 
     public LiveSearchViewModel(IDialogService customDialogService, Service service, ServiceState serviceState,
-        PoeTradeApiService poeTradeApiService, Wpf.Ui.Mvvm.Contracts.IDialogService dialogService,
-        ResourceDownloadService resourceDownloadService, ISnackbarService snackbarService)
+        PoeTradeApiService poeTradeApiService, Wpf.Ui.Mvvm.Contracts.IDialogService dialogService, ISnackbarService snackbarService)
     {
         _dialogService = customDialogService;
         DialogControl = dialogService.GetDialogControl();
         _serviceState = serviceState;
         _service = service;
         _poeTradeApiService = poeTradeApiService;
-        _resourceDownloadService = resourceDownloadService;
         _snackbarService = snackbarService;
         _orderErrorChannel = serviceState.OrderErrorChannel.Reader;
-        var orders = _service.GetOrdersByLeague(UserSettings.Default.LeagueName).ToArray();
-        // _service.StartLiveSearchAsync(orders);
-        Orders = new ObservableCollection<OrderViewModel>(orders.ToOrderModel());
+
+        LoadOrders();
         Start(CancellationToken.None);
     }
 
+    public void LoadOrders(string leagueName = null)
+    {
+        var orders = _service.GetOrdersByLeague(leagueName ?? UserSettings.Default.LeagueName).ToArray();
+        _service.StartLiveSearchAsync(orders);
+        Orders = new ObservableCollection<OrderViewModel>(orders.ToOrderModel());
+    }
+
+    public void StopSearchingForOrders(string leagueName = null)
+    {
+        _service.StopSearchingForOrders(leagueName ?? UserSettings.Default.LeagueName);
+    }
 
     private void Start(CancellationToken token)
     {
@@ -156,17 +162,16 @@ public partial class LiveSearchViewModel : ViewModelBase
         }
 
         order.Id = id;
-        // order.HasValidationErrors = true;
-        // order.ValidationError = "Invalid link";
-        order.LeagueName = UserSettings.Default.LeagueName;
         order.IsActive = true;
         order.Activity = OrderActivity.Enabled;
-
-        Orders.Add(order);
-
         _service.CreateOrder(order.ToOrder());
 
-        // await _service.StartLiveSearchAsync(order.Id);
+        if (order.LeagueName == UserSettings.Default.LeagueName)
+        {
+            Orders.Add(order);
+
+            // await _service.StartLiveSearchAsync(order.Id);
+        }
 
         OpenSnackbarOrderAdded(order.Name);
         

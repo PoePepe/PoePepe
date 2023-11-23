@@ -3,6 +3,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using Poe.LiveSearch.Models;
+using Poe.UIW.Properties;
+using Poe.UIW.Services;
 using Poe.UIW.ViewModels;
 using Wpf.Ui.Common.Interfaces;
 using Wpf.Ui.Controls.Interfaces;
@@ -11,14 +13,23 @@ namespace Poe.UIW.Views.Pages;
 
 public partial class LiveSearch : INavigableView<LiveSearchViewModel>
 {
-    public LiveSearch(LiveSearchViewModel viewModel)
+    public LiveSearch(LiveSearchViewModel viewModel, LeagueService leagueService)
     {
         ViewModel = viewModel;
+        _leagueService = leagueService;
         DataContext = viewModel;
-        InitializeComponent();
-        
+
         Loaded += OnLoaded;
         Unloaded += OnUnloaded;
+
+        InitializeComponent();
+
+        _leagueService.LeagueNamesLoaded += LeagueNamesLoaded;
+    }
+
+    private void LeagueNamesLoaded(object sender, EventArgs e)
+    {
+        Dispatcher.Invoke(() => { LeagueNameComboBox.ItemsSource = _leagueService.ActualLeagueNames; });
     }
 
     private void OnLoaded(object sender, RoutedEventArgs e)
@@ -40,7 +51,8 @@ public partial class LiveSearch : INavigableView<LiveSearchViewModel>
     }
 
     public LiveSearchViewModel ViewModel { get; }
-    
+    private readonly LeagueService _leagueService;
+
     private void SelectingItemsControl_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
     {
         if (sender is not ComboBox cmb)
@@ -81,5 +93,32 @@ public partial class LiveSearch : INavigableView<LiveSearchViewModel>
         contextMenu!.PlacementTarget = button;
         contextMenu.Placement = PlacementMode.Bottom;
         contextMenu.IsOpen = true;
+    }
+
+    private void LeagueNameComboBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (sender is not ComboBox cmb)
+        {
+            return;
+        }
+
+        if (!cmb.IsDropDownOpen)
+        {
+            return;
+        }
+
+        if (e.AddedItems.Count == 0 || e.RemovedItems.Count == 0)
+        {
+            return;
+        }
+
+        var newLeague = e.AddedItems[0].ToString();
+        var oldLeague = e.RemovedItems[0].ToString();
+
+        ViewModel.StopSearchingForOrders(oldLeague);
+        ViewModel.LoadOrders(newLeague);
+
+        UserSettings.Default.Save();
+        UserSettings.Default.Reload();
     }
 }

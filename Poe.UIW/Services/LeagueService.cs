@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -13,6 +14,7 @@ namespace Poe.UIW.Services;
 public class LeagueService
 {
     public string[] ActualLeagueNames { get; set; } = { "Standard", "Hardcore", "SSF Standard", "Ancestor" };
+    public EventHandler LeagueNamesLoaded;
 
     public async Task LoadActualLeagueNamesAsync(CancellationToken cancellationToken = default)
     {
@@ -24,6 +26,8 @@ public class LeagueService
         }
 
         ActualLeagueNames = response.Content.ToArray();
+
+        LeagueNamesLoaded?.Invoke(this, EventArgs.Empty);
     }
     
     /// <summary>

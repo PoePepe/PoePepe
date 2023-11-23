@@ -83,6 +83,15 @@ public class Service
         AddLiveSearchOrder(order);
     }
     
+    public void StopSearchingForOrders(string leagueName = null)
+    {
+        var orders = _orderRepository.GetAll().Where(x => x.LeagueName == leagueName);
+        foreach (var order in orders)
+        {
+            StopSearchingForOrder(order.Id);
+        }
+    }
+    
     public void ClearAllOrders()
     {
         var orders = _orderRepository.GetAll();

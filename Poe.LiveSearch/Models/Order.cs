@@ -9,5 +9,5 @@ public class Order
     public string QueryLink { get; set; }
     public OrderActivity Activity { get; set; }
     public OrderMod Mod { get; set; }
-    public int OrderPrice { get; set; }
+    public DateTimeOffset CreatedAt { get; set; }
 }

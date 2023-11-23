@@ -60,7 +60,6 @@ public class OrderRepository : IOrderRepository
 
         oldEntity.QueryHash = entity.QueryHash;
         oldEntity.Name = entity.Name;
-        oldEntity.OrderPrice = entity.OrderPrice;
         oldEntity.Activity = entity.Activity;
         oldEntity.Mod = entity.Mod;
             

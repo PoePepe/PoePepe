@@ -19,6 +19,7 @@ public static class OrderMapper
             Activity = order.Activity,
             Mod = order.Mod,
             IsActive = order.Activity == OrderActivity.Enabled,
+            CreatedAt = order.CreatedAt
         };
     }
 
@@ -33,6 +34,7 @@ public static class OrderMapper
             QueryLink = order.Link,
             Activity = order.Activity,
             Mod = order.Mod,
+            CreatedAt = order.CreatedAt
         };
     }
 

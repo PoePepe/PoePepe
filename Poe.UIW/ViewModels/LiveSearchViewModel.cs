@@ -66,9 +66,9 @@ public partial class LiveSearchViewModel : ViewModelBase
     public void LoadOrders(string leagueName = null)
     {
         var orders = _service.GetOrdersByLeague(leagueName ?? UserSettings.Default.LeagueName).ToArray();
-        _service.StartLiveSearchAsync(orders);
+        // _service.StartLiveSearchAsync(orders);
         Orders = new ObservableCollection<OrderViewModel>(orders.ToOrderModel());
-        FilteredOrders = Orders;
+        FilteredOrders = Orders.OrderByDescending(x => x.CreatedAt);
     }
 
     public void StopSearchingForOrders(string leagueName = null)
@@ -173,6 +173,7 @@ public partial class LiveSearchViewModel : ViewModelBase
         order.Id = id;
         order.IsActive = true;
         order.Activity = OrderActivity.Enabled;
+        order.CreatedAt = DateTimeOffset.UtcNow;
         _service.CreateOrder(order.ToOrder());
 
         if (order.LeagueName == UserSettings.Default.LeagueName)

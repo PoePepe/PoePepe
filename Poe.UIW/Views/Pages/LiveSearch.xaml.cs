@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -36,6 +37,13 @@ public partial class LiveSearch : INavigableView<LiveSearchViewModel>
     {
         ViewModel.DialogControl.ButtonRightClick += DialogControlOnButtonRightClick;
         ViewModel.DialogControl.ButtonLeftClick += DialogControlOnButtonRightClick;
+
+        ViewModel.OrdersChanged += OrderAdded;
+    }
+
+    private void OrderAdded(object sender, EventArgs e)
+    {
+        DataGridFilter();
     }
 
     private void OnUnloaded(object sender, RoutedEventArgs e)
@@ -120,5 +128,23 @@ public partial class LiveSearch : INavigableView<LiveSearchViewModel>
 
         UserSettings.Default.Save();
         UserSettings.Default.Reload();
+    }
+
+    private void DataGridFilter()
+    {
+        var searchText = OrderNameAutoSuggestBox.Text;
+        if (string.IsNullOrEmpty(searchText))
+        {
+            ViewModel.FilteredOrders = ViewModel.Orders.ToList();
+        }
+        var formattedText = searchText.ToLower().Trim();
+
+        ViewModel.FilteredOrders = ViewModel.Orders
+            .Where(order => order.Name.ToLower().Contains(formattedText));
+    }
+
+    private void TextBoxBase_OnTextChanged(object sender, TextChangedEventArgs e)
+    {
+        DataGridFilter();
     }
 }

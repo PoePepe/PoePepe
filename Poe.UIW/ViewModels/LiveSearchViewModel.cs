@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
@@ -13,7 +14,6 @@ using Poe.LiveSearch.Services;
 using Poe.LiveSearch.WebSocket;
 using Poe.UIW.Mapping;
 using Poe.UIW.Properties;
-using Poe.UIW.Services;
 using Serilog;
 using Wpf.Ui.Common;
 using Wpf.Ui.Controls.Interfaces;
@@ -35,6 +35,12 @@ public partial class LiveSearchViewModel : ViewModelBase
 
     [ObservableProperty]
     private ObservableCollection<OrderViewModel> _orders;
+    private IEnumerable<OrderViewModel> _filteredOrders = new List<OrderViewModel>();
+    public IEnumerable<OrderViewModel> FilteredOrders
+    {
+        get => _filteredOrders;
+        set => SetProperty(ref _filteredOrders, value);
+    }
     
     public static IEnumerable<OrderMod> AvailableMods { get; } = new[] { OrderMod.Whisper, OrderMod.Notify };
 
@@ -62,6 +68,7 @@ public partial class LiveSearchViewModel : ViewModelBase
         var orders = _service.GetOrdersByLeague(leagueName ?? UserSettings.Default.LeagueName).ToArray();
         _service.StartLiveSearchAsync(orders);
         Orders = new ObservableCollection<OrderViewModel>(orders.ToOrderModel());
+        FilteredOrders = Orders;
     }
 
     public void StopSearchingForOrders(string leagueName = null)
@@ -128,7 +135,7 @@ public partial class LiveSearchViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    public async Task ClearOrders()
+    private async Task ClearOrders()
     {
 
         await Da();
@@ -151,8 +158,10 @@ public partial class LiveSearchViewModel : ViewModelBase
         Log.Information("Orders cleared");
     }
 
+    public EventHandler OrdersChanged;
+
     [RelayCommand]
-    public async Task AddNewOrder()
+    private async Task AddNewOrder()
     {
         var id = !Enumerable.Any(Orders) ? 1 : Orders.Select(x => x.Id).Max() + 1;
         var order = await _dialogService.AddNewOrderAsync(this);
@@ -169,11 +178,12 @@ public partial class LiveSearchViewModel : ViewModelBase
         if (order.LeagueName == UserSettings.Default.LeagueName)
         {
             Orders.Add(order);
-
             // await _service.StartLiveSearchAsync(order.Id);
         }
 
         OpenSnackbarOrderAdded(order.Name);
+
+        OrdersChanged?.Invoke(this, EventArgs.Empty);
         
         Log.Information("Order {OrderName} has been created", order.Name);
     }
@@ -199,7 +209,7 @@ public partial class LiveSearchViewModel : ViewModelBase
     }
     
     [RelayCommand]
-    public void EnableOrder(long id)
+    private void EnableOrder(long id)
     {
         var order = Orders.FirstOrDefault(x => x.Id == id);
 
@@ -219,7 +229,7 @@ public partial class LiveSearchViewModel : ViewModelBase
     }
     
     [RelayCommand]
-    public void DisableOrder(long id)
+    private void DisableOrder(long id)
     {
         var order = Orders.FirstOrDefault(x => x.Id == id);
 
@@ -251,7 +261,7 @@ public partial class LiveSearchViewModel : ViewModelBase
     }
     
     [RelayCommand]
-    public void CopyOrderLink(string orderQueryLink)
+    private void CopyOrderLink(string orderQueryLink)
     {
         if (orderQueryLink is null)
         {
@@ -262,7 +272,7 @@ public partial class LiveSearchViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    public async Task EditOrder(long id)
+    private async Task EditOrder(long id)
     {
         var order = Orders.FirstOrDefault(x => x.Id == id);
 
@@ -291,7 +301,7 @@ public partial class LiveSearchViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    public async Task DeleteOrder(long id)
+    private async Task DeleteOrder(long id)
     {
         var order = Orders.FirstOrDefault(x => x.Id == id);
 
@@ -319,13 +329,15 @@ public partial class LiveSearchViewModel : ViewModelBase
 
         if (!Orders.Remove(order))
         {
-            Log.Warning("Order {OrderName} hasn't been deleted", order.Name);
+            Log.Warning("Order {OrderName} hasn't been deleted from presentation", order.Name);
         }
 
         if (!_service.DeleteOrder(id))
         {
-            Log.Warning("Order {OrderName} hasn't been deleted", order.Name);
+            Log.Warning("Order {OrderName} hasn't been deleted from store", order.Name);
         }
+
+        OrdersChanged.Invoke(this, EventArgs.Empty);
 
         Log.Information("Order {OrderName} has been deleted", order.Name);
     }

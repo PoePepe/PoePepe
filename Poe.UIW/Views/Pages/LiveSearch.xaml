@@ -34,7 +34,12 @@
             </StackPanel>
             <StackPanel Grid.Row="1" Orientation="Horizontal" 
                         HorizontalAlignment="Right">
-                
+                <ui:AutoSuggestBox
+                    x:Name="OrderNameAutoSuggestBox"
+                    HorizontalAlignment="Left"
+                    Margin="0,8,0,0"
+                    TextChanged="TextBoxBase_OnTextChanged"
+                    PlaceholderText="Search by name" />
                 <Button
                     HorizontalAlignment="Right"
                     VerticalAlignment="Top"
@@ -59,7 +64,7 @@
             </StackPanel>
 
             <DataGrid Grid.Row="2"  Name="dataGrid_LifeSearch"
-                       ItemsSource="{Binding Orders}"
+                       ItemsSource="{Binding FilteredOrders}"
                        Style="{StaticResource DataGrid_LifeSearch}"
                        CellStyle="{StaticResource DataGridCell_LifeSearch}"
                        ColumnHeaderStyle="{StaticResource DataGridColumnHeaderStyle_LifeSearch}"

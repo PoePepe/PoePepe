@@ -258,7 +258,7 @@
         <Setter Property="Stylus.IsFlicksEnabled" Value="False" />
         <Setter Property="AutoGenerateColumns" Value="False" />
         <Setter Property="HeadersVisibility" Value="Column" />
-        <Setter Property="Margin" Value="20" />
+        <Setter Property="Margin" Value="0" />
         <Setter Property="IsReadOnly" Value="True" />
         <Setter Property="SelectionMode" Value="Single" />
         <Setter Property="SelectionUnit" Value="FullRow" />
@@ -324,7 +324,7 @@
                             Padding="15,0,15,0"
                             Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="0,0,0.5,0">
+                            BorderThickness="0,0,0,0">
                             <ContentPresenter
                                 HorizontalAlignment="Left"
                                 VerticalAlignment="{TemplateBinding VerticalContentAlignment}"

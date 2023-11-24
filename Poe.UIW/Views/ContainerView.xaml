@@ -39,7 +39,7 @@
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-
+        
             <!--  This is the main navigation of the application.  -->
             <ui:NavigationStore
                 x:Name="RootNavigation"

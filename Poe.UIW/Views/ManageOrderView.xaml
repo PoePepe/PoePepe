@@ -28,17 +28,29 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
+        <!-- Title="ManageOrder" -->
+        <!-- Icon="pack://application:,,,/Resources/Icons/logo.png" -->
+        <!-- <StackPanel Orientation="Horizontal" Margin="10 5 0 0 "> -->
+        <!--     <Image  RenderOptions.BitmapScalingMode="HighQuality"   -->
+        <!--             Height="20" -->
+        <!--             Margin="0 0 10  0" -->
+        <!--             Source="/Resources/Icons/logo.png" -->
+        <!--             /> -->
+        <!--     <TextBlock FontSize="15" Margin="0 1 0 0" Text="Manage Order"></TextBlock> -->
+        <!-- </StackPanel> -->
         <ui:TitleBar
-            Title="PoePepe"
+            Icon="pack://application:,,,/Resources/Icons/logo.png"
             Grid.Row="0"
             ForceShutdown="False"
-            Icon="pack://application:,,,/Resources/Icons/logo.png"
+            FontSize="15"
             MinimizeToTray="False"
             ShowHelp="False"
+            ShowMaximize="False"
+            ShowMinimize="False"
             ShowClose="True">
         </ui:TitleBar>
-
-        <StackPanel Grid.Row="1" Margin="15 10 15  0">
+        <TextBlock HorizontalAlignment="Center" FontSize="20" Margin="0 10 10 0" Text="ManageOrder" />
+        <StackPanel Grid.Row="1" Margin="15 15 15  0">
 
             <StackPanel
                 Margin="0 0 0 10">
@@ -47,9 +59,12 @@
                     Style="{StaticResource textBlock_ManageOrder}"
                     Text="Name:" />
                 <!-- NameEdit -->
-                <TextBox Grid.Row="1"
-                         HorizontalAlignment="Stretch"
-                         Text="{Binding ManageOrderModel.Name}" />
+                <ui:TextBox Grid.Row="1"
+                            PlaceholderText="Name"
+
+                            HorizontalAlignment="Stretch"
+                            Text="{Binding ManageOrderModel.Name}" />
+               
             </StackPanel>
             <StackPanel
                 Margin="0 0 0 10">
@@ -58,29 +73,32 @@
                            Style="{StaticResource textBlock_ManageOrder}"
                            Text="Link:" />
                 <!-- LinkEdit -->
-                <TextBox Grid.Row="1" Grid.Column="1"
-                         IsEnabled="{Binding IsEditing, Converter={StaticResource InvertedBoolConverter}}"
-                         HorizontalAlignment="Stretch"
-                         Text="{Binding ManageOrderModel.Link}" />
+                <ui:TextBox Grid.Row="1" Grid.Column="1"
+                            x:Name="WidthFix"
+                            IsEnabled="{Binding IsEditing, Converter={StaticResource InvertedBoolConverter}}"
+                            PlaceholderText="Link"
+
+                            HorizontalAlignment="Stretch"
+                            Text="{Binding ManageOrderModel.Link}" />
             </StackPanel>
             <!-- Mod -->
-            <StackPanel HorizontalAlignment="Center" Orientation="Horizontal"
-                        Margin="0 5 0 0">
-                <!-- <TextBlock Grid.Row="2" -->
-                <!--            Style="{StaticResource textBlock_ManageOrder}" -->
-                <!--            VerticalAlignment="Center" -->
-                <!--            Margin=" 0 0 5 0" -->
-                <!--            Text="Choose mod:" /> -->
+            <StackPanel HorizontalAlignment="Stretch"
+                        Margin="0 0 0 0">
+                <TextBlock
+                    Style="{StaticResource textBlock_ManageOrder}"
+                    VerticalAlignment="Center"
+                    Margin=" 0 0 5 0"
+                    Text="Choose mod:" />
                 <!-- ModEdit -->
                 <ComboBox Grid.Row="2" Grid.Column="1"
-                          HorizontalAlignment="Left"
-                          VerticalAlignment="Center"
+                          VerticalAlignment="Stretch"
+                          Width="{Binding ActualWidth, ElementName=WidthFix}"
                           SelectedValue="{Binding ManageOrderModel.Mod}"
                           ItemsSource="{x:Static vm:ManageOrderViewModel.AvailableMods}"
                           FontSize="15">
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding }" />
+                            <TextBlock HorizontalAlignment="Stretch" Text="{Binding }" />
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
                 </ComboBox>
@@ -99,10 +117,12 @@
             <!--     Command="{Binding CancelCommand}" -->
             <!--     Content="Cancel" /> -->
         </StackPanel>
-        <Grid Grid.Row="2" Margin="0 20 0 15">
+        <StackPanel Grid.Row="2" Margin="15 25 15 15">
+
             <ui:Button
                 Appearance="Primary"
-                HorizontalAlignment="Center"
+                Height="38"
+                HorizontalAlignment="Stretch"
                 VerticalAlignment="Bottom"
                 HorizontalContentAlignment="Center"
                 VerticalContentAlignment="Center"
@@ -112,7 +132,7 @@
                 Background="#2562d1"
                 Command="{Binding SubmitCommand}"
                 Content="Submit" /><!-- IsEnabled="{Binding OrderModel.Validator.IsValid}" -->
-        </Grid>
+        </StackPanel>
 
     </Grid>
 </ui:UiWindow>

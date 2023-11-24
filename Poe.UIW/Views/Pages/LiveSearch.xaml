@@ -60,7 +60,8 @@
                 </StackPanel>
             </Grid>
             <StackPanel Grid.Row="1" Orientation="Horizontal" 
-                            HorizontalAlignment="Right">
+                            HorizontalAlignment="Right"
+                        Margin="0 0 0 10">
                     <ui:AutoSuggestBox
                         x:Name="OrderNameAutoSuggestBox"
                         HorizontalAlignment="Left"
@@ -74,6 +75,7 @@
                                   DisplayMemberPath="Description"
                                   ItemsSource="{x:Static vm:LiveSearchViewModel.AvailableSorting}"
                                   SelectionChanged="SortComboBox_OnSelectionChanged">
+                        
                         </ComboBox>
                 </StackPanel>
 

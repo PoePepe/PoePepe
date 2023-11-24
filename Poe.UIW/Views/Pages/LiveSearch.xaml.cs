@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using Poe.LiveSearch.Models;
+using Poe.UIW.Helpers;
 using Poe.UIW.Properties;
 using Poe.UIW.Services;
 using Poe.UIW.ViewModels;
@@ -22,10 +23,9 @@ public partial class LiveSearch : INavigableView<LiveSearchViewModel>
 
         Loaded += OnLoaded;
         Unloaded += OnUnloaded;
+        _leagueService.LeagueNamesLoaded += LeagueNamesLoaded;
 
         InitializeComponent();
-
-        _leagueService.LeagueNamesLoaded += LeagueNamesLoaded;
     }
 
     private void LeagueNamesLoaded(object sender, EventArgs e)
@@ -51,7 +51,7 @@ public partial class LiveSearch : INavigableView<LiveSearchViewModel>
         ViewModel.DialogControl.ButtonRightClick -= DialogControlOnButtonRightClick;
         ViewModel.DialogControl.ButtonLeftClick -= DialogControlOnButtonRightClick;
     }
-    
+
     private static void DialogControlOnButtonRightClick(object sender, RoutedEventArgs e)
     {
         var dialogControl = (IDialogControl)sender;
@@ -67,12 +67,12 @@ public partial class LiveSearch : INavigableView<LiveSearchViewModel>
         {
             return;
         }
-        
+
         if (!cmb.IsDropDownOpen)
         {
             return;
         }
-        
+
         if (DataContext is not LiveSearchViewModel context)
         {
             return;
@@ -83,15 +83,15 @@ public partial class LiveSearch : INavigableView<LiveSearchViewModel>
             return;
         }
 
+        if (e.AddedItems.Count == 0 || e.RemovedItems.Count == 0)
+        {
+            return;
+        }
+
         var newMod = Enum.Parse<OrderMod>(e.AddedItems[0].ToString());
         var oldMod = Enum.Parse<OrderMod>(e.RemovedItems[0].ToString());
 
         context.ChangeOrderMod(orderViewModel.Id, newMod, oldMod);
-    }
-    
-    protected override void OnInitialized(EventArgs eventArgs)
-    {
-        base.OnInitialized(eventArgs);
     }
 
     private void MoreButton_OnClick(object sender, RoutedEventArgs e)
@@ -127,7 +127,6 @@ public partial class LiveSearch : INavigableView<LiveSearchViewModel>
         ViewModel.LoadOrders(newLeague);
 
         UserSettings.Default.Save();
-        UserSettings.Default.Reload();
     }
 
     private void DataGridFilter()
@@ -135,16 +134,41 @@ public partial class LiveSearch : INavigableView<LiveSearchViewModel>
         var searchText = OrderNameAutoSuggestBox.Text;
         if (string.IsNullOrEmpty(searchText))
         {
-            ViewModel.FilteredOrders = ViewModel.Orders.ToList();
+            ViewModel.FilteredOrders = ViewModel.Orders.Sort(ViewModel.ActualSort);
         }
+
         var formattedText = searchText.ToLower().Trim();
 
         ViewModel.FilteredOrders = ViewModel.Orders
-            .Where(order => order.Name.ToLower().Contains(formattedText));
+            .Where(order => order.Name.ToLower().Contains(formattedText))
+            .Sort(ViewModel.ActualSort);
     }
 
     private void TextBoxBase_OnTextChanged(object sender, TextChangedEventArgs e)
     {
         DataGridFilter();
+    }
+
+    private void SortComboBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (sender is not ComboBox cmb)
+        {
+            return;
+        }
+
+        if (!cmb.IsDropDownOpen)
+        {
+            return;
+        }
+
+        if (e.AddedItems.Count == 0 || e.RemovedItems.Count == 0)
+        {
+            return;
+        }
+
+        ViewModel.FilteredOrders = ViewModel.FilteredOrders.Sort(ViewModel.ActualSort);
+
+        UserSettings.Default.LiveSearchSort = ViewModel.ActualSort.Kind.ToString();
+        UserSettings.Default.Save();
     }
 }

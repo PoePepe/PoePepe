@@ -12,7 +12,9 @@ using Poe.LiveSearch.Api.Trade;
 using Poe.LiveSearch.Models;
 using Poe.LiveSearch.Services;
 using Poe.LiveSearch.WebSocket;
+using Poe.UIW.Helpers;
 using Poe.UIW.Mapping;
+using Poe.UIW.Models;
 using Poe.UIW.Properties;
 using Serilog;
 using Wpf.Ui.Common;
@@ -41,8 +43,22 @@ public partial class LiveSearchViewModel : ViewModelBase
         get => _filteredOrders;
         set => SetProperty(ref _filteredOrders, value);
     }
-    
+
     public static IEnumerable<OrderMod> AvailableMods { get; } = new[] { OrderMod.Whisper, OrderMod.Notify };
+
+    [ObservableProperty] private OrderSort _actualSort;
+
+    public static IEnumerable<OrderSort> AvailableSorting { get; } = new[]
+    {
+        new OrderSort(OrderSortKind.NameAsc, "Name A-Z"),
+        new OrderSort(OrderSortKind.NameDesc, "Name Z-A"),
+        new OrderSort(OrderSortKind.CreationDateAsc, "Oldest"),
+        new OrderSort(OrderSortKind.CreationDateDesc, "Newest"),
+        new OrderSort(OrderSortKind.Notify, "Notify mod"),
+        new OrderSort(OrderSortKind.Whisper, "Whisper mod"),
+        new OrderSort(OrderSortKind.Enabled, "Enabled status"),
+        new OrderSort(OrderSortKind.Disabled, "Disabled status")
+    };
 
     public LiveSearchViewModel()
     {
@@ -59,6 +75,9 @@ public partial class LiveSearchViewModel : ViewModelBase
         _snackbarService = snackbarService;
         _orderErrorChannel = serviceState.OrderErrorChannel.Reader;
 
+        var sortKind = Enum.TryParse<OrderSortKind>(UserSettings.Default.LiveSearchSort, out var sort) ? sort : OrderSortKind.CreationDateDesc;
+        ActualSort = AvailableSorting.First(x => x.Kind == sortKind);
+
         LoadOrders();
         Start(CancellationToken.None);
     }
@@ -68,7 +87,7 @@ public partial class LiveSearchViewModel : ViewModelBase
         var orders = _service.GetOrdersByLeague(leagueName ?? UserSettings.Default.LeagueName).ToArray();
         // _service.StartLiveSearchAsync(orders);
         Orders = new ObservableCollection<OrderViewModel>(orders.ToOrderModel());
-        FilteredOrders = Orders.OrderByDescending(x => x.CreatedAt);
+        FilteredOrders = Orders.Sort(ActualSort);
     }
 
     public void StopSearchingForOrders(string leagueName = null)
@@ -255,6 +274,8 @@ public partial class LiveSearchViewModel : ViewModelBase
         {
             return;
         }
+
+        order.Mod = newMod;
 
         _service.UpdateOrder(order.ToOrder());
 

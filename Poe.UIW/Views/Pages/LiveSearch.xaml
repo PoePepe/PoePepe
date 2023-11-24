@@ -40,6 +40,16 @@
                     Margin="0,8,0,0"
                     TextChanged="TextBoxBase_OnTextChanged"
                     PlaceholderText="Search by name" />
+
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Sort by: " ></TextBlock>
+                    <ComboBox SelectedValue="{Binding ActualSort, Mode=TwoWay}"
+                              DisplayMemberPath="Description"
+                              ItemsSource="{x:Static vm:LiveSearchViewModel.AvailableSorting}"
+                              SelectionChanged="SortComboBox_OnSelectionChanged">
+                    </ComboBox>
+                </StackPanel>
+
                 <Button
                     HorizontalAlignment="Right"
                     VerticalAlignment="Top"
@@ -57,10 +67,7 @@
                     Command="{Binding ClearOrdersCommand}"
                     Content="Clear all" 
                     FontSize="15"
-                    FontWeight="Medium"
-
-
-                    />
+                    FontWeight="Medium"/>
             </StackPanel>
 
             <DataGrid Grid.Row="2"  Name="dataGrid_LifeSearch"

@@ -14,20 +14,10 @@
         <StackPanel
             Margin="0,0,4,0">
             <TextBlock Foreground="{DynamicResource TextFillColorSecondaryBrush}" Text="Poe Session Id" />
-            <ui:TextBox x:Name="SessionIdTextBox" Margin="0,8,0,0"
+            <ui:TextBox Margin="0,8,0,0"
                         PlaceholderText="POESESSID=*******************"
                         Text="{Binding PoeSessionId}"/>
         </StackPanel>
-<!-- LeagueName -->
-        <!-- <StackPanel -->
-        <!--     Margin="4,10,0,0"> -->
-        <!--     <TextBlock Foreground="{DynamicResource TextFillColorSecondaryBrush}" Text="League Name" /> -->
-        <!--     <ComboBox -->
-        <!--         Margin="0,8,0,0" -->
-        <!--         x:Name="LeagueNameComboBox" -->
-        <!--         SelectedValue="{Binding Source={x:Static properties:UserSettings.Default}, Path=LeagueName}" -->
-        <!--         /> -->
-        <!-- </StackPanel> -->
 
         <StackPanel
             Margin="4,10,0,0">

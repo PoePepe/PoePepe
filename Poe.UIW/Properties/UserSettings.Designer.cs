@@ -81,5 +81,17 @@ namespace Poe.UIW.Properties {
                 this["NotificationPositionLeft"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("NameAsc")]
+        public string LiveSearchSort {
+            get {
+                return ((string)(this["LiveSearchSort"]));
+            }
+            set {
+                this["LiveSearchSort"] = value;
+            }
+        }
     }
 }

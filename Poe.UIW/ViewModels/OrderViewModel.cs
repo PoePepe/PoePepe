@@ -32,7 +32,7 @@ public partial class OrderViewModel : ViewModelValidatableBase
     [ObservableProperty]
     [NotifyDataErrorInfo]
     [Required]
-    [RegularExpression("^(https://www\\.pathofexile\\.com/trade/search/)[a-zA-Z\\s%20]+\\/[a-zA-Z0-9]+$")]
+    [RegularExpression("^(https://www\\.pathofexile\\.com/trade/search/)[a-zA-Z\\s%20]+\\/[a-zA-Z0-9]+$", ErrorMessage = "Invalid link")]
     [CustomValidation(typeof(OrderViewModel), nameof(ValidateLink))]
     private string _link;
 

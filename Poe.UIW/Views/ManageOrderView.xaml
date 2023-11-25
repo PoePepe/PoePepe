@@ -28,16 +28,6 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <!-- Title="ManageOrder" -->
-        <!-- Icon="pack://application:,,,/Resources/Icons/logo.png" -->
-        <!-- <StackPanel Orientation="Horizontal" Margin="10 5 0 0 "> -->
-        <!--     <Image  RenderOptions.BitmapScalingMode="HighQuality"   -->
-        <!--             Height="20" -->
-        <!--             Margin="0 0 10  0" -->
-        <!--             Source="/Resources/Icons/logo.png" -->
-        <!--             /> -->
-        <!--     <TextBlock FontSize="15" Margin="0 1 0 0" Text="Manage Order"></TextBlock> -->
-        <!-- </StackPanel> -->
         <ui:TitleBar
             Icon="pack://application:,,,/Resources/Icons/logo.png"
             Grid.Row="0"
@@ -49,7 +39,7 @@
             ShowMinimize="False"
             ShowClose="True">
         </ui:TitleBar>
-        <TextBlock HorizontalAlignment="Center" FontSize="20" Margin="0 10 10 0" Text="ManageOrder" />
+        <TextBlock x:Name="TitleTextBlock" Grid.Row="0" HorizontalAlignment="Center" FontSize="20" Margin="0 10 10 0" Text="Add new order" />
         <StackPanel Grid.Row="1" Margin="20 15 20  0">
 
             <StackPanel
@@ -61,15 +51,14 @@
                 <!-- NameEdit -->
                 <ui:TextBox Grid.Row="1"
                             PlaceholderText="Name"
-                            
+                            x:Name="NameTextBox"
                             HorizontalAlignment="Stretch"
-                            Text="{Binding ManageOrderModel.Name}" />
-                <StackPanel Visibility="Visible" Orientation="Horizontal" Margin="0 1 0 0 ">
+                            Text="{Binding ManageOrderModel.Name, ValidatesOnDataErrors=False, ValidatesOnNotifyDataErrors=False, NotifyOnValidationError=False}"/>
+                <StackPanel x:Name="NameErrorStackPanel" Visibility="Hidden" Orientation="Horizontal" Margin="0 1 0 0 ">
                     <ui:SymbolIcon Symbol="ErrorCircle12"
                                    Margin="0 0 4 0"
                                    Foreground="#d50000"/>
                     <TextBlock  VerticalAlignment="Center"
-                                Text="Wrong link"
                                 Foreground="#d50000" FontSize="13" />
                 </StackPanel>
             </StackPanel>
@@ -81,19 +70,19 @@
                            Text="Link:" />
                 <!-- LinkEdit -->
                 <ui:TextBox Grid.Row="1" Grid.Column="1"
-                            x:Name="WidthFix"
+                            x:Name="LinkTextBox"
                             IsEnabled="{Binding IsEditing, Converter={StaticResource InvertedBoolConverter}}"
                             PlaceholderText="Link"
                             HorizontalAlignment="Stretch"
-                            Text="{Binding ManageOrderModel.Link}" />
-                <StackPanel Visibility="Visible"
+                            Text="{Binding ManageOrderModel.Link, ValidatesOnDataErrors=False, ValidatesOnNotifyDataErrors=False, NotifyOnValidationError=False}"/>
+                <StackPanel x:Name="LinkErrorStackPanel"
+                            Visibility="Hidden"
                             Orientation="Horizontal"
                             Margin="0 1 0 0 ">
                     <ui:SymbolIcon Symbol="ErrorCircle12"
                                    Margin="0 0 4 0"
                                    Foreground="#d50000" />
-                    <TextBlock  VerticalAlignment="Center"
-                                Text="Wrong link"
+                    <TextBlock VerticalAlignment="Center"
                                 Foreground="#d50000"
                                 FontSize="13" />
                 </StackPanel>
@@ -105,12 +94,11 @@
                     Style="{StaticResource textBlock_ManageOrder}"
                     VerticalAlignment="Center"
                     Margin=" 0 0 5 0"
-                    
                     Text="Choose mod:" />
                 <!-- ModEdit -->
                 <ComboBox Grid.Row="2" Grid.Column="1"
                           VerticalAlignment="Stretch"
-                          Width="{Binding ActualWidth, ElementName=WidthFix}"
+                          Width="{Binding ActualWidth, ElementName=LinkTextBox}"
                           SelectedValue="{Binding ManageOrderModel.Mod}"
                           ItemsSource="{x:Static vm:ManageOrderViewModel.AvailableMods}"
                           FontSize="15">

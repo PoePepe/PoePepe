@@ -106,6 +106,9 @@
         <Resource Include="Resources\Images\Separators\separator-supporter-foil.png" />
         <Resource Include="Resources\Images\Separators\separator-unique.png" />
         <Resource Include="Resources\Images\Separators\separator-rare.png" />
+        <Content Include="Resources\Sounds\defaultNotification.wav">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
     </ItemGroup>
 
     <ItemGroup>

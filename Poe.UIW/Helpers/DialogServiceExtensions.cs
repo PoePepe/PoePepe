@@ -1,6 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
+using System.Reflection;
 using System.Threading.Tasks;
+using HanumanInstitute.MvvmDialogs.FileSystem;
 using HanumanInstitute.MvvmDialogs.FrameworkDialogs;
 using Microsoft.Extensions.DependencyInjection;
 using Poe.UIW;
@@ -32,7 +36,6 @@ public static class DialogServiceExtensions
     public static async Task<OrderViewModel> EditOrderAsync(this IDialogService service, INotifyPropertyChanged ownerViewModel, OrderViewModel order)
     {
         var da = App.Current.Services.GetRequiredService<ContainerViewModel>();
-
         var vm = service.CreateViewModel<ManageOrderViewModel>();
         vm.SetOrder(order);
         // var settings = new DialogHostSettings(vm);
@@ -61,4 +64,21 @@ public static class DialogServiceExtensions
 
         orderItemInfoView.ShowDialog();
     }
+
+    public static IDialogStorageFile OpenSoundFile(this IDialogService service, INotifyPropertyChanged owner)
+    {
+        var settings = new OpenFileDialogSettings
+        {
+            Title = "Open Sound file",
+            InitialDirectory = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!,
+                "Resources/Sounds"),
+            Filters = new List<FileFilter>
+            {
+                new("Media files", new [] {"wav", "mp3"})
+            }
+        };
+
+        return service.ShowOpenFileDialog(null, settings);
+    }
+            
 }

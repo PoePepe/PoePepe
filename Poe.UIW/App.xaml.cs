@@ -99,7 +99,9 @@ namespace Poe.UIW
             services.AddSingleton<Views.Pages.LiveSearch>();
             
             services.AddSingleton<SettingsViewModel>();
-            services.AddScoped<Views.Pages.Settings>();
+            services.AddTransient<Views.Pages.Settings>();
+
+            services.AddSingleton<SoundService>();
 
             services.AddSingleton<ResourceDownloadService>();
             services.AddHttpClient<ResourceDownloadService>();

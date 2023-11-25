@@ -16,6 +16,7 @@ using Poe.UIW.Helpers;
 using Poe.UIW.Mapping;
 using Poe.UIW.Models;
 using Poe.UIW.Properties;
+using Poe.UIW.Services;
 using Serilog;
 using Wpf.Ui.Common;
 using Wpf.Ui.Controls.Interfaces;
@@ -34,10 +35,11 @@ public partial class LiveSearchViewModel : ViewModelBase
     private readonly IDialogService _dialogService;
     private readonly ChannelReader<OrderError> _orderErrorChannel;
     public readonly IDialogControl DialogControl;
+    private readonly SoundService _soundService;
 
-    [ObservableProperty]
-    private ObservableCollection<OrderViewModel> _orders;
+    [ObservableProperty] private ObservableCollection<OrderViewModel> _orders;
     private IEnumerable<OrderViewModel> _filteredOrders = new List<OrderViewModel>();
+
     public IEnumerable<OrderViewModel> FilteredOrders
     {
         get => _filteredOrders;
@@ -65,7 +67,8 @@ public partial class LiveSearchViewModel : ViewModelBase
     }
 
     public LiveSearchViewModel(IDialogService customDialogService, Service service, ServiceState serviceState,
-        PoeTradeApiService poeTradeApiService, Wpf.Ui.Mvvm.Contracts.IDialogService dialogService, ISnackbarService snackbarService)
+        PoeTradeApiService poeTradeApiService, Wpf.Ui.Mvvm.Contracts.IDialogService dialogService,
+        ISnackbarService snackbarService, SoundService soundService)
     {
         _dialogService = customDialogService;
         DialogControl = dialogService.GetDialogControl();
@@ -73,9 +76,12 @@ public partial class LiveSearchViewModel : ViewModelBase
         _service = service;
         _poeTradeApiService = poeTradeApiService;
         _snackbarService = snackbarService;
+        _soundService = soundService;
         _orderErrorChannel = serviceState.OrderErrorChannel.Reader;
 
-        var sortKind = Enum.TryParse<OrderSortKind>(UserSettings.Default.LiveSearchSort, out var sort) ? sort : OrderSortKind.CreationDateDesc;
+        var sortKind = Enum.TryParse<OrderSortKind>(UserSettings.Default.LiveSearchSort, out var sort)
+            ? sort
+            : OrderSortKind.CreationDateDesc;
         ActualSort = AvailableSorting.First(x => x.Kind == sortKind);
 
         LoadOrders();
@@ -110,7 +116,7 @@ public partial class LiveSearchViewModel : ViewModelBase
 
         Log.Information("Started receiving data from error channel");
     }
-    
+
     private void SetErrorToOrder(OrderError orderError)
     {
         var order = Orders.FirstOrDefault(x => x.Id == orderError.OrderId);
@@ -118,6 +124,7 @@ public partial class LiveSearchViewModel : ViewModelBase
         {
             return;
         }
+
         order.ValidationError = orderError.ErrorMessage;
         order.HasValidationErrors = true;
 
@@ -131,10 +138,12 @@ public partial class LiveSearchViewModel : ViewModelBase
         {
             return;
         }
-        
+
         var searchResponse = searchResponseResult.Content;
-        
-        var fetchResponse = await _poeTradeApiService.FetchItemsAsync(string.Join(',', searchResponse.Result.First()), searchResponse.Id);
+
+        var fetchResponse =
+            await _poeTradeApiService.FetchItemsAsync(string.Join(',', searchResponse.Result.First()),
+                searchResponse.Id);
         if (!fetchResponse.IsSuccess)
         {
             return;
@@ -149,19 +158,17 @@ public partial class LiveSearchViewModel : ViewModelBase
 
         da.OrderId = Orders.FirstOrDefault()?.Id ?? 0L;
         da.OrderName = Orders.FirstOrDefault()?.Name;
-        da.Orders = new []{new ItemLiveResponse(da.Id, da.OrderId, da.OrderName)};
+        da.Orders = new[] { new ItemLiveResponse(da.Id, da.OrderId, da.OrderName) };
         await _serviceState.FoundItemsChannel.Writer.WriteAsync(da);
     }
 
     [RelayCommand]
     private async Task ClearOrders()
     {
-
+        // _soundService.Play();
         await Da();
         return;
 
-        
-        
         if (!Enumerable.Any(Orders))
         {
             return;
@@ -173,7 +180,7 @@ public partial class LiveSearchViewModel : ViewModelBase
             Orders.Clear();
             _service.ClearAllOrders();
         }
-        
+
         Log.Information("Orders cleared");
     }
 
@@ -204,10 +211,10 @@ public partial class LiveSearchViewModel : ViewModelBase
         OpenSnackbarOrderAdded(order.Name);
 
         OrdersChanged?.Invoke(this, EventArgs.Empty);
-        
+
         Log.Information("Order {OrderName} has been created", order.Name);
     }
-    
+
     private void OpenSnackbarOrderAdded(string orderName)
     {
         _snackbarService.Show(
@@ -217,7 +224,7 @@ public partial class LiveSearchViewModel : ViewModelBase
             ControlAppearance.Success
         );
     }
-    
+
     private void OpenSnackbarOrderEdited(string orderName)
     {
         _snackbarService.Show(
@@ -227,7 +234,7 @@ public partial class LiveSearchViewModel : ViewModelBase
             ControlAppearance.Success
         );
     }
-    
+
     [RelayCommand]
     private void EnableOrder(long id)
     {
@@ -244,10 +251,10 @@ public partial class LiveSearchViewModel : ViewModelBase
         order.ValidationError = null!;
 
         _service.EnableLiveSearchOrder(order.Id);
-        
+
         Log.Information("Order {OrderName} has been enabled", order.Name);
     }
-    
+
     [RelayCommand]
     private void DisableOrder(long id)
     {
@@ -262,10 +269,10 @@ public partial class LiveSearchViewModel : ViewModelBase
         order.IsActive = false;
 
         _service.DisableLiveSearchOrder(order.Id);
-            
+
         Log.Information("Order {OrderName} has been disabled", order.Name);
     }
-    
+
     public void ChangeOrderMod(long id, OrderMod newMod, OrderMod oldMod)
     {
         var order = Orders.FirstOrDefault(x => x.Id == id);
@@ -281,7 +288,7 @@ public partial class LiveSearchViewModel : ViewModelBase
 
         Log.Information("Mod of order {OrderName} has been changed to {NewMod}", order.Name, newMod);
     }
-    
+
     [RelayCommand]
     private void CopyOrderLink(string orderQueryLink)
     {
@@ -289,7 +296,7 @@ public partial class LiveSearchViewModel : ViewModelBase
         {
             return;
         }
-        
+
         Clipboard.SetText(orderQueryLink);
     }
 
@@ -309,14 +316,14 @@ public partial class LiveSearchViewModel : ViewModelBase
         {
             return;
         }
-        
+
         order.HasValidationErrors = false;
         order.ValidationError = null!;
 
         _service.UpdateOrder(order.ToOrder());
 
         order = updatedOrder;
-        
+
         OpenSnackbarOrderEdited(order.Name);
 
         Log.Information("Order {OrderName} has been updated", order.Name);
@@ -333,11 +340,11 @@ public partial class LiveSearchViewModel : ViewModelBase
 
             return;
         }
-        
+
         var result = await DialogControl.ShowAndWaitAsync("",
             $"Delete order {order.Name}?", true
         );
-        
+
         switch (result)
         {
             case IDialogControl.ButtonPressed.Left:

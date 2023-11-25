@@ -22,6 +22,12 @@
     <Setting Name="LiveSearchSort" Type="System.String" Scope="User">
       <Value Profile="(Default)">NameAsc</Value>
     </Setting>
+    <Setting Name="NotificationSoundPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">defaultNotification.wav</Value>
+    </Setting>
+    <Setting Name="PlayNotificationSound" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
 

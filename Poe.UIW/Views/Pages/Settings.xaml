@@ -16,7 +16,7 @@
             <TextBlock Foreground="{DynamicResource TextFillColorSecondaryBrush}" Text="Poe Session Id" />
             <ui:TextBox Margin="0,8,0,0"
                         PlaceholderText="POESESSID=*******************"
-                        Text="{Binding PoeSessionId}"/>
+                        Text="{Binding PoeSessionId}" />
         </StackPanel>
 
         <StackPanel
@@ -24,7 +24,34 @@
             <CheckBox
                 Margin="0,0,0,8"
                 Content="Hide notifications if PoE not foreground?"
-                IsChecked="{Binding IsHide}"/>
+                IsChecked="{Binding IsHide}" />
+        </StackPanel>
+
+        <StackPanel
+            Margin="4,10,0,0">
+            <CheckBox
+                Margin="0,0,0,8"
+                Content="Play notification sound?"
+                IsChecked="{Binding PlayNotificationSound}" />
+
+            <StackPanel Orientation="Horizontal">
+                <ui:Button
+                    Visibility="{Binding PlayNotificationSound, Converter={StaticResource BooleanToVisibilityConverter}}"
+                    Appearance="Secondary"
+                    Command="{Binding OpenSoundFileCommand}"
+                    Content="Open sound file" />
+
+                <TextBlock
+                    Visibility="{Binding PlayNotificationSound, Converter={StaticResource BooleanToVisibilityConverter}}"
+                    Text="{Binding NotificationSoundPath}" />
+            </StackPanel>
+
+            <ui:Button
+                Visibility="{Binding PlayNotificationSound, Converter={StaticResource BooleanToVisibilityConverter}}"
+                Appearance="Secondary"
+                Command="{Binding ResetSoundFileCommand}"
+                Content="Reset to default" />
+
         </StackPanel>
 
         <StackPanel

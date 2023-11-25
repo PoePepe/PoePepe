@@ -8,6 +8,7 @@ using Poe.LiveSearch.Api.Trade.Models;
 using Poe.UIW.Helpers;
 using Poe.UIW.Mapping;
 using Poe.UIW.Properties;
+using Poe.UIW.Services;
 using Poe.UIW.ViewModels;
 using Serilog;
 
@@ -20,6 +21,7 @@ public partial class AlwaysOnTopView
     private const int LSFW_LOCK = 1;
 
     private readonly DispatcherTimer _dispatcherTimer;
+    private readonly SoundService _soundService;
     public AlwaysOnTopView()
     {
         InitializeComponent();
@@ -30,6 +32,8 @@ public partial class AlwaysOnTopView
         {
             await Dispatcher.InvokeAsync(() => Notify(result));
         };
+        
+        _soundService = App.Current.Services.GetService<SoundService>();
         
         Loaded += OnLoaded;
         
@@ -95,6 +99,7 @@ public partial class AlwaysOnTopView
             {
                 DataContext = vm
             };
+            uc.Loaded += UcOnLoaded;
             uc.HorizontalAlignment = HorizontalAlignment.Left;
             NotificationStackPanel.Children.Add(uc);
             NotificationStackPanel.Height += 25;
@@ -103,5 +108,10 @@ public partial class AlwaysOnTopView
         {
             Log.Error(e, "Error notifying of found item by order {OrderName}", result.OrderName);
         }
+    }
+
+    private void UcOnLoaded(object sender, RoutedEventArgs e)
+    {
+        _soundService.Play();
     }
 }

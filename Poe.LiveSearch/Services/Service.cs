@@ -131,7 +131,7 @@ public class Service
         order.Activity = OrderActivity.Enabled;
         _orderRepository.Update(order);
 
-        AddLiveSearchOrder(order);
+        // AddLiveSearchOrder(order);
     }
 
     public void DisableLiveSearchOrder(long orderId)

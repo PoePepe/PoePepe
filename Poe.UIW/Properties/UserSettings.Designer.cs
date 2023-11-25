@@ -93,5 +93,29 @@ namespace Poe.UIW.Properties {
                 this["LiveSearchSort"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("defaultNotification.wav")]
+        public string NotificationSoundPath {
+            get {
+                return ((string)(this["NotificationSoundPath"]));
+            }
+            set {
+                this["NotificationSoundPath"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool PlayNotificationSound {
+            get {
+                return ((bool)(this["PlayNotificationSound"]));
+            }
+            set {
+                this["PlayNotificationSound"] = value;
+            }
+        }
     }
 }

@@ -38,7 +38,8 @@ public class SoundService
 
     private void PlayerOnMediaFailed(object sender, ExceptionEventArgs e)
     {
-        Log.Error(e.ErrorException, "Error with file {File}", _player.Source);
+        Log.Error("Error with file {File}. {Error}", _player.Source, e.ErrorException.Message);
+        _player.Open(_defaultSoundUri);
     }
 
     public void Play()

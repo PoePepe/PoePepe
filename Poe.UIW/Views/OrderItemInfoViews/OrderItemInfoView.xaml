@@ -197,7 +197,8 @@
                         <ItemsControl ItemsSource="{Binding OrderItemInfo.CraftedMods}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <TextBlock HorizontalAlignment="Center" Text="{Binding  }"></TextBlock>
+                                    <TextBlock Style="{StaticResource mods_Crafted}"
+                                               HorizontalAlignment="Center" Text="{Binding  }"></TextBlock>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>

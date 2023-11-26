@@ -29,15 +29,18 @@ public partial class ManageOrderView
 
         var error = _viewModel.ManageOrderModel.GetErrors(e.PropertyName).FirstOrDefault();
 
-        if (error is null)
-        {
-            return;
-        }
-
         switch (e.PropertyName)
         {
+            case "Link" when error is null:
+                HideError(_validatableLinkTextBox);
+                break;
+
             case "Link":
                 ShowError(_validatableLinkTextBox, error);
+                break;
+
+            case "Name" when error is null:
+                HideError(_validatableNameTextBox);
                 break;
 
             case "Name":
@@ -54,23 +57,28 @@ public partial class ManageOrderView
 
     private void ShowError(ValidatableTextBox validatableTextBox, ValidationResult error)
     {
+        TextBlock errorTextBlock;
         if (validatableTextBox.HasError)
         {
-            return;
+            errorTextBlock = (TextBlock) validatableTextBox.ErrorPanel.Children[1];
+            if (errorTextBlock.Text == error.ErrorMessage)
+            {
+                return;
+            }
         }
 
         var textBoxTemplate = validatableTextBox.TextBox.Template;
-        var accentBorder = (Border)textBoxTemplate.FindName("AccentBorder", validatableTextBox.TextBox);
-        var contentBorder = (Border)textBoxTemplate.FindName("ContentBorder", validatableTextBox.TextBox);
+        var accentBorder = (Border) textBoxTemplate.FindName("AccentBorder", validatableTextBox.TextBox);
+        var contentBorder = (Border) textBoxTemplate.FindName("ContentBorder", validatableTextBox.TextBox);
         _accentBorderBrush ??= accentBorder.BorderBrush;
         _contentBorderBrush ??= contentBorder.BorderBrush;
 
-        accentBorder.BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#d50000"));
-        contentBorder.BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#d50000"));
+        accentBorder.BorderBrush = new SolidColorBrush((Color) ColorConverter.ConvertFromString("#d50000"));
+        contentBorder.BorderBrush = new SolidColorBrush((Color) ColorConverter.ConvertFromString("#d50000"));
 
         validatableTextBox.ErrorPanel.Visibility = Visibility.Visible;
 
-        var errorTextBlock = (TextBlock)validatableTextBox.ErrorPanel.Children[1];
+        errorTextBlock = (TextBlock) validatableTextBox.ErrorPanel.Children[1];
         errorTextBlock.Text = error.ErrorMessage;
     }
 
@@ -85,8 +93,8 @@ public partial class ManageOrderView
         }
 
         var textBoxTemplate = validatableTextBox.TextBox.Template;
-        var accentBorder = (Border)textBoxTemplate.FindName("AccentBorder", validatableTextBox.TextBox);
-        var contentBorder = (Border)textBoxTemplate.FindName("ContentBorder", validatableTextBox.TextBox);
+        var accentBorder = (Border) textBoxTemplate.FindName("AccentBorder", validatableTextBox.TextBox);
+        var contentBorder = (Border) textBoxTemplate.FindName("ContentBorder", validatableTextBox.TextBox);
 
         accentBorder.BorderBrush = _accentBorderBrush ?? accentBorder.BorderBrush;
         contentBorder.BorderBrush = _contentBorderBrush ?? contentBorder.BorderBrush;
@@ -96,7 +104,7 @@ public partial class ManageOrderView
 
     private void OnLoaded(object sender, RoutedEventArgs e)
     {
-        _viewModel = (ManageOrderViewModel)DataContext;
+        _viewModel = (ManageOrderViewModel) DataContext;
 
         if (_viewModel.IsEditing)
         {

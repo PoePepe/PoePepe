@@ -23,7 +23,7 @@
             Margin="4,10,0,0">
             <CheckBox
                 Margin="0,0,0,8"
-                Content="Hide notifications if PoE not foreground?"
+                Content="Hide notifications if PoE not foreground"
                 IsChecked="{Binding IsHide}" />
         </StackPanel>
 
@@ -31,7 +31,7 @@
             Margin="4,10,0,0">
             <CheckBox
                 Margin="0,0,0,8"
-                Content="Play notification sound?"
+                Content="Play notification sound"
                 IsChecked="{Binding PlayNotificationSound}" />
 
             <StackPanel Orientation="Horizontal">

@@ -8,8 +8,9 @@ using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using Poe.UIW.Properties;
 using Poe.UIW.ViewModels;
-using Wpf.Ui.Appearance;
+using Wpf.Ui.Common;
 using Wpf.Ui.Controls.Interfaces;
 using Wpf.Ui.Mvvm.Contracts;
 
@@ -20,9 +21,7 @@ namespace Poe.UIW.Views;
 /// </summary>
 public partial class ContainerView : INavigationWindow
 {
-    private readonly IThemeService _themeService;
     private readonly ISnackbarService _snackbarService;
-
 
     public ContainerViewModel ViewModel { get; }
 
@@ -33,14 +32,12 @@ public partial class ContainerView : INavigationWindow
     public ContainerView(ContainerViewModel viewModel,
         INavigationService navigationService,
         IPageService pageService,
-        IThemeService themeService,
         IDialogService dialogService,
         ISnackbarService snackbarService)
     {
         ViewModel = viewModel;
         DataContext = this;
 
-        _themeService = themeService;
         _snackbarService = snackbarService;
 
         InitializeComponent();
@@ -56,6 +53,11 @@ public partial class ContainerView : INavigationWindow
 
     private void OnLoaded(object sender, RoutedEventArgs e)
     {
+        AlertNavigationItem.Content = UserSettings.Default.PlayNotificationSound ? "Mute" : "Unmute";
+        AlertNavigationItem.Icon = UserSettings.Default.PlayNotificationSound
+            ? SymbolRegular.AlertOff24
+            : SymbolRegular.Alert24;
+
         Task.Run(() =>
         {
             Dispatcher.Invoke(() =>
@@ -95,13 +97,6 @@ public partial class ContainerView : INavigationWindow
 
     #endregion INavigationWindow methods
 
-    private void NavigationButtonTheme_OnClick(object sender, RoutedEventArgs e)
-    {
-        _themeService.SetTheme(
-            _themeService.GetTheme() == ThemeType.Dark ? ThemeType.Light : ThemeType.Dark
-        );
-    }
-
     private void MenuItem_OnClick_Open(object sender, RoutedEventArgs e)
     {
         Show();
@@ -112,5 +107,17 @@ public partial class ContainerView : INavigationWindow
     {
         Close();
         OnClosing(new CancelEventArgs());
+    }
+
+    private void NavigationButtonAlert_OnClick(object sender, RoutedEventArgs e)
+    {
+        UserSettings.Default.PlayNotificationSound = !UserSettings.Default.PlayNotificationSound;
+
+        AlertNavigationItem.Content = UserSettings.Default.PlayNotificationSound ? "Mute" : "Unmute";
+        AlertNavigationItem.Icon = UserSettings.Default.PlayNotificationSound
+            ? SymbolRegular.AlertOff24
+            : SymbolRegular.Alert24;
+
+        UserSettings.Default.Save();
     }
 }

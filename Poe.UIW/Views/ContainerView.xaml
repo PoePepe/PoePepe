@@ -66,9 +66,8 @@
                         PageTag="settings"
                         PageType="{x:Type pages:Settings}" />
                     <ui:NavigationItem
-                        Click="NavigationButtonTheme_OnClick"
-                        Content="Theme"
-                        Icon="DarkTheme24" />
+                        x:Name="AlertNavigationItem"
+                        Click="NavigationButtonAlert_OnClick"/>
                 </ui:NavigationStore.Footer>
             </ui:NavigationStore>
 

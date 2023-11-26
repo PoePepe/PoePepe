@@ -86,13 +86,12 @@ namespace Poe.UIW
             services.AddSingleton<ApplicationHostService>();
             services.AddSingleton<ISnackbarService, SnackbarService>();
             services.AddSingleton<IPageService, PageService>();
-            services.AddSingleton<IThemeService, ThemeService>();
             services.AddSingleton<ITaskBarService, TaskBarService>();
             services.AddSingleton<Wpf.Ui.Mvvm.Contracts.IDialogService, Wpf.Ui.Mvvm.Services.DialogService>();
 
-            services.AddSingleton<INavigationService, Wpf.Ui.Mvvm.Services.NavigationService>();
+            services.AddSingleton<INavigationService, NavigationService>();
 
-            services.AddScoped<INavigationWindow, Views.ContainerView>();
+            services.AddScoped<INavigationWindow, ContainerView>();
             services.AddScoped<ContainerViewModel>();
             
             services.AddSingleton<LiveSearchViewModel>();

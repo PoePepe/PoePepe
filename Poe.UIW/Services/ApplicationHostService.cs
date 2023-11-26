@@ -18,7 +18,6 @@ public class ApplicationHostService
     private readonly IServiceProvider _serviceProvider;
     private readonly INavigationService _navigationService;
     private readonly IPageService _pageService;
-    private readonly IThemeService _themeService;
     private readonly ITaskBarService _taskBarService;
 
     private INavigationWindow _navigationWindow;
@@ -28,7 +27,6 @@ public class ApplicationHostService
         IServiceProvider serviceProvider,
         INavigationService navigationService,
         IPageService pageService,
-        IThemeService themeService,
         ITaskBarService taskBarService
     )
     {
@@ -36,7 +34,6 @@ public class ApplicationHostService
         _serviceProvider = serviceProvider;
         _navigationService = navigationService;
         _pageService = pageService;
-        _themeService = themeService;
         _taskBarService = taskBarService;
     }
 

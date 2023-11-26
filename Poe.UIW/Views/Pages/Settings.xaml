@@ -14,9 +14,11 @@
         <StackPanel
             Margin="0,0,4,0">
             <TextBlock Foreground="{DynamicResource TextFillColorSecondaryBrush}" Text="Poe Session Id" />
-            <ui:TextBox Margin="0,8,0,0"
-                        PlaceholderText="POESESSID=*******************"
-                        Text="{Binding PoeSessionId}" />
+            <ui:TextBox
+                x:Name="PoeSessionIdTextBox"
+                Margin="0,8,0,0"
+                PlaceholderText="POESESSID=********************************"
+                Text="{Binding PoeSessionId}" />
         </StackPanel>
 
         <StackPanel

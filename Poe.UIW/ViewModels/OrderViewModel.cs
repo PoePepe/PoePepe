@@ -42,9 +42,6 @@ public partial class OrderViewModel : ViewModelValidatableBase
 
     [ObservableProperty] private bool _isActive;
 
-    [ObservableProperty] private bool _hasValidationErrors;
-    [ObservableProperty] private string _validationError;
-
     public void ReValidateAllProperties()
     {
         ValidateAllProperties();

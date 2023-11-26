@@ -15,6 +15,36 @@ public partial class Settings : INavigableView<SettingsViewModel>
         Loaded += OnLoaded;
 
         InitializeComponent();
+        DataObject.AddPastingHandler(PoeSessionIdTextBox, OnPaste);
+    }
+
+    private void OnPaste(object sender, DataObjectPastingEventArgs e)
+    {
+        var isText = e.SourceDataObject.GetDataPresent(DataFormats.UnicodeText, true);
+        if (!isText)
+        {
+            return;
+        }
+
+        if (e.SourceDataObject.GetData(DataFormats.UnicodeText) is not string text)
+        {
+            return;
+        }
+
+        if (text.StartsWith("POESESSID="))
+        {
+            ViewModel.PoeSessionId = text[10..];
+        }
+        else if (text.Length == 32)
+        {
+            ViewModel.PoeSessionId = text;
+        }
+        else
+        {
+            ViewModel.PoeSessionId = text;
+        }
+
+        e.CancelCommand();
     }
 
     private void OnLoaded(object sender, RoutedEventArgs e)

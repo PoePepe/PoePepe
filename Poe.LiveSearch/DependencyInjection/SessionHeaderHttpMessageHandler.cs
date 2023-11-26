@@ -23,7 +23,10 @@ public class SessionHeaderHttpMessageHandler : DelegatingHandler
         var requestPath = request.RequestUri.PathAndQuery;
         if (requestPath.StartsWith(PoeApiPath.ApiPathWhisper) || requestPath.StartsWith(PoeApiPath.ApiPathFetch) || requestPath.StartsWith(PoeApiPath.ApiPathSearch) || requestPath.StartsWith(PoeApiPath.ApiPathLeague))
         {
-            request.Headers.Add(CookieHeaderName, _serviceState.Session);
+            if (!request.Headers.Contains(CookieHeaderName))
+            {
+                request.Headers.Add(CookieHeaderName, _serviceState.Session);
+            }
         }
 
         var httpResponseMessage = await base.SendAsync(request, cancellationToken);

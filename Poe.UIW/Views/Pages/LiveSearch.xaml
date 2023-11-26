@@ -99,7 +99,7 @@
                                         Foreground="#d50000" Symbol="Warning28">
                                         <ui:SymbolIcon.ToolTip>
                                             <ToolTip>
-                                                <TextBlock Foreground="#d50000" Text="{Binding ValidationError}" />
+                                                <TextBlock Foreground="#d50000" Text="{Binding CommonValidationError}" />
                                             </ToolTip>
                                         </ui:SymbolIcon.ToolTip>
                                     </ui:SymbolIcon>

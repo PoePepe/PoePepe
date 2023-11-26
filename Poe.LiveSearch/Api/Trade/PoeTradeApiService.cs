@@ -20,9 +20,9 @@ public class PoeTradeApiService
     /// Checks if a session is valid.
     /// </summary>
     /// <returns>Boolean value indicating if the session is valid.</returns>
-    public async Task<bool> IsValidSessionAsync()
+    public async Task<bool> IsValidSessionAsync(string poeSessId)
     {
-        var response = await _poeTradeApi.SearchItemsAsync("Standard", "10w8Sg");
+        var response = await _poeTradeApi.IsValidSessionAsync("Standard", "10w8Sg", poeSessId);
 
         if (!response.IsSuccessStatusCode)
         {

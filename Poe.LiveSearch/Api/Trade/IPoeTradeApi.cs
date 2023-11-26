@@ -9,6 +9,12 @@ public interface IPoeTradeApi : IRefitApi
     /// <summary>
     /// Создание связи по ключу.
     /// </summary>
+    [Post("/api/trade/search/{leagueName}/{queryHash}")]
+    Task<ApiResponse<SearchResponse>> IsValidSessionAsync(string leagueName, string queryHash, [Header("Cookie")] string poeSessId);
+
+    /// <summary>
+    /// Создание связи по ключу.
+    /// </summary>
     [Post("/api/trade/search/{leagueName}")]
     Task<ApiResponse<SearchResponse>> SearchItemsAsync(string leagueName, [Body] SearchRequest request);
     

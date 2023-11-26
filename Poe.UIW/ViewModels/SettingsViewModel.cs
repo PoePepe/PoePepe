@@ -35,7 +35,7 @@ public partial class SettingsViewModel : ViewModelValidatableBase
         _soundService = soundService;
         _poeTradeApiService = poeTradeApiService;
 
-        PoeSessionId = UserSettings.Default.Session;
+        PoeSessionId = UserSettings.Default.Session[10..];
         IsHide = UserSettings.Default.HideIfPoeUnfocused;
         PlayNotificationSound = UserSettings.Default.PlayNotificationSound;
     }
@@ -46,7 +46,9 @@ public partial class SettingsViewModel : ViewModelValidatableBase
 
     [ObservableProperty] private string _notificationSoundPath;
 
-    [ObservableProperty] [Required] [RegularExpression("^POESESSID=[a-z0-9]{32}$")]
+    [ObservableProperty]
+    [Required]
+    [RegularExpression("^[a-z0-9]{32}$", ErrorMessage = "Incorrect format. Please enter a valid 32-character value.")]
     private string _poeSessionId;
 
     [ObservableProperty] private bool _hasValidationErrors;
@@ -111,17 +113,18 @@ public partial class SettingsViewModel : ViewModelValidatableBase
             return;
         }
 
-        if (PoeSessionId != UserSettings.Default.Session)
+        if (!UserSettings.Default.Session.Contains(PoeSessionId))
         {
-            var isValid = await _poeTradeApiService.IsValidSessionAsync();
+            var isValid = await _poeTradeApiService.IsValidSessionAsync(PoeSessionId);
             if (!isValid)
             {
                 HasValidationErrors = false;
                 ValidationError = "Session id invalid";
+
                 return;
             }
 
-            UserSettings.Default.Session = PoeSessionId;
+            UserSettings.Default.Session = $"POESESSID={PoeSessionId}";
         }
 
         UserSettings.Default.HideIfPoeUnfocused = IsHide;

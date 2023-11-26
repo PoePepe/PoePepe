@@ -125,7 +125,7 @@ public partial class LiveSearchViewModel : ViewModelBase
             return;
         }
 
-        order.ValidationError = orderError.ErrorMessage;
+        order.CommonValidationError = orderError.ErrorMessage;
         order.HasValidationErrors = true;
 
         DisableOrder(orderError.OrderId);
@@ -248,7 +248,7 @@ public partial class LiveSearchViewModel : ViewModelBase
         order.Activity = OrderActivity.Enabled;
         order.IsActive = true;
         order.HasValidationErrors = false;
-        order.ValidationError = null!;
+        order.CommonValidationError = null!;
 
         _service.EnableLiveSearchOrder(order.Id);
 
@@ -318,7 +318,7 @@ public partial class LiveSearchViewModel : ViewModelBase
         }
 
         order.HasValidationErrors = false;
-        order.ValidationError = null!;
+        order.CommonValidationError = null!;
 
         _service.UpdateOrder(order.ToOrder());
 

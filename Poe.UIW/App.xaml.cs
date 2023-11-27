@@ -48,9 +48,11 @@ namespace Poe.UIW
             var liveSearchChannelWorker = Services.GetRequiredService<LiveSearchChannelWorker>();
             var foundChannelWorker = Services.GetRequiredService<FoundChannelWorker>();
             var whisperChannelWorker = Services.GetRequiredService<WhisperChannelWorker>();
+            var historyChannelWorker = Services.GetRequiredService<HistoryChannelWorker>();
             liveSearchChannelWorker.Start(CancellationToken.None);
             foundChannelWorker.Start(CancellationToken.None);
             whisperChannelWorker.Start(CancellationToken.None);
+            historyChannelWorker.Start(CancellationToken.None);
 
             base.OnStartup(e);
         }
@@ -113,6 +115,9 @@ namespace Poe.UIW
             
             services.AddTransient<OrderItemInfoView>();
             services.AddTransient<OrderItemInfoViewModel>();
+
+            services.AddTransient<OrderHistoryView>();
+            services.AddTransient<OrderHistoryViewModel>();
             
             services.AddTransient<OrderItemNotificationViewModel>();
 

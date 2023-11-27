@@ -1,5 +1,4 @@
-﻿using System.Text.Json.Serialization;
-using Poe.LiveSearch.Api.Trade.Models;
+﻿using Poe.LiveSearch.Api.Trade.Models;
 
 namespace Poe.LiveSearch.Models;
 

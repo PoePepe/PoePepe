@@ -10,7 +10,7 @@ namespace Poe.UIW.ViewModels.OrderItemInfoViewModels;
 
 public abstract partial class OrderItemInfoViewModelBase : ViewModelBase, IModalDialogViewModel, ICloseable
 {
-    [ObservableProperty] protected OrderItemDto _orderItem;
+    [ObservableProperty] private OrderItemDto _orderItem;
     private readonly WhisperService _whisperService;
 
     public OrderItemInfoViewModelBase()
@@ -25,7 +25,7 @@ public abstract partial class OrderItemInfoViewModelBase : ViewModelBase, IModal
     public abstract void SetOrderItem(OrderItemDto orderItem);
     
     [RelayCommand]
-    public async Task Whisper()
+    private async Task Whisper()
     {
         await _whisperService.WhisperAsync(OrderItem);
 
@@ -34,7 +34,7 @@ public abstract partial class OrderItemInfoViewModelBase : ViewModelBase, IModal
     }
 
     [RelayCommand]
-    public void Close()
+    private void Close()
     {
         DialogResult = false;
         RequestClose?.Invoke(this, EventArgs.Empty);

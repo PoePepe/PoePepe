@@ -16,7 +16,7 @@ public partial class OrderItemInfoView : Window
 {
     public OrderItemInfoViewModel ViewModel { get; }
     private BitmapImage _bitmapImage;
-    public event EventHandler Whispered;
+    public event EventHandler<WhisperEventArgs> Whispered;
 
     public OrderItemInfoView()
     {
@@ -156,7 +156,7 @@ public partial class OrderItemInfoView : Window
 
     private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
     {
-        Whispered?.Invoke(sender, e);
+        Whispered?.Invoke(sender, new WhisperEventArgs(ViewModel.OrderItem.Id));
         DialogResult = true;
     }
 

@@ -69,7 +69,6 @@ public class PoeTradeApiService
         return response.GetResult();
     }
 
-
     /// <summary>
     /// Fetches specific items.
     /// </summary>

@@ -6,6 +6,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:valueConverters="clr-namespace:ValueConverters;assembly=ValueConverters"
+             xmlns:helpers="clr-namespace:Poe.UIW.Helpers"
              mc:Ignorable="d">
     <Application.Resources>
         <ResourceDictionary>
@@ -13,7 +14,8 @@
                 x:Key="Locator"
                 d:IsDataSource="True" />
             
-            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+            <valueConverters:BoolToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+            <helpers:CurrencyImageConverter x:Key="CurrencyImageConverter" />
             <valueConverters:InvertedBoolConverter x:Key="InvertedBoolConverter" />
             <valueConverters:BoolToVisibilityConverter  x:Key="BooleanToInvertedVisibilityConverter" IsInverted="True" />
             <ResourceDictionary.MergedDictionaries>

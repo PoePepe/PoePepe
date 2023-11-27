@@ -14,9 +14,9 @@ public class OrderRepository : IOrderRepository
     {
         _collection = liteDbContext.Database.GetCollection<Order>("Order");
 
-        var da = _collection.Find(Query.All()).ToArray();
+        var data = _collection.Find(Query.All()).ToArray();
         
-        _cache = new ConcurrentDictionary<long, Order>(da.ToDictionary(x => x.Id, y => y));
+        _cache = new ConcurrentDictionary<long, Order>(data.ToDictionary(x => x.Id, y => y));
     }
 
     public IEnumerable<Order> GetAll()
@@ -34,11 +34,6 @@ public class OrderRepository : IOrderRepository
         _cache.Clear();
 
         _collection.DeleteAll();
-    }
-
-    public IQueryable<Order> Get()
-    {
-        return _cache.Values.AsQueryable();
     }
 
     public Order Add(Order entity)

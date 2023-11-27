@@ -1,5 +1,4 @@
 ﻿using System.Threading.Channels;
-using Poe.LiveSearch.Api.Trade;
 using Poe.LiveSearch.Api.Trade.Models;
 using Poe.LiveSearch.Models;
 using Poe.LiveSearch.Persistence;
@@ -7,23 +6,23 @@ using Poe.LiveSearch.WebSocket;
 using Serilog;
 
 namespace Poe.LiveSearch.Services;
-// todo come up mechanism of workers
+
 public class FoundChannelWorker
 {
-    private readonly ServiceState _serviceState;
     private readonly ChannelReader<FetchResponseResult> _foundItemsChannel;
     private readonly ChannelWriter<FetchResponseResult> _notificationItemsChannel;
     private readonly ChannelWriter<WhisperRequestData> _whisperItemsChannel;
+    private readonly ChannelWriter<FetchResponseResult> _historyItemsChannel;
     private readonly IOrderRepository _orderRepository;
 
     public FoundChannelWorker(ServiceState serviceState, IOrderRepository orderRepository)
     {
-        _serviceState = serviceState;
         _orderRepository = orderRepository;
 
         _foundItemsChannel = serviceState.FoundItemsChannel.Reader;
         _notificationItemsChannel = serviceState.NotificationItemsChannel.Writer;
         _whisperItemsChannel = serviceState.WhisperItemsChannel.Writer;
+        _historyItemsChannel = serviceState.HistoryItemsChannel.Writer;
     }
 
     public void Start(CancellationToken token)
@@ -72,6 +71,9 @@ public class FoundChannelWorker
 
                 return ValueTask.CompletedTask;
             }
+            result.OrderName = orderInfo.OrderName;
+            result.OrderId = orderInfo.OrderId;
+            var historyTask = _historyItemsChannel.WriteAsync(result, token);
 
             if (order.Activity == OrderActivity.Disabled)
             {
@@ -84,14 +86,17 @@ public class FoundChannelWorker
             {
                 Log.Debug("Order {OrderName} sent to whisper channel", orderInfo.OrderName);
 
-                return _whisperItemsChannel.WriteAsync(new WhisperRequestData(new WhisperRequest(result.Listing.WhisperToken), order.Name), token);
+                var whisperTask = _whisperItemsChannel.WriteAsync(
+                    new WhisperRequestData(new WhisperRequest(result.Listing.WhisperToken), order.Name), token);
+
+                return WhenAll(whisperTask, historyTask);
             }
 
             Log.Debug("Order {OrderName} sent to notification channel", orderInfo.OrderName);
 
-            result.OrderName = orderInfo.OrderName;
-            result.OrderId = orderInfo.OrderId;
-            return _notificationItemsChannel.WriteAsync(result, token);
+            var notificationTask = _notificationItemsChannel.WriteAsync(result, token);
+
+            return WhenAll(notificationTask, historyTask);
         }
         catch (Exception e)
         {
@@ -101,7 +106,21 @@ public class FoundChannelWorker
         }
     }
     
-    private static async ValueTask WhenAll(List<ValueTask> tasks)
+    private static async ValueTask WhenAll(params ValueTask[] tasks)
+    {
+        ArgumentNullException.ThrowIfNull(tasks);
+        if (tasks.Length == 0)
+        {
+            return;
+        }
+
+        for (var i = 0; i < tasks.Length; i++)
+        {
+            await tasks[i].ConfigureAwait(false);
+        }
+    }
+
+    private static async ValueTask WhenAll(IReadOnlyList<ValueTask> tasks)
     {
         ArgumentNullException.ThrowIfNull(tasks);
         if (tasks.Count == 0)

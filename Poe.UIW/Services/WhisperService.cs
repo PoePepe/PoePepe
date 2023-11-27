@@ -31,16 +31,19 @@ public class WhisperService
         cts.Token.Register(() => InputKeyboardService.SendInputToPoe(orderItem.WhisperMessage));
         
         await _whisperChannel.WriteAsync(new WhisperRequestData(new WhisperRequest(orderItem.WhisperToken), cts, orderItem.OrderName));
+    }
 
-        // var dispatcherTimer = new DispatcherTimer();
-        // dispatcherTimer.Tick += (_, _) =>
-        // {
-        //     dispatcherTimer.Stop();
-        //     InputKeyboardService.SendInputToPoe(whisperMessage);
-        // };
-        //
-        // dispatcherTimer.Interval = TimeSpan.FromSeconds(3);
-        //
-        // dispatcherTimer.Start();
+    public async Task WhisperAsync(ItemHistoryDto itemHistory)
+    {
+        if (itemHistory.WhisperMessage is null || itemHistory.WhisperToken is null)
+        {
+            Log.Error("Data for whisper of order {OrderName} is empty", itemHistory.OrderName);
+        }
+
+        var cts = new CancellationTokenSource();
+        cts.CancelAfter(TimeSpan.FromSeconds(3));
+        cts.Token.Register(() => InputKeyboardService.SendInputToPoe(itemHistory.WhisperMessage));
+
+        await _whisperChannel.WriteAsync(new WhisperRequestData(new WhisperRequest(itemHistory.WhisperToken), cts, itemHistory.OrderName));
     }
 }

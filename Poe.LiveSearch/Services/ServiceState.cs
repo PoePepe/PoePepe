@@ -13,6 +13,7 @@ public class ServiceState
     public Channel<ItemLiveResponse> LiveSearchChannel { get; } = Channel.CreateUnbounded<ItemLiveResponse>();
     public Channel<FetchResponseResult> FoundItemsChannel { get; } = Channel.CreateUnbounded<FetchResponseResult>();
     public Channel<FetchResponseResult> NotificationItemsChannel { get; } = Channel.CreateUnbounded<FetchResponseResult>();
+    public Channel<FetchResponseResult> HistoryItemsChannel { get; } = Channel.CreateUnbounded<FetchResponseResult>();
 
     public Channel<WhisperRequestData> WhisperItemsChannel { get; } = Channel.CreateUnbounded<WhisperRequestData>();
     public Channel<OrderError> OrderErrorChannel { get; } = Channel.CreateUnbounded<OrderError>();

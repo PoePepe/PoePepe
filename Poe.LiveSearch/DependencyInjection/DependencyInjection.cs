@@ -29,6 +29,7 @@ public static class DependencyInjection
         services.AddSingleton<FoundChannelWorker>();
         services.AddSingleton<LiveSearchChannelWorker>();
         services.AddSingleton<WhisperChannelWorker>();
+        services.AddSingleton<HistoryChannelWorker>();
         services.AddSingleton<Service>();
         services.AddSingleton<ServiceState>();
         
@@ -68,8 +69,8 @@ public static class DependencyInjection
         services.Configure<LiteDbOptions>(configuration.GetSection(LiteDbOptions.DefaultSection));
         services.AddSingleton<ILiteDbContext, LiteDbContext>();
 
-        services.AddScoped<IOrderRepository, OrderRepository>();
-        services.AddSingleton<IUserCredentialsRepository, UserCredentialsRepository>();
+        services.AddSingleton<IOrderRepository, OrderRepository>();
+        services.AddSingleton<IItemHistoryRepository, ItemHistoryRepository>();
 
         return services;
     }

@@ -177,7 +177,7 @@ public class Listing
 
     [JsonPropertyName("stash")] public Stash Stash { get; set; }
 
-    [JsonPropertyName("whisper")] public string Whisper { get; set; }
+    [JsonPropertyName("whisper")] public string WhisperMessage { get; set; }
 
     [JsonPropertyName("whisper_token")] public string WhisperToken { get; set; }
 
@@ -230,10 +230,13 @@ public class FetchResponseResult
 
     [JsonPropertyName("item")] public Item Item { get; set; }
 
-    [JsonIgnore]
-    public IEnumerable<ItemLiveResponse> Orders { get; set; }
-    public long OrderId { get; set; }
-    public string OrderName { get; set; }
+    [JsonIgnore] public IEnumerable<ItemLiveResponse> Orders { get; set; }
+
+    [JsonIgnore] public long OrderId { get; set; }
+
+    [JsonIgnore] public string OrderName { get; set; }
+
+    [JsonIgnore] public bool IsWhispered { get; set; }
 }
 
 public class Stash

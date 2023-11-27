@@ -1,0 +1,137 @@
+﻿<ui:UiWindow x:Class="Poe.UIW.Views.OrderHistoryView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+             xmlns:local="clr-namespace:Poe.UIW.Views"
+             xmlns:viewModels="clr-namespace:Poe.UIW.ViewModels"
+             mc:Ignorable="d"
+             ExtendsContentIntoTitleBar="True"
+             WindowBackdropType="Mica"
+             ResizeMode="NoResize"
+             SizeToContent="Height"
+             MaxWidth="1000"
+
+             Title="OrderHistoryView"
+             d:DataContext="{d:DesignInstance viewModels:OrderHistoryViewModel, IsDesignTimeCreatable=True}">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <ui:TitleBar
+            Icon="pack://application:,,,/Resources/Icons/logo.png"
+            Grid.Row="0"
+            ForceShutdown="False"
+            FontSize="15"
+            MinimizeToTray="False"
+            ShowHelp="False"
+            ShowMaximize="False"
+            ShowMinimize="False"
+            ShowClose="True">
+        </ui:TitleBar>
+        <TextBlock x:Name="TitleTextBlock" Grid.Row="0" HorizontalAlignment="Center" FontSize="20" Margin="0 10 10 0"
+                   Text="History" />
+
+        <DataGrid Grid.Row="1"
+                  ItemsSource="{Binding HistoryItemViews}"
+                  Style="{StaticResource DataGrid_LifeSearch}"
+                  CellStyle="{StaticResource DataGridCell_LifeSearch}"
+                  ColumnHeaderStyle="{StaticResource DataGridColumnHeaderStyle_LifeSearch}"
+                  RowStyle="{StaticResource DataGridRowStyle_LifeSearch}">
+            <DataGrid.Columns>
+                <!-- Item name -->
+                <DataGridTemplateColumn Width="280" Header="Name">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Vertical">
+                                <TextBlock VerticalAlignment="Center" Text="{Binding ItemName}"></TextBlock>
+                                <TextBlock VerticalAlignment="Center" Text="{Binding ItemTypeLine}"></TextBlock>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <!-- Date -->
+                <DataGridTemplateColumn Width="220">
+                    <DataGridTemplateColumn.HeaderTemplate>
+                        <DataTemplate>
+                            <TextBlock HorizontalAlignment="Center">Found date</TextBlock>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.HeaderTemplate>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock VerticalAlignment="Center" Text="{Binding FoundDate}"></TextBlock>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <!-- Price -->
+                <DataGridTemplateColumn Width="100">
+                    <DataGridTemplateColumn.HeaderTemplate>
+                        <DataTemplate>
+                            <TextBlock HorizontalAlignment="Center">Price</TextBlock>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.HeaderTemplate>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                                <StackPanel HorizontalAlignment="Left" Orientation="Horizontal"
+                                            Margin="5,0,0,0">
+                                    <TextBlock VerticalAlignment="Center" Style="{StaticResource currencyPrice}"
+                                               Text="{Binding Price.Amount}">
+                                    </TextBlock>
+                                    <TextBlock VerticalAlignment="Center" Style="{StaticResource currencyPrice}">x </TextBlock>
+                                    <Image VerticalAlignment="Center" Height="28"
+                                           Source="{Binding Price.Currency, Converter={StaticResource CurrencyImageConverter}}">
+                                    </Image>
+                                </StackPanel>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <!-- Is whispered -->
+                <DataGridTemplateColumn Width="130">
+                    <DataGridTemplateColumn.HeaderTemplate>
+                        <DataTemplate>
+                            <TextBlock HorizontalAlignment="Center">Is whispered</TextBlock>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.HeaderTemplate>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                                <TextBlock VerticalAlignment="Center" Text="{Binding IsWhispered}" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <!-- Action buttons -->
+                <DataGridTemplateColumn Width="auto">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <ui:Button BorderThickness="0"
+                                           HorizontalAlignment="Center" Padding="10"
+                                           Content="Show info"
+                                           Appearance="Transparent"
+                                           Command="{Binding ViewModel.ShowInfoCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:OrderHistoryView}}"
+                                           CommandParameter="{Binding ItemId}" />
+
+                                <ui:Button BorderThickness="0"
+                                           HorizontalAlignment="Center" Padding="10"
+                                           Content="Whisper"
+                                           Appearance="Transparent"
+                                           Command="{Binding ViewModel.WhisperCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:OrderHistoryView}}"
+                                           CommandParameter="{Binding ItemId}" />
+                            </StackPanel>
+
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</ui:UiWindow>

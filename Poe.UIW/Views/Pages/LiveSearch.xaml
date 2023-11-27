@@ -11,8 +11,7 @@
            xmlns:helpers="clr-namespace:Poe.UIW.Helpers"
            xmlns:properties="clr-namespace:Poe.UIW.Properties"
            mc:Ignorable="d"
-           d:DataContext="{d:DesignInstance vm:LiveSearchViewModel, IsDesignTimeCreatable=True}"
-           >
+           d:DataContext="{d:DesignInstance vm:LiveSearchViewModel, IsDesignTimeCreatable=True}">
     
     <Grid>
 
@@ -168,8 +167,6 @@
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
 
-                    <!-- <DataGridTextColumn Width="auto" /> -->
-                    
                     <DataGridTemplateColumn Width="auto">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
@@ -186,6 +183,9 @@
                                                 <MenuItem Header="Copy link"
                                                           Command="{Binding Source={StaticResource Proxy}, Path=Data.CopyOrderLinkCommand}"
                                                           CommandParameter="{Binding Link}" />
+                                                <MenuItem Header="History"
+                                                          Command="{Binding Source={StaticResource Proxy}, Path=Data.ShowOrderHistoryCommand}"
+                                                          CommandParameter="{Binding Id}" />
                                                 <Separator/>
                                                 <MenuItem Header="Edit"
                                                           Command="{Binding Source={StaticResource Proxy}, Path=Data.EditOrderCommand}"
@@ -196,32 +196,6 @@
                                             </ContextMenu>
                                         </ui:Button.ContextMenu>
                                     </ui:Button>
-
-                                    <!-- <Button VerticalContentAlignment="Center" Background="Transparent"> -->
-                                    <!--     <Button.ContentTemplate> -->
-                                    <!--         <DataTemplate> -->
-                                    <!--             <TextBlock Foreground="Black" FontSize="22" VerticalAlignment="Center" -->
-                                    <!--                        Text="⋯"> -->
-                                    <!--             </TextBlock> -->
-                                    <!--         </DataTemplate> -->
-                                    <!--     </Button.ContentTemplate> -->
-                                    <!-- -->
-                                    <!--     ~1~ <Button.Flyout> @1@ -->
-                                    <!--     ~1~     <MenuFlyout> @1@ -->
-                                    <!--     ~1~         <MenuItem Header="Copy link" @1@ -->
-                                    <!--     ~1~                   Command="{Binding $parent[DataGrid].((vm:MainViewModel)DataContext).CopyOrderLink}" @1@ -->
-                                    <!--     ~1~                   CommandParameter="{Binding Link}"/> @1@ -->
-                                    <!--     ~1~         <MenuItem Header="-" /> @1@ -->
-                                    <!--     ~1~         <MenuItem Header="Edit" @1@ -->
-                                    <!--     ~1~                   Command="{Binding $parent[DataGrid].((vm:MainViewModel)DataContext).EditOrder}" @1@ -->
-                                    <!--     ~1~                   CommandParameter="{Binding Id}" /> @1@ -->
-                                    <!--     ~1~         <MenuItem Header="-" /> @1@ -->
-                                    <!--     ~1~         <MenuItem Header="Delete" @1@ -->
-                                    <!--     ~1~                   Command="{Binding $parent[DataGrid].((vm:MainViewModel)DataContext).DeleteOrder}" @1@ -->
-                                    <!--     ~1~                   CommandParameter="{Binding Id}" /> @1@ -->
-                                    <!--     ~1~     </MenuFlyout> @1@ -->
-                                    <!--     ~1~ </Button.Flyout> @1@ -->
-                                    <!-- </Button> -->
                                 </StackPanel>
 
                             </DataTemplate>

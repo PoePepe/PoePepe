@@ -11,6 +11,7 @@ using Poe.UIW;
 using Poe.UIW.Models;
 using Poe.UIW.ViewModels;
 using Poe.UIW.ViewModels.OrderItemInfoViewModels;
+using Poe.UIW.Views;
 using Poe.UIW.Views.OrderItemInfoViews;
 using ManageOrderViewModel = Poe.UIW.ViewModels.ManageOrderViewModel;
 using OrderViewModel = Poe.UIW.ViewModels.OrderViewModel;
@@ -54,7 +55,18 @@ public static class DialogServiceExtensions
             MessageBoxButton.YesNo);
     }
     
-    public static void ShowOrderItemInfo(OrderItemDto orderItem, Action<object, EventArgs> onWhispered)
+    public static void ShowOrderHistory(this OrderViewModel order, Action<object, EventArgs> onClosed)
+    {
+        var orderHistoryViewModel = App.Current.Services.GetRequiredService<OrderHistoryViewModel>();
+        orderHistoryViewModel.SetOrder(order);
+
+        var orderItemInfoView = new OrderHistoryView(orderHistoryViewModel);
+
+        orderItemInfoView.Show();
+        orderItemInfoView.Closed += (sender, args) => onClosed(sender, args);
+    }
+
+    public static void ShowOrderItemInfo(OrderItemDto orderItem, Action<object, WhisperEventArgs> onWhispered)
     {
         var orderItemInfoViewModel = App.Current.Services.GetRequiredService<OrderItemInfoViewModel>();
         orderItemInfoViewModel.SetOrderItem(orderItem);

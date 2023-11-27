@@ -24,7 +24,7 @@ public static class OrderItemMapper
             OrderId = response.OrderId,
             OrderName = response.OrderName,
             ImageUrl = response.Item.Icon,
-            WhisperMessage = response.Listing.Whisper,
+            WhisperMessage = response.Listing.WhisperMessage,
             WhisperToken = response.Listing.WhisperToken,
             Price = new ItemPrice
             {

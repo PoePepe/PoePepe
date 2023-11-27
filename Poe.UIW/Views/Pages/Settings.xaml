@@ -27,18 +27,29 @@
         <!--Settings-->
         <StackPanel Grid.Row="1">
             <!--POESESSID-->
-            <Grid HorizontalAlignment="Left">
+            <StackPanel HorizontalAlignment="Left">
 
                 <TextBox Margin="0"
                          Width="350"
                          Style="{StaticResource Poesessidfix}"
                          x:Name="PoeSessionIdTextBox"
                          Text="{Binding PoeSessionId}" />
-
-            </Grid>
+                
+                <StackPanel x:Name="NameErrorStackPanel"
+                            Visibility="Hidden"
+                            Orientation="Horizontal"
+                            Margin="0 2 0 0 ">
+                    <ui:SymbolIcon Symbol="ErrorCircle12"
+                                   Margin="0 0 4 0"
+                                   Foreground="#d50000" />
+                    <TextBlock  VerticalAlignment="Center"
+                                Foreground="#d50000"
+                                FontSize="13" />
+                </StackPanel>
+            </StackPanel>
             <!--Hide_Notify-->
-            <Grid Margin="0,20,0,0">
-                <CheckBox Margin="0,0,0,8"
+            <Grid Margin="0,0,0,0">
+                <CheckBox Margin="0,0,0,0"
                           Content="Hide notifications if PoE not foreground"
                           IsChecked="{Binding IsHide}" />
             </Grid>
@@ -62,7 +73,7 @@
 
             </StackPanel>-->
             <!--Notification_Sound-->
-            <Grid Margin="0 15 0 0">
+            <Grid Margin="0 20 0 0">
                 <ComboBox x:Name="fsdfds"
                           Width="350"
                           SelectedValue="{Binding ActualSort, Mode=TwoWay}"

@@ -189,7 +189,7 @@ public partial class LiveSearchViewModel : ViewModelBase
     [RelayCommand]
     private async Task AddNewOrder()
     {
-        var id = !Enumerable.Any(Orders) ? 1 : Orders.Select(x => x.Id).Max() + 1;
+        var id = !Orders.Any() ? 1 : Orders.Select(x => x.Id).Max() + 1;
         var order = await _dialogService.AddNewOrderAsync(this);
         if (order is null)
         {
@@ -287,6 +287,33 @@ public partial class LiveSearchViewModel : ViewModelBase
         _service.UpdateOrder(order.ToOrder());
 
         Log.Information("Mod of order {OrderName} has been changed to {NewMod}", order.Name, newMod);
+    }
+
+    private string _openedHistoryForOrder;
+    
+    private void OnHistoryClosed(object sender, EventArgs e)
+    {
+        _openedHistoryForOrder = null;
+    }
+    
+    [RelayCommand]
+    private void ShowOrderHistory(long id)
+    {
+        if (_openedHistoryForOrder is not null)
+        {
+            return;
+        }
+
+        var order = Orders.FirstOrDefault(x => x.Id == id);
+
+        if (order is null)
+        {
+            return;
+        }
+
+        _openedHistoryForOrder = order.Name;
+
+        order.ShowOrderHistory(OnHistoryClosed);
     }
 
     [RelayCommand]

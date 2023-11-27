@@ -32,7 +32,7 @@
                     <ColumnDefinition Width="30*" />
                 </Grid.ColumnDefinitions>
 
-
+                <Border BorderBrush="White" BorderThickness="0 0 0.15 0"> </Border>
                 <Button
                     Command="{Binding ShowInfoCommand}"
                     VerticalAlignment="Stretch"

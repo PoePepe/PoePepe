@@ -8,57 +8,90 @@
            xmlns:properties="clr-namespace:Poe.UIW.Properties"
            xmlns:viewModels="clr-namespace:Poe.UIW.ViewModels"
            mc:Ignorable="d"
-           Title="Settings" Height="450" Width="800"
            d:DataContext="{d:DesignInstance viewModels:SettingsViewModel, IsDesignTimeCreatable=True}">
-    <StackPanel>
-        <StackPanel
-            Margin="0,0,4,0">
-            <TextBlock Foreground="{DynamicResource TextFillColorSecondaryBrush}" Text="Poe Session Id" />
-            <ui:TextBox
-                x:Name="PoeSessionIdTextBox"
-                Margin="0,8,0,0"
-                PlaceholderText="POESESSID=********************************"
-                Text="{Binding PoeSessionId}" />
+
+    <Grid Margin="30 0 30 0">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+
+        </Grid.RowDefinitions>
+        <!--Title-->
+        <TextBlock Text="Settings"
+                   HorizontalAlignment="Left"
+                   Margin="0 25 25 50"
+                   FontSize="25"
+                   FontWeight="SemiBold" />
+        <!--Settings-->
+        <StackPanel Grid.Row="1">
+            <!--POESESSID-->
+            <Grid HorizontalAlignment="Left">
+
+                <TextBox Margin="0"
+                         Width="350"
+                         Style="{StaticResource Poesessidfix}"
+                         x:Name="PoeSessionIdTextBox"
+                         Text="{Binding PoeSessionId}" />
+
+            </Grid>
+            <!--Hide_Notify-->
+            <Grid Margin="0,20,0,0">
+                <CheckBox Margin="0,0,0,8"
+                          Content="Hide notifications if PoE not foreground"
+                          IsChecked="{Binding IsHide}" />
+            </Grid>
+
+            <!--<StackPanel Margin="4,10,0,0">
+                <CheckBox Margin="0,0,0,8"
+                          Content="Play notification sound"
+                          IsChecked="{Binding PlayNotificationSound}" />
+
+                <StackPanel Orientation="Horizontal">
+                    <ui:Button Appearance="Secondary"
+                               Command="{Binding OpenSoundFileCommand}"
+                               Content="Open sound file" />
+
+                    <TextBlock Text="{Binding NotificationSoundPath}" />
+                </StackPanel>
+
+                <ui:Button Appearance="Secondary"
+                           Command="{Binding ResetSoundFileCommand}"
+                           Content="Reset to default" />
+
+            </StackPanel>-->
+            <!--Notification_Sound-->
+            <Grid Margin="0 15 0 0">
+                <ComboBox x:Name="fsdfds"
+                          Width="350"
+                          SelectedValue="{Binding ActualSort, Mode=TwoWay}"
+                          HorizontalAlignment="Left"
+                          Style="{StaticResource Notification_Sound}"
+                          ItemsSource="{Binding dsadsadsa}"
+                          FontSize="14">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding }" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+            </Grid>
         </StackPanel>
-
-        <StackPanel
-            Margin="4,10,0,0">
-            <CheckBox
-                Margin="0,0,0,8"
-                Content="Hide notifications if PoE not foreground"
-                IsChecked="{Binding IsHide}" />
+        <!--Action_Buttons-->
+        <StackPanel Grid.Row="2"
+                    Margin="0,30,0,0" >
+            <ui:Button Appearance="Primary"
+                       Width="100"
+                       HorizontalContentAlignment="Center"
+                       VerticalContentAlignment="Center"
+                       FontSize="16"
+                       FontWeight="DemiBold"
+                       Foreground="White"
+                       Background="#2562d1"
+                       Command="{Binding SubmitCommand}"
+                       Content="Save" />
+            <!-- IsEnabled="{Binding OrderModel.Validator.IsValid}" -->
         </StackPanel>
-
-        <StackPanel
-            Margin="4,10,0,0">
-            <CheckBox
-                Margin="0,0,0,8"
-                Content="Play notification sound"
-                IsChecked="{Binding PlayNotificationSound}" />
-
-            <StackPanel Orientation="Horizontal">
-                <ui:Button
-                    Visibility="{Binding PlayNotificationSound, Converter={StaticResource BooleanToVisibilityConverter}}"
-                    Appearance="Secondary"
-                    Command="{Binding OpenSoundFileCommand}"
-                    Content="Open sound file" />
-
-                <TextBlock
-                    Visibility="{Binding PlayNotificationSound, Converter={StaticResource BooleanToVisibilityConverter}}"
-                    Text="{Binding NotificationSoundPath}" />
-            </StackPanel>
-
-            <ui:Button
-                Visibility="{Binding PlayNotificationSound, Converter={StaticResource BooleanToVisibilityConverter}}"
-                Appearance="Secondary"
-                Command="{Binding ResetSoundFileCommand}"
-                Content="Reset to default" />
-
-        </StackPanel>
-
-        <StackPanel
-            Margin="4,0,0,0">
-            <ui:Button Appearance="Primary" Command="{Binding SaveCommand}" Content="Save" />
-        </StackPanel>
-    </StackPanel>
+    </Grid>
 </ui:UiPage>

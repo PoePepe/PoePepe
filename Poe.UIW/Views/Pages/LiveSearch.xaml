@@ -29,7 +29,7 @@
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="Life Search"
                                HorizontalAlignment="Left"
-                               Margin="25 0 25 20"
+                               Margin="0 0 25 20"
                                FontSize="25"
                                FontWeight="SemiBold" />
                     <ComboBox MaxWidth="200"
@@ -68,18 +68,15 @@
                         TextChanged="TextBoxBase_OnTextChanged"
                         PlaceholderText="Search by name" />
 
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock   FontSize="16" VerticalAlignment="Center" Text="Sort by: " ></TextBlock>
-                        <ComboBox SelectedValue="{Binding ActualSort, Mode=TwoWay}"
-                                  DisplayMemberPath="Description"
-                                  ItemsSource="{x:Static vm:LiveSearchViewModel.AvailableSorting}"
-                                  SelectionChanged="SortComboBox_OnSelectionChanged">
-                        
-                        </ComboBox>
-                </StackPanel>
+                    
+                    <ComboBox SelectedValue="{Binding ActualSort, Mode=TwoWay}"
+                              DisplayMemberPath="Description"
+                              Style="{StaticResource SortByCombobox}"
+                              ItemsSource="{x:Static vm:LiveSearchViewModel.AvailableSorting}"
+                              SelectionChanged="SortComboBox_OnSelectionChanged" />
 
-                
-            </StackPanel>
+
+                </StackPanel>
 
             <DataGrid Grid.Row="2"  Name="dataGrid_LifeSearch"
                        ItemsSource="{Binding FilteredOrders}"
@@ -88,7 +85,24 @@
                        ColumnHeaderStyle="{StaticResource DataGridColumnHeaderStyle_LifeSearch}"
                        RowStyle="{StaticResource DataGridRowStyle_LifeSearch}">
                 <DataGrid.Columns>
-                    <DataGridTemplateColumn Width="280" Header="Name">
+                    
+                    <DataGridTemplateColumn Width="Auto">
+                        <DataGridTemplateColumn.HeaderTemplate>
+                            <DataTemplate>
+                                <CheckBox HorizontalAlignment="Center" Margin="1 0 0 0" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.HeaderTemplate>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <CheckBox  />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                        
+                    </DataGridTemplateColumn>
+                    
+                    
+                    
+                    <DataGridTemplateColumn Width="280" Header="Name" CanUserResize="False">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">

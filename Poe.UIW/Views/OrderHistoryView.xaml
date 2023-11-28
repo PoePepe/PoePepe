@@ -11,7 +11,9 @@
              WindowBackdropType="Mica"
              ResizeMode="NoResize"
              SizeToContent="Height"
-             MaxWidth="1000"
+             MaxWidth="825"
+             MaxHeight="600"
+             
 
              Title="OrderHistoryView"
              d:DataContext="{d:DesignInstance viewModels:OrderHistoryViewModel, IsDesignTimeCreatable=True}">
@@ -31,10 +33,11 @@
             ShowMinimize="False"
             ShowClose="True">
         </ui:TitleBar>
-        <TextBlock x:Name="TitleTextBlock" Grid.Row="0" HorizontalAlignment="Center" FontSize="20" Margin="0 10 10 0"
+        <TextBlock x:Name="TitleTextBlock" Grid.Row="0" HorizontalAlignment="Center" FontSize="20" Margin="0 10 10 20"
                    Text="History" />
-
+        
         <DataGrid Grid.Row="1"
+                  Margin="30 0 30 20 "
                   ItemsSource="{Binding HistoryItemViews}"
                   Style="{StaticResource DataGrid_LifeSearch}"
                   CellStyle="{StaticResource DataGridCell_LifeSearch}"
@@ -54,21 +57,21 @@
                 </DataGridTemplateColumn>
 
                 <!-- Date -->
-                <DataGridTemplateColumn Width="220">
+                <DataGridTemplateColumn Width="Auto">
                     <DataGridTemplateColumn.HeaderTemplate>
                         <DataTemplate>
-                            <TextBlock HorizontalAlignment="Center">Found date</TextBlock>
+                            <TextBlock HorizontalAlignment="Right">Found date</TextBlock>
                         </DataTemplate>
                     </DataGridTemplateColumn.HeaderTemplate>
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <TextBlock VerticalAlignment="Center" Text="{Binding FoundDate}"></TextBlock>
+                            <TextBlock  VerticalAlignment="Center" Text="{Binding FoundDate}"></TextBlock>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
                 <!-- Price -->
-                <DataGridTemplateColumn Width="100">
+                <DataGridTemplateColumn Width="Auto">
                     <DataGridTemplateColumn.HeaderTemplate>
                         <DataTemplate>
                             <TextBlock HorizontalAlignment="Center">Price</TextBlock>
@@ -78,7 +81,7 @@
                         <DataTemplate>
                             <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
                                 <StackPanel HorizontalAlignment="Left" Orientation="Horizontal"
-                                            Margin="5,0,0,0">
+                                            Margin="0,0,0,0">
                                     <TextBlock VerticalAlignment="Center" Style="{StaticResource currencyPrice}"
                                                Text="{Binding Price.Amount}">
                                     </TextBlock>
@@ -92,7 +95,7 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
-                <!-- Is whispered -->
+                <!-- Is whispered --><!--
                 <DataGridTemplateColumn Width="130">
                     <DataGridTemplateColumn.HeaderTemplate>
                         <DataTemplate>
@@ -106,10 +109,10 @@
                             </StackPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
+                </DataGridTemplateColumn>-->
 
                 <!-- Action buttons -->
-                <DataGridTemplateColumn Width="auto">
+                <DataGridTemplateColumn Width="Auto">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">

@@ -53,10 +53,10 @@ public partial class ContainerView : INavigationWindow
 
     private void OnLoaded(object sender, RoutedEventArgs e)
     {
-        AlertNavigationItem.Content = UserSettings.Default.PlayNotificationSound ? "Mute" : "Unmute";
+        AlertNavigationItem.Content = UserSettings.Default.PlayNotificationSound ? "Sound" : "Mute";
         AlertNavigationItem.Icon = UserSettings.Default.PlayNotificationSound
-            ? SymbolRegular.AlertOff24
-            : SymbolRegular.Alert24;
+            ? SymbolRegular.Alert24
+            : SymbolRegular.AlertOff24;
 
         Task.Run(() =>
         {

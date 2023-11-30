@@ -31,6 +31,8 @@ public partial class Settings : INavigableView<SettingsViewModel>
             return;
         }
 
+        ViewModel.PoeSessionId = "";
+
         if (text.StartsWith("POESESSID="))
         {
             ViewModel.PoeSessionId = text[10..];

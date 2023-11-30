@@ -33,11 +33,11 @@
             ShowMinimize="False"
             ShowClose="True">
         </ui:TitleBar>
-        <TextBlock x:Name="TitleTextBlock" Grid.Row="0" HorizontalAlignment="Center" FontSize="20" Margin="0 10 10 20"
+        <TextBlock x:Name="TitleTextBlock" Grid.Row="0" HorizontalAlignment="Center" FontSize="20" Margin="0 10 10 0"
                    Text="History" />
         
         <DataGrid Grid.Row="1"
-                  Margin="30 0 30 20 "
+                  Margin="30 20 30 20 "
                   ItemsSource="{Binding HistoryItemViews}"
                   Style="{StaticResource DataGrid_LifeSearch}"
                   CellStyle="{StaticResource DataGridCell_LifeSearch}"

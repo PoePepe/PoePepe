@@ -30,7 +30,7 @@
             <StackPanel HorizontalAlignment="Left">
 
                 <TextBox Margin="0"
-                         Width="350"
+                         Width="450"
                          Style="{StaticResource Poesessidfix}"
                          x:Name="PoeSessionIdTextBox"
                          Text="{Binding PoeSessionId}" />
@@ -47,12 +47,7 @@
                                 FontSize="13" />
                 </StackPanel>
             </StackPanel>
-            <!--Hide_Notify-->
-            <Grid Margin="0,0,0,0">
-                <CheckBox Margin="0,0,0,0"
-                          Content="Hide notifications if PoE not foreground"
-                          IsChecked="{Binding IsHide}" />
-            </Grid>
+            
 
             <!--<StackPanel Margin="4,10,0,0">
                 <CheckBox Margin="0,0,0,8"
@@ -73,9 +68,9 @@
 
             </StackPanel>-->
             <!--Notification_Sound-->
-            <Grid Margin="0 20 0 0">
-                <ComboBox x:Name="fsdfds"
-                          Width="350"
+            <Grid Margin="0 10 0 0">
+                <ComboBox
+                          Width="450"
                           SelectedValue="{Binding ActualSort, Mode=TwoWay}"
                           HorizontalAlignment="Left"
                           Style="{StaticResource Notification_Sound}"
@@ -87,6 +82,12 @@
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
                 </ComboBox>
+            </Grid>
+            <!--Hide_Notify-->
+            <Grid Margin="0,20,0,0">
+                <CheckBox Margin="0,0,0,0"
+                          Content="Hide notifications if PoE not foreground"
+                          IsChecked="{Binding IsHide}" />
             </Grid>
         </StackPanel>
         <!--Action_Buttons-->

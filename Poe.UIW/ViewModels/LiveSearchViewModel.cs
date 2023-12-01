@@ -35,7 +35,6 @@ public partial class LiveSearchViewModel : ViewModelBase
     private readonly IDialogService _dialogService;
     private readonly ChannelReader<OrderError> _orderErrorChannel;
     public readonly IDialogControl DialogControl;
-    private readonly SoundService _soundService;
 
     [ObservableProperty] private ObservableCollection<OrderViewModel> _orders;
     private IEnumerable<OrderViewModel> _filteredOrders = new List<OrderViewModel>();
@@ -68,7 +67,7 @@ public partial class LiveSearchViewModel : ViewModelBase
 
     public LiveSearchViewModel(IDialogService customDialogService, Service service, ServiceState serviceState,
         PoeTradeApiService poeTradeApiService, Wpf.Ui.Mvvm.Contracts.IDialogService dialogService,
-        ISnackbarService snackbarService, SoundService soundService)
+        ISnackbarService snackbarService)
     {
         _dialogService = customDialogService;
         DialogControl = dialogService.GetDialogControl();
@@ -76,7 +75,6 @@ public partial class LiveSearchViewModel : ViewModelBase
         _service = service;
         _poeTradeApiService = poeTradeApiService;
         _snackbarService = snackbarService;
-        _soundService = soundService;
         _orderErrorChannel = serviceState.OrderErrorChannel.Reader;
 
         var sortKind = Enum.TryParse<OrderSortKind>(UserSettings.Default.LiveSearchSort, out var sort)
@@ -129,11 +127,20 @@ public partial class LiveSearchViewModel : ViewModelBase
         order.HasValidationErrors = true;
 
         DisableOrder(orderError.OrderId);
+
+        _snackbarService.Show(
+            $"Error {orderError.ErrorMessage} occurred in order {order.Name}.",
+            "The search has been stopped.",
+            SymbolRegular.Alert24,
+            ControlAppearance.Danger
+        );
+
+        Log.Error("Error {Error} occurred in order {OrderName}", orderError.ErrorMessage, order.Name);
     }
 
     private async Task Da()
     {
-        var searchResponseResult = await _poeTradeApiService.SearchItemsAsync("Ancestor","Pd8349giL");
+        var searchResponseResult = await _poeTradeApiService.SearchItemsAsync("Ancestor", "10w8Sg");
         if (!searchResponseResult.IsSuccess || !searchResponseResult.Content.Result.Any())
         {
             return;
@@ -149,10 +156,11 @@ public partial class LiveSearchViewModel : ViewModelBase
             return;
         }
 
-        var da = fetchResponse.Content.Results.FirstOrDefault();
+        var da = fetchResponse.Content?.Results?.FirstOrDefault();
 
         if (da is null)
         {
+            Console.WriteLine("null");
             return;
         }
 

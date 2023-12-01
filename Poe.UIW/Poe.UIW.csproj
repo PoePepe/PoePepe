@@ -106,9 +106,6 @@
         <Resource Include="Resources\Images\Separators\separator-supporter-foil.png" />
         <Resource Include="Resources\Images\Separators\separator-unique.png" />
         <Resource Include="Resources\Images\Separators\separator-rare.png" />
-        <Content Include="Resources\Sounds\defaultNotification.wav">
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </Content>
     </ItemGroup>
 
     <ItemGroup>
@@ -131,6 +128,37 @@
         <AutoGen>True</AutoGen>
         <DependentUpon>UserSettings.settings</DependentUpon>
       </Compile>
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Resources\Sounds\Baka.wav" />
+      <Content Include="Resources\Sounds\Baka.wav">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Resources\Sounds\Doorbell.mp3" />
+      <Content Include="Resources\Sounds\Doorbell.mp3">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Resources\Sounds\Electronic ping.mp3" />
+      <Content Include="Resources\Sounds\Electronic ping.mp3">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Resources\Sounds\Lofi.mp3" />
+      <Content Include="Resources\Sounds\Lofi.mp3">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Resources\Sounds\Music box.mp3" />
+      <Content Include="Resources\Sounds\Music box.mp3">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Resources\Sounds\Ribbit.mp3" />
+      <Content Include="Resources\Sounds\Ribbit.mp3">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Resources\Sounds\Simple ping.mp3" />
+      <Content Include="Resources\Sounds\Simple ping.mp3">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
     </ItemGroup>
 
 </Project>

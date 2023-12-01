@@ -21,8 +21,6 @@ namespace Poe.UIW.Views;
 /// </summary>
 public partial class ContainerView : INavigationWindow
 {
-    private readonly ISnackbarService _snackbarService;
-
     public ContainerViewModel ViewModel { get; }
 
     public ContainerView()
@@ -38,8 +36,6 @@ public partial class ContainerView : INavigationWindow
         ViewModel = viewModel;
         DataContext = this;
 
-        _snackbarService = snackbarService;
-
         InitializeComponent();
 
         SetPageService(pageService);
@@ -53,7 +49,7 @@ public partial class ContainerView : INavigationWindow
 
     private void OnLoaded(object sender, RoutedEventArgs e)
     {
-        AlertNavigationItem.Content = UserSettings.Default.PlayNotificationSound ? "Sound" : "Mute";
+        AlertNavigationItem.Content = UserSettings.Default.PlayNotificationSound ? "Sound on" : "Sound off";
         AlertNavigationItem.Icon = UserSettings.Default.PlayNotificationSound
             ? SymbolRegular.Alert24
             : SymbolRegular.AlertOff24;
@@ -113,7 +109,7 @@ public partial class ContainerView : INavigationWindow
     {
         UserSettings.Default.PlayNotificationSound = !UserSettings.Default.PlayNotificationSound;
 
-        AlertNavigationItem.Content = UserSettings.Default.PlayNotificationSound ? "Sound" : "Mute";
+        AlertNavigationItem.Content = UserSettings.Default.PlayNotificationSound ? "Sound on" : "Sound off";
         AlertNavigationItem.Icon = UserSettings.Default.PlayNotificationSound
             ? SymbolRegular.Alert24
             : SymbolRegular.AlertOff24;

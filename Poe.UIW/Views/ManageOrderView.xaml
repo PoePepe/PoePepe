@@ -53,7 +53,7 @@
                             PlaceholderText="Name"
                             x:Name="NameTextBox"
                             HorizontalAlignment="Stretch"
-                            Text="{Binding ManageOrderModel.Name, ValidatesOnDataErrors=False, ValidatesOnNotifyDataErrors=False, NotifyOnValidationError=False}"/>
+                            Text="{Binding ManageOrderModel.Name, ValidatesOnNotifyDataErrors=False}"/>
                 <StackPanel x:Name="NameErrorStackPanel" Visibility="Hidden" Orientation="Horizontal" Margin="0 1 0 0 ">
                     <ui:SymbolIcon Symbol="ErrorCircle12"
                                    Margin="0 0 4 0"
@@ -74,7 +74,7 @@
                             IsEnabled="{Binding IsEditing, Converter={StaticResource InvertedBoolConverter}}"
                             PlaceholderText="Link"
                             HorizontalAlignment="Stretch"
-                            Text="{Binding ManageOrderModel.Link, ValidatesOnDataErrors=False, ValidatesOnNotifyDataErrors=False, NotifyOnValidationError=False}"/>
+                            Text="{Binding ManageOrderModel.Link, ValidatesOnNotifyDataErrors=False}"/>
                 <StackPanel x:Name="LinkErrorStackPanel"
                             Visibility="Hidden"
                             Orientation="Horizontal"

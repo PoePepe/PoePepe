@@ -1,7 +1,14 @@
-﻿using System.Windows;
+﻿using System.ComponentModel;
+using System.Linq;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Media;
+using Poe.UIW.Models;
 using Poe.UIW.Properties;
 using Poe.UIW.ViewModels;
 using Wpf.Ui.Common.Interfaces;
+using ValidationResult = System.ComponentModel.DataAnnotations.ValidationResult;
 
 namespace Poe.UIW.Views.Pages;
 
@@ -51,8 +58,130 @@ public partial class Settings : INavigableView<SettingsViewModel>
 
     private void OnLoaded(object sender, RoutedEventArgs e)
     {
-        ViewModel.NotificationSoundPath = UserSettings.Default.NotificationSoundPath;
+        ViewModel.CurrentSound =
+            ViewModel.DefaultSoundNames.First(x => x.Path == UserSettings.Default.NotificationSoundPath);
+
+        ViewModel.ErrorsChanged += ViewModelOnErrorsChanged;
+        _validatablePoeSessIdTextBox = new ValidatableTextBox(PoeSessionIdTextBox, PoeSessIdErrorStackPanel);
     }
 
     public SettingsViewModel ViewModel { get; }
+
+    private void ViewModelOnErrorsChanged(object sender, DataErrorsChangedEventArgs e)
+    {
+        if (!ViewModel.HasErrors)
+        {
+            HideError(_validatablePoeSessIdTextBox);
+            return;
+        }
+
+        var error = ViewModel.GetErrors(e.PropertyName).FirstOrDefault();
+
+        switch (e.PropertyName)
+        {
+            case "PoeSessionId" when error is null:
+                HideError(_validatablePoeSessIdTextBox);
+                break;
+
+            case "PoeSessionId":
+                ShowError(_validatablePoeSessIdTextBox, error);
+                break;
+
+            default:
+                return;
+        }
+    }
+
+    private void ShowError(ValidatableTextBox validatableTextBox, ValidationResult error)
+    {
+        TextBlock errorTextBlock;
+        if (validatableTextBox.HasError)
+        {
+            errorTextBlock = (TextBlock)validatableTextBox.ErrorPanel.Children[1];
+            if (errorTextBlock.Text == error.ErrorMessage)
+            {
+                return;
+            }
+        }
+
+        var textBoxTemplate = validatableTextBox.TextBox.Template;
+        var accentBorder = (Border)textBoxTemplate.FindName("AccentBorder", validatableTextBox.TextBox);
+        var contentBorder = (Border)textBoxTemplate.FindName("ContentBorder", validatableTextBox.TextBox);
+        _accentBorderBrush ??= accentBorder.BorderBrush;
+        _contentBorderBrush ??= contentBorder.BorderBrush;
+
+        accentBorder.BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#d50000"));
+        contentBorder.BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#d50000"));
+
+        validatableTextBox.ErrorPanel.Visibility = Visibility.Visible;
+
+        errorTextBlock = (TextBlock)validatableTextBox.ErrorPanel.Children[1];
+        errorTextBlock.Text = error.ErrorMessage;
+    }
+
+    private void HideError(ValidatableTextBox validatableTextBox)
+    {
+        if (!validatableTextBox.HasError)
+        {
+            return;
+        }
+
+        var textBoxTemplate = validatableTextBox.TextBox.Template;
+        var accentBorder = (Border)textBoxTemplate.FindName("AccentBorder", validatableTextBox.TextBox);
+        var contentBorder = (Border)textBoxTemplate.FindName("ContentBorder", validatableTextBox.TextBox);
+
+        accentBorder.BorderBrush = _accentBorderBrush ?? accentBorder.BorderBrush;
+        contentBorder.BorderBrush = _contentBorderBrush ?? contentBorder.BorderBrush;
+
+        validatableTextBox.ErrorPanel.Visibility = Visibility.Hidden;
+    }
+
+    private ValidatableTextBox _validatablePoeSessIdTextBox;
+    private Brush _accentBorderBrush;
+    private Brush _contentBorderBrush;
+
+    private class ValidatableTextBox
+    {
+        public ValidatableTextBox(TextBox textBox, StackPanel errorPanel)
+        {
+            TextBox = textBox;
+            ErrorPanel = errorPanel;
+        }
+
+        public bool HasError => ErrorPanel.Visibility == Visibility.Visible;
+        public TextBox TextBox { get; set; }
+        public StackPanel ErrorPanel { get; set; }
+    }
+
+    private void Selector_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (sender is not ComboBox cmb)
+        {
+            return;
+        }
+
+        if (!cmb.IsDropDownOpen)
+        {
+            return;
+        }
+
+        var selected = (Sound)e.AddedItems[0];
+        if (selected.Name.StartsWith("Custom"))
+        {
+            ViewModel.OpenSoundFile();
+        }
+    }
+
+    private void SoundElement_OnSelected(object sender, MouseButtonEventArgs e)
+    {
+        if (sender is not TextBlock textBlock)
+        {
+            return;
+        }
+
+        if (textBlock.Text.StartsWith("Custom"))
+        {
+            ViewModel.OpenSoundFile();
+        }
+    }
 }

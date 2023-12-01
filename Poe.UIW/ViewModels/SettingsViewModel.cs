@@ -1,6 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -9,6 +10,7 @@ using HanumanInstitute.MvvmDialogs;
 using HanumanInstitute.MvvmDialogs.FileSystem;
 using Poe.LiveSearch.Api.Trade;
 using Poe.LiveSearch.Services;
+using Poe.UIW.Models;
 using Poe.UIW.Properties;
 using Poe.UIW.Services;
 using Serilog;
@@ -39,32 +41,45 @@ public partial class SettingsViewModel : ViewModelValidatableBase
         PoeSessionId = UserSettings.Default.Session[10..];
         IsHide = UserSettings.Default.HideIfPoeUnfocused;
         PlayNotificationSound = UserSettings.Default.PlayNotificationSound;
+
+        DefaultSoundNames = new ObservableCollection<Sound>(new[]
+        {
+            new Sound("Baka.wav"),
+            new Sound("Doorbell.mp3"),
+            new Sound("Electronic ping.mp3"),
+            new Sound("Lofi.mp3"),
+            new Sound("Music box.mp3"),
+            new Sound("Ribbit.mp3"),
+            new Sound("Simple ping.mp3"),
+            Sound.Custom(UserSettings.Default.NotificationSoundPath)
+        });
     }
 
     [ObservableProperty] private bool _isHide;
 
     [ObservableProperty] private bool _playNotificationSound;
 
-    [ObservableProperty] private string _notificationSoundPath;
-
     [ObservableProperty]
+    [NotifyDataErrorInfo]
     [Required]
     [RegularExpression("^[a-z0-9]{32}$", ErrorMessage = "Incorrect format. Please enter a valid 32-character value.")]
     private string _poeSessionId;
 
+    [ObservableProperty] private string _customSoundName;
+
+    [ObservableProperty] private string _customSoundPath;
+
+    [ObservableProperty] private Sound _currentSound;
+
+    [ObservableProperty] private ObservableCollection<Sound> _defaultSoundNames;
+
     [ObservableProperty] private bool _hasValidationErrors;
     [ObservableProperty] private string _validationError;
-
-    [RelayCommand]
-    private void ResetSoundFile()
-    {
-        NotificationSoundPath = SoundService.DefaultNotificationPath;
-    }
 
     private IDialogStorageFile _soundFile;
 
     [RelayCommand]
-    private void OpenSoundFile()
+    public void OpenSoundFile()
     {
         _soundFile?.Dispose();
 
@@ -75,26 +90,28 @@ public partial class SettingsViewModel : ViewModelValidatableBase
             return;
         }
 
-        NotificationSoundPath = _soundFile.Name;
+        DefaultSoundNames.RemoveAt(7);
+        DefaultSoundNames.Add(Sound.Custom(_soundFile.Name));
+
+        CurrentSound = DefaultSoundNames.Last();
     }
 
-    private async Task SaveSoundFile()
+    private Task SaveSoundFile()
     {
-        if (NotificationSoundPath == SoundService.DefaultNotificationPath)
-        {
-            _soundService.Reset();
-            return;
-        }
-
         var fileInAppFolder = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!,
-            "Resources/Sounds/", _soundFile.Name);
+            "Resources/Sounds/", CurrentSound.Path);
 
         if (File.Exists(fileInAppFolder))
         {
-            _soundService.Load(_soundFile.Name);
-            return;
+            _soundService.Load(CurrentSound.Path);
+            return Task.CompletedTask;
         }
 
+        return CopyCustomSoundAsync(fileInAppFolder);
+    }
+
+    private async Task CopyCustomSoundAsync(string fileInAppFolder)
+    {
         await using var fileStream = await _soundFile.OpenReadAsync();
 
         await using (Stream destinationStream = File.Create(fileInAppFolder))
@@ -129,12 +146,11 @@ public partial class SettingsViewModel : ViewModelValidatableBase
         }
 
         UserSettings.Default.HideIfPoeUnfocused = IsHide;
-        UserSettings.Default.PlayNotificationSound = PlayNotificationSound;
 
-        if (UserSettings.Default.NotificationSoundPath != NotificationSoundPath)
+        if (UserSettings.Default.NotificationSoundPath != CurrentSound.Path)
         {
             await SaveSoundFile();
-            UserSettings.Default.NotificationSoundPath = NotificationSoundPath;
+            UserSettings.Default.NotificationSoundPath = CurrentSound.Path;
         }
 
         UserSettings.Default.Save();

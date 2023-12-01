@@ -40,7 +40,7 @@ public partial class OrderHistoryViewModel: ViewModelBase
 
         _historyItems = _itemHistoryRepository.GetByOrderId(order.Id);
         HistoryItemViews =
-            new ObservableCollection<ItemHistoryDto>(_historyItems.ToItemHistoryDto());
+            new ObservableCollection<ItemHistoryDto>(_historyItems.ToItemHistoryDto().OrderByDescending(x => x.FoundDate));
     }
     
     private void OnWhispered(object sender, WhisperEventArgs e)

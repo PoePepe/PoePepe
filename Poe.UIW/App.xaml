@@ -17,7 +17,7 @@
             <valueConverters:BoolToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
             <helpers:CurrencyImageConverter x:Key="CurrencyImageConverter" />
             <valueConverters:InvertedBoolConverter x:Key="InvertedBoolConverter" />
-            <valueConverters:BoolToVisibilityConverter  x:Key="BooleanToInvertedVisibilityConverter" IsInverted="True" />
+            <valueConverters:BoolToVisibilityConverter x:Key="BooleanToInvertedVisibilityConverter" IsInverted="True" />
             <ResourceDictionary.MergedDictionaries>
                 <ui:ThemesDictionary Theme="Dark" />
                 <ui:ControlsDictionary />

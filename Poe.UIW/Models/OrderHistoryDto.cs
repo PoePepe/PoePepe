@@ -6,6 +6,7 @@ public class ItemHistoryDto
 {
     public string OrderName { get; set; }
     public string ItemId { get; set; }
+    public bool NameExists { get; set; }
     public string ItemName { get; set; }
     public string ItemTypeLine { get; set; }
     public bool IsWhispered { get; set; }

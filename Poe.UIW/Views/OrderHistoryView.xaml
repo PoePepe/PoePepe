@@ -12,8 +12,8 @@
              ResizeMode="NoResize"
              SizeToContent="Height"
              MaxWidth="825"
+             WindowStartupLocation="CenterScreen"
              MaxHeight="600"
-             
 
              Title="OrderHistoryView"
              d:DataContext="{d:DesignInstance viewModels:OrderHistoryViewModel, IsDesignTimeCreatable=True}">
@@ -35,7 +35,7 @@
         </ui:TitleBar>
         <TextBlock x:Name="TitleTextBlock" Grid.Row="0" HorizontalAlignment="Center" FontSize="20" Margin="0 10 10 0"
                    Text="History" />
-        
+
         <DataGrid Grid.Row="1"
                   Margin="30 20 30 20 "
                   ItemsSource="{Binding HistoryItemViews}"
@@ -48,9 +48,13 @@
                 <DataGridTemplateColumn Width="280" Header="Name">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <StackPanel Orientation="Vertical">
-                                <TextBlock VerticalAlignment="Center" Text="{Binding ItemName}"></TextBlock>
-                                <TextBlock VerticalAlignment="Center" Text="{Binding ItemTypeLine}"></TextBlock>
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock
+                                    Visibility="{Binding NameExists, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                    VerticalAlignment="Center"
+                                    Text="{Binding ItemName}" />
+                                <TextBlock VerticalAlignment="Center"
+                                           Text="{Binding ItemTypeLine}" />
                             </StackPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
@@ -65,7 +69,7 @@
                     </DataGridTemplateColumn.HeaderTemplate>
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <TextBlock  VerticalAlignment="Center" Text="{Binding FoundDate}"></TextBlock>
+                            <TextBlock VerticalAlignment="Center" Text="{Binding FoundDate}"></TextBlock>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>

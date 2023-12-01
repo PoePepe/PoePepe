@@ -13,6 +13,7 @@ public static class ItemHistoryMapper
         {
             OrderName = itemHistory.ItemData.OrderName,
             ItemId = itemHistory.ItemId,
+            NameExists = !string.IsNullOrEmpty(itemHistory.ItemData.Item.Name),
             ItemName = itemHistory.ItemData.Item.Name,
             ItemTypeLine = itemHistory.ItemData.Item.TypeLine,
             IsWhispered = itemHistory.ItemData.IsWhispered,

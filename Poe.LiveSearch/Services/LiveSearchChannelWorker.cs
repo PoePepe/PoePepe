@@ -1,24 +1,25 @@
-﻿using System.Diagnostics;
-using System.Threading.Channels;
+﻿using System.Threading.Channels;
 using Poe.LiveSearch.Api.Trade;
 using Poe.LiveSearch.Api.Trade.Models;
 using Poe.LiveSearch.Models;
+using Poe.LiveSearch.Persistence;
 using Poe.LiveSearch.WebSocket;
 using Serilog;
 
 namespace Poe.LiveSearch.Services;
 
-//bg service
 public class LiveSearchChannelWorker : IDisposable, IAsyncDisposable
 {
+    private readonly IOrderRepository _orderRepository;
     private readonly PoeTradeApiService _poeTradeApiService;
     private readonly ChannelReader<ItemLiveResponse> _liveSearchChannelReader;
     private readonly ChannelWriter<FetchResponseResult> _foundItemsChannelWriter;
     private Timer _timer;
 
-    public LiveSearchChannelWorker(PoeTradeApiService poeTradeApiService, ServiceState state)
+    public LiveSearchChannelWorker(PoeTradeApiService poeTradeApiService, ServiceState state, IOrderRepository orderRepository)
     {
         _poeTradeApiService = poeTradeApiService;
+        _orderRepository = orderRepository;
         _liveSearchChannelReader = state.LiveSearchChannel.Reader;
         _foundItemsChannelWriter = state.FoundItemsChannel.Writer;
     }
@@ -37,7 +38,7 @@ public class LiveSearchChannelWorker : IDisposable, IAsyncDisposable
     {
         Log.Information("Started receiving from channel of searched items");
 
-        _timer = new Timer(_ => Task.Run(async () => await ReceiveSearchedItemsAsync(token), token), null, TimeSpan.Zero, TimeSpan.FromMilliseconds(2000));
+        _timer = new Timer(_ => Task.Run(async () => await ReceiveSearchedItemsAsync(token), token), null, TimeSpan.Zero, TimeSpan.FromMilliseconds(1000));
     }
     
     private async Task ReceiveSearchedItemsAsync(CancellationToken token)
@@ -49,7 +50,10 @@ public class LiveSearchChannelWorker : IDisposable, IAsyncDisposable
             var batch = new List<ItemLiveResponse>(10);
             while (batch.Count < 10 && _liveSearchChannelReader.TryRead(out var liveResponse))
             {
-                batch.Add(liveResponse);
+                if (_orderRepository.GetById(liveResponse.OrderId).Activity == OrderActivity.Enabled)
+                {
+                    batch.Add(liveResponse);
+                }
             }
 
             if (!batch.Any())

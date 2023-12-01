@@ -8,6 +8,7 @@ namespace Poe.LiveSearch.Services.RateLimiter;
 
 public class RateLimiterHttpMessageHandler : DelegatingHandler
 {
+    private static readonly SemaphoreSlim SemaphoreSlim = new(1, 1);
     private readonly RateLimiterState _rateLimiterState;
 
     public RateLimiterHttpMessageHandler(RateLimiterState rateLimiterState)
@@ -18,24 +19,69 @@ public class RateLimiterHttpMessageHandler : DelegatingHandler
     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,
         CancellationToken cancellationToken)
     {
-        var policyExists = TryGetPolicy(request, out var policy);
-        if (policyExists)
+        var isRateLimited = IsRateLimited(request, out var policyName);
+        if (isRateLimited)
+        {
+            if (_rateLimiterState.StateOfPolicies.TryGetValue(policyName, out var policy))
+            {
+                if (policy.IsWaitingForLimit)
+                {
+                    Log.Warning("Request {RequestUri} skipped due to waiting for a rate limiter",
+                        request.RequestUri?.PathAndQuery);
+
+                    return new HttpResponseMessage(HttpStatusCode.TooManyRequests)
+                    {
+                        ReasonPhrase =
+                            $"Request {request.RequestUri?.PathAndQuery} skipped due to waiting for a rate limiter",
+                        RequestMessage = request,
+                    };
+                }
+            }
+
+            try
+            {
+                await SemaphoreSlim.WaitAsync(cancellationToken);
+                return await CoreSendAsync(request, cancellationToken);
+            }
+            finally
+            {
+                SemaphoreSlim.Release();
+            }
+        }
+
+        return await base.SendAsync(request, cancellationToken);
+    }
+
+    private async Task<HttpResponseMessage> CoreSendAsync(HttpRequestMessage request,
+        CancellationToken cancellationToken)
+    {
+        var isRateLimited = IsRateLimited(request, out var policyName);
+        if (isRateLimited && _rateLimiterState.StateOfPolicies.TryGetValue(policyName, out var policy))
         {
             if (policy.IsWaitingForLimit)
             {
-                Log.Warning("Request {RequestUri} skipped due to waiting for a rate limiter", request.RequestUri?.PathAndQuery);
+                Log.Warning("Request {RequestUri} skipped due to waiting for a rate limiter",
+                    request.RequestUri?.PathAndQuery);
 
-                return new HttpResponseMessage(HttpStatusCode.TooManyRequests); 
+                return new HttpResponseMessage(HttpStatusCode.TooManyRequests)
+                {
+                    ReasonPhrase =
+                        $"Request {request.RequestUri?.PathAndQuery} skipped due to waiting for a rate limiter",
+                    RequestMessage = request,
+                };
             }
-            
+
             var delay = GetDelayFromRule(policy);
-            await WaitForLimitAsync(policy, delay);
-            policy.IsWaitingForLimit = false;
+            if (delay != TimeSpan.Zero)
+            {
+                await WaitForLimitAsync(policy, delay);
+                policy.IsWaitingForLimit = false;
+            }
         }
 
         var response = await base.SendAsync(request, cancellationToken);
 
-        if (policyExists)
+        if (isRateLimited)
         {
             UpdateRateLimiterState(response);
         }
@@ -43,10 +89,9 @@ public class RateLimiterHttpMessageHandler : DelegatingHandler
         return response;
     }
 
-    private bool TryGetPolicy(HttpRequestMessage request, out RateLimiterPolicyState policy)
+    private bool IsRateLimited(HttpRequestMessage request, out string policyName)
     {
-        string policyName = null;
-        policy = null;
+        policyName = null;
 
         if (request.RequestUri is null)
         {
@@ -65,8 +110,8 @@ public class RateLimiterHttpMessageHandler : DelegatingHandler
         {
             policyName = RateLimitPolicy.WhisperPolicy;
         }
-        
-        return policyName != null && _rateLimiterState.StateOfPolicies.TryGetValue(policyName, out policy);
+
+        return policyName != null;
     }
 
     private Task WaitForLimitAsync(RateLimiterPolicyState policy, TimeSpan delay)
@@ -76,16 +121,17 @@ public class RateLimiterHttpMessageHandler : DelegatingHandler
             return Task.CompletedTask;
         }
 
-        if (delay > TimeSpan.FromSeconds(1))
+        if (delay > TimeSpan.FromMilliseconds(1000))
         {
             policy.IsWaitingForLimit = true;
         }
 
-        Log.Warning("Rules of policy {PolicyName} were broken. Need to wait a {Difference} ms", policy.PolicyName, delay.Milliseconds);
+        Log.Warning("Rules of policy {PolicyName} were broken. Need to wait a {Difference} ms", policy.PolicyName,
+            delay.Milliseconds);
 
         return Task.Delay(delay);
     }
-    
+
     private TimeSpan GetDelayFromRule(RateLimiterPolicyState policy)
     {
         var now = DateTime.Now;
@@ -93,97 +139,49 @@ public class RateLimiterHttpMessageHandler : DelegatingHandler
         if (policy.RetryAfter != 0)
         {
             var difference = now - policy.UpdatedAt;
-            
+
             if (difference != TimeSpan.Zero)
             {
                 Log.Warning("Need to wait a {Difference} ms", difference.Milliseconds);
-                
+
                 return difference;
             }
         }
 
-        var rules = policy.Rules.SelectMany(x => x.Value);
-        return GetDelayFromRule(now, policy, rules);
+        return GetDelayFromRule(now, policy);
     }
 
-    // private Task CheckRateLimiterState(string policyName)
-    // {
-    //     var now = DateTime.Now;
-    //
-    //     if (!_rateLimiterState.StateOfPolicies.TryGetValue(policyName, out var policy))
-    //     {
-    //         return Task.CompletedTask;
-    //     }
-    //
-    //     if (policy.RetryAfter != 0)
-    //     {
-    //         var difference = DateTime.Now - policy.UpdatedAt;
-    //         Log.Warning("Rules of policy {PolicyName} were broken. Need to wait a {Difference} ms", policyName, difference.Milliseconds);
-    //         return Task.Delay(difference);
-    //     }
-    //
-    //     var rules = policy.Rules.SelectMany(x => x.Value);
-    //     return CheckRuleAndWaitAsync(now, policy, rules);
-    // }
-    
-    private TimeSpan GetDelayFromRule(DateTime now, RateLimiterPolicyState policy,
-        IEnumerable<RateLimitRule> rules)
+    private TimeSpan GetDelayFromRule(DateTime now, RateLimiterPolicyState policy)
     {
         var maxTimeToWait = TimeSpan.Zero;
-        foreach (var rule in rules)
+
+        foreach (var policyRules in policy.Rules)
         {
-            var ruleTime = now.AddSeconds(-rule.TestedPeriod);
-
-            var requests = policy.DateHistoryOfRequest.Where(x => x > ruleTime).ToArray();
-            var requestsCount = requests.Length;
-            if (rule.MaximumHits >= requestsCount)
+            var policyState = policy.States.First(x => x.Key == $"{policyRules.Key}-State").Value;
+            for (var i = 0; i < policyRules.Value.Length; i++)
             {
-                continue;
-            }
+                var state = policyState[i];
+                var rule = policyRules.Value[i];
 
-            var oldestRequest = requests[^1];
-            var preOldestRequest = requests[^2];
-            var timeToWait = preOldestRequest - oldestRequest;
-            if (maxTimeToWait < timeToWait)
-            {
-                maxTimeToWait = timeToWait;
+                var testedPeriod = rule.TestedPeriod;
+                var ruleTime = now.AddSeconds(-testedPeriod);
+                var requests = state.DateHistoryOfRequest.Where(x => x > ruleTime).ToArray();
+                if (rule.CustomMaximumHits >= requests.Length)
+                {
+                    continue;
+                }
+
+                var oldestRequest = requests.First();
+                var timeToWait = oldestRequest.AddSeconds(testedPeriod) - now;
+                if (maxTimeToWait < timeToWait)
+                {
+                    maxTimeToWait = timeToWait;
+                }
             }
         }
 
         return maxTimeToWait != TimeSpan.Zero ? maxTimeToWait : TimeSpan.Zero;
     }
-
-    // private Task CheckRuleAndWaitAsync(DateTime now, RateLimiterPolicyState policy,
-    //     IEnumerable<RateLimitRule> rules)
-    // {
-    //     var maxTimeToWait = TimeSpan.Zero;
-    //     foreach (var rule in rules)
-    //     {
-    //         var ruleTime = now.AddSeconds(-rule.TestedPeriod);
-    //
-    //         var requests = policy.DateHistoryOfRequest.Where(x => x > ruleTime).ToArray();
-    //         var requestsCount = requests.Length;
-    //         if (rule.MaximumHits < requestsCount)
-    //         {
-    //             var oldestRequest = requests[^1];
-    //             var preOldestRequest = requests[^2];
-    //             var timeToWait = preOldestRequest - oldestRequest;
-    //             if (maxTimeToWait < timeToWait)
-    //             {
-    //                 maxTimeToWait = timeToWait;
-    //             }
-    //         }
-    //     }
-    //
-    //     if (maxTimeToWait != TimeSpan.Zero)
-    //     {
-    //         Log.Warning("Limits of policy {PolicyName} has been reached. Need to wait a {Difference} ms", policy.PolicyName, maxTimeToWait.Milliseconds);
-    //
-    //         return Task.Delay(maxTimeToWait);
-    //     }
-    //     
-    //     return Task.CompletedTask;
-    // }
 
     private (string policyName, string retryAfter, string[] rules) ParseHeaders(HttpResponseHeaders headers)
     {
@@ -241,20 +239,22 @@ public class RateLimiterHttpMessageHandler : DelegatingHandler
         switch (response.StatusCode)
         {
             case HttpStatusCode.TooManyRequests:
-                Log.Warning("Request {RequestUri} got status Too Many Requests (429)", response.RequestMessage?.RequestUri?.PathAndQuery);
+                Log.Warning("Request {RequestUri} got status Too Many Requests (429)",
+                    response.RequestMessage?.RequestUri?.PathAndQuery);
                 break;
-            
+
             case HttpStatusCode.OK:
-                policy.DateHistoryOfRequest = UpdateHistoryOfRequest(policy, now);
+                UpdateHistoryOfRequest(policy, now);
                 break;
-            
+
             default:
-                Log.Warning("Request {RequestUri} got unexpected status {StatusCode}", response.RequestMessage?.RequestUri?.PathAndQuery, response.StatusCode);
+                Log.Warning("Request {RequestUri} got unexpected status {StatusCode}",
+                    response.RequestMessage?.RequestUri?.PathAndQuery, response.StatusCode);
                 break;
         }
     }
 
-    private LinkedList<DateTime> UpdateHistoryOfRequest(RateLimiterPolicyState policy, DateTime now)
+    private void UpdateHistoryOfRequest(RateLimiterPolicyState policy, DateTime now)
     {
         var historyMaximumRequestCount = 0;
         foreach (var rule in policy.Rules)
@@ -266,14 +266,31 @@ public class RateLimiterHttpMessageHandler : DelegatingHandler
             }
         }
 
-        if (policy.DateHistoryOfRequest.Count >= historyMaximumRequestCount)
+        foreach (var policyStates in policy.States)
         {
-            policy.DateHistoryOfRequest.RemoveFirst();
+            for (var index = 0; index < policyStates.Value.Length; index++)
+            {
+                var state = policyStates.Value[index];
+                var testedPeriod = state.TestedPeriod;
+                var ruleTime = now.AddSeconds(-testedPeriod);
+                var requestCount = state.DateHistoryOfRequest.Count(x => x > ruleTime);
+                var da = state.CurrentHitCount - requestCount;
+
+                var count = state.DateHistoryOfRequest.Count - historyMaximumRequestCount;
+                for (var c = 0; c < count; c++)
+                {
+                    if (state.DateHistoryOfRequest.Count > historyMaximumRequestCount)
+                    {
+                        state.DateHistoryOfRequest.RemoveFirst();
+                    }
+                }
+
+                for (var i = 0; i < da; i++)
+                {
+                    state.DateHistoryOfRequest.AddLast(now);
+                }
+            }
         }
-
-        policy.DateHistoryOfRequest.AddLast(now);
-
-        return policy.DateHistoryOfRequest;
     }
 
     private RateLimiterPolicyState UpdatePolicyState(HttpResponseHeaders headers, RateLimiterPolicyState policyState,
@@ -288,68 +305,23 @@ public class RateLimiterHttpMessageHandler : DelegatingHandler
 
         foreach (var header in headers)
         {
-            // if (rateLimitRules.Contains(header.Key))
-            // {
-            //     var valueOfRules = header.Value.SingleOrDefault().Split(',');
-            //     var rules = new RateLimitRule[valueOfRules.Length];
-            //
-            //     for (var index = 0; index < valueOfRules.Length; index++)
-            //     {
-            //         var valueOfRule = valueOfRules[index];
-            //         var values = valueOfRule.Split(':');
-            //
-            //         var rule = new RateLimitRule
-            //         {
-            //             Name = header.Key,
-            //             MaximumHits = int.Parse(values[0]),
-            //             TestedPeriod = int.Parse(values[1]),
-            //             RestrictedTime = int.Parse(values[2])
-            //         };
-            //
-            //         rules[index] = rule;
-            //     }
-            //     
-            //     policyState.Rules.AddOrUpdate(header.Key, rules, (_, _) => rules);
-            //
-            // }
-
             if (rateLimitRules.Contains(header.Key))
             {
                 var rules = ParseFromHeader(header, (name, values) =>
-                    new RateLimitRule
+                {
+                    var maxCalculatedHits = (int)Math.Floor(int.Parse(values[0]) * 0.5);
+                    return new RateLimitRule
                     {
                         Name = name,
                         MaximumHits = int.Parse(values[0]),
+                        CustomMaximumHits = maxCalculatedHits == 0 ? 1 : maxCalculatedHits,
                         TestedPeriod = int.Parse(values[1]),
                         RestrictedTime = int.Parse(values[2])
-                    });
+                    };
+                });
 
                 policyState.Rules.AddOrUpdate(header.Key, rules, (_, _) => rules);
             }
-
-            // if (rateLimitRuleStates.Contains(header.Key))
-            // {
-            //     var valueOfRuleStates = header.Value.SingleOrDefault().Split(',');
-            //     var ruleStates = new RateLimitState[valueOfRuleStates.Length];
-            //
-            //     for (var index = 0; index < valueOfRuleStates.Length; index++)
-            //     {
-            //         var valueOfRuleState = valueOfRuleStates[index];
-            //         var values = valueOfRuleState.Split(':');
-            //         
-            //         var ruleState = new RateLimitState
-            //         {
-            //             Name = header.Key,
-            //             CurrentHitCount = int.Parse(values[0]),
-            //             TestedPeriod = int.Parse(values[1]),
-            //             DurationOfTheRestriction = int.Parse(values[2])
-            //         };
-            //
-            //         ruleStates[index] = ruleState;
-            //     }
-            //
-            //     policyState.States.AddOrUpdate(header.Key, ruleStates, (_, _) => ruleStates);
-            // }
 
             if (rateLimitRuleStates.Contains(header.Key))
             {

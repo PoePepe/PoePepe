@@ -106,17 +106,23 @@ public class LiveSearcherWebSocketClient
             
             Log.Information("Connected to web socket for order {OrderName}", _order.Name);
         }
-        catch (WebSocketException e) when(e.WebSocketErrorCode == WebSocketError.NotAWebSocket)
+        catch (WebSocketException e) when(e.WebSocketErrorCode == WebSocketError.NotAWebSocket && e.Message.Contains("404"))
         {
             _orderErrorChannelWriter.TryWrite(new OrderError(_order.Id, "Invalid link"));
 
-            Log.Error("The server returned status code '404' when status code '101' was expected. The URI {Uri} not a correct websocket address", uri);
+            Log.Error(e, "The URI {Uri} not a correct websocket address", uri);
+        }
+        catch (WebSocketException e) when(e.WebSocketErrorCode == WebSocketError.NotAWebSocket && e.Message.Contains("429"))
+        {
+            _orderErrorChannelWriter.TryWrite(new OrderError(_order.Id, "Rate limit exceed. Wait a little time."));
+
+            Log.Error(e, "The URI {Uri} rate limit exceed. Wait a little time", uri);
         }
         catch (WebSocketException e)
         {
             _orderErrorChannelWriter.TryWrite(new OrderError(_order.Id, "Invalid link"));
 
-            Log.Error("The server returned status code '404' when status code '101' was expected. The URI {Uri} not a correct websocket address", uri);
+            Log.Error(e, "The URI {Uri} occured error", uri);
         }
         catch (TaskCanceledException)
         {

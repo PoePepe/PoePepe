@@ -89,7 +89,7 @@ public partial class LiveSearchViewModel : ViewModelBase
     public void LoadOrders(string leagueName = null)
     {
         var orders = _service.GetOrdersByLeague(leagueName ?? UserSettings.Default.LeagueName).ToArray();
-        // _service.StartLiveSearchAsync(orders);
+        _service.StartLiveSearchAsync(orders);
         Orders = new ObservableCollection<OrderViewModel>(orders.ToOrderModel());
         FilteredOrders = Orders.Sort(ActualSort);
     }
@@ -213,7 +213,7 @@ public partial class LiveSearchViewModel : ViewModelBase
         if (order.LeagueName == UserSettings.Default.LeagueName)
         {
             Orders.Add(order);
-            // await _service.StartLiveSearchAsync(order.Id);
+            await _service.StartLiveSearchAsync(order.Id);
         }
 
         OpenSnackbarOrderAdded(order.Name);

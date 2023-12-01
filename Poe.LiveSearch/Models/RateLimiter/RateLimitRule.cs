@@ -13,6 +13,11 @@ public class RateLimitRule
     public int MaximumHits { get; set; }
 
     /// <summary>
+    /// Максимальное количество запросов за указанный период c коэффициентом.
+    /// </summary>
+    public int CustomMaximumHits { get; set; }
+
+    /// <summary>
     /// Проверенный период. 
     /// </summary>
     /// <remarks>

@@ -29,4 +29,6 @@ public class RateLimitState
     /// </remarks>
     /// <remarks>В секундах.</remarks>
     public int DurationOfTheRestriction { get; set; }
+    
+    public LinkedList<DateTime> DateHistoryOfRequest { get; set; } = new();
 }

@@ -16,7 +16,5 @@ public class RateLimiterPolicyState
     public string[] RuleNames { get; set; }
     public string PolicyName { get; set; }
     public DateTime UpdatedAt { get; set; }
-
-    public LinkedList<DateTime> DateHistoryOfRequest { get; set; } = new();
     public bool IsWaitingForLimit { get; set; }
 }

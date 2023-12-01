@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using System.Reflection;
 using System.Windows.Media;
 using Poe.UIW.Properties;
 using Serilog;
@@ -10,6 +12,7 @@ namespace Poe.UIW.Services;
 public class SoundService
 {
     private readonly MediaPlayer _player;
+    private readonly MediaPlayer _testPlayer;
     private readonly Uri _defaultSoundUri;
     private string _currentFileName;
     private readonly ISnackbarService _snackbarService;
@@ -18,10 +21,31 @@ public class SoundService
     {
         _snackbarService = snackbarService;
         _player = new MediaPlayer();
+        _testPlayer = new MediaPlayer();
         _defaultSoundUri = new Uri("Resources/Sounds/Simple ping.mp3", UriKind.Relative);
         _player.Open(new Uri($"Resources/Sounds/{UserSettings.Default.NotificationSoundPath}", UriKind.Relative));
         _player.MediaFailed += PlayerOnMediaFailed;
         _player.MediaEnded += PlayerOnMediaEnded;
+
+        _testPlayer.MediaFailed += TestPlayerOnMediaFailed;
+        _testPlayer.MediaEnded += PlayerOnMediaEnded;
+    }
+
+    public void TestPlay(string path)
+    {
+        var fileInAppFolder = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!,
+            "Resources/Sounds/", path);
+        _testPlayer.Open(new Uri(fileInAppFolder, UriKind.Absolute));
+        _testPlayer.Play();
+    }
+
+    public void TestPlay(Uri absolutPath)
+    {
+        if (absolutPath.IsAbsoluteUri)
+        {
+            _testPlayer.Open(absolutPath);
+            _testPlayer.Play();
+        }
     }
 
     public void Load(string path)
@@ -33,6 +57,12 @@ public class SoundService
     private void PlayerOnMediaEnded(object sender, EventArgs e)
     {
         _player.Stop();
+    }
+
+    private void TestPlayerOnMediaFailed(object sender, ExceptionEventArgs e)
+    {
+        Log.Error("Error with file {File}. {Error}", _player.Source, e.ErrorException.Message);
+        _player.Open(_defaultSoundUri);
     }
 
     private void PlayerOnMediaFailed(object sender, ExceptionEventArgs e)

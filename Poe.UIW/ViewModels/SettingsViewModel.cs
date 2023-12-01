@@ -78,6 +78,16 @@ public partial class SettingsViewModel : ViewModelValidatableBase
 
     private IDialogStorageFile _soundFile;
 
+    public void TestSound()
+    {
+        _soundService.TestPlay(CurrentSound.Path);
+    }
+
+    public void TestCustomSound()
+    {
+        _soundService.TestPlay(_soundFile.Path);
+    }
+
     [RelayCommand]
     public void OpenSoundFile()
     {
@@ -94,6 +104,8 @@ public partial class SettingsViewModel : ViewModelValidatableBase
         DefaultSoundNames.Add(Sound.Custom(_soundFile.Name));
 
         CurrentSound = DefaultSoundNames.Last();
+
+        TestCustomSound();
     }
 
     private Task SaveSoundFile()

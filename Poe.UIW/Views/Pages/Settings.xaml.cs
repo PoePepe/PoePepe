@@ -170,6 +170,8 @@ public partial class Settings : INavigableView<SettingsViewModel>
         {
             ViewModel.OpenSoundFile();
         }
+
+        ViewModel.TestSound();
     }
 
     private void SoundElement_OnSelected(object sender, MouseButtonEventArgs e)

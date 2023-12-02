@@ -14,13 +14,15 @@ public class Service
 
     private readonly ServiceState _serviceState;
     private readonly IOrderRepository _orderRepository;
+    private readonly IItemHistoryRepository _itemHistoryRepository;
     private readonly PoeApiOptions _poeApiOptions;
 
-    public Service(PoeTradeApiService poeTradeApiService, ServiceState serviceState, IOrderRepository orderRepository, IOptions<PoeApiOptions> options)
+    public Service(PoeTradeApiService poeTradeApiService, ServiceState serviceState, IOrderRepository orderRepository, IOptions<PoeApiOptions> options, IItemHistoryRepository itemHistoryRepository)
     {
         _poeTradeApiService = poeTradeApiService;
         _serviceState = serviceState;
         _orderRepository = orderRepository;
+        _itemHistoryRepository = itemHistoryRepository;
         _poeApiOptions = options.Value;
     }
 
@@ -101,11 +103,14 @@ public class Service
         }
 
         _orderRepository.Clear();
+        _itemHistoryRepository.Clear();
     }
     
     public bool DeleteOrder(long orderId)
     {
         StopSearchingForOrder(orderId);
+
+        _itemHistoryRepository.ClearByOrder(orderId);
 
         return _orderRepository.Delete(orderId);
     }

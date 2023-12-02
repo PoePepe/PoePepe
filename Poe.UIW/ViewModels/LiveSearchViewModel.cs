@@ -119,8 +119,7 @@ public partial class LiveSearchViewModel : ViewModelBase
             return;
         }
 
-        order.CommonValidationError = orderError.ErrorMessage;
-        order.HasValidationErrors = true;
+        order.SetCommonValidationError(orderError.ErrorMessage);
 
         DisableOrder(orderError.OrderId);
 
@@ -169,7 +168,6 @@ public partial class LiveSearchViewModel : ViewModelBase
     [RelayCommand]
     private async Task ClearOrders()
     {
-        // _soundService.Play();
         await Da();
         return;
 
@@ -281,8 +279,7 @@ public partial class LiveSearchViewModel : ViewModelBase
 
         order.Activity = OrderActivity.Enabled;
         order.IsActive = true;
-        order.HasValidationErrors = false;
-        order.CommonValidationError = null!;
+        order.ClearCommonValidationError();
 
         _service.EnableLiveSearchOrder(order.Id);
 
@@ -392,8 +389,7 @@ public partial class LiveSearchViewModel : ViewModelBase
             return;
         }
 
-        order.HasValidationErrors = false;
-        order.CommonValidationError = null!;
+        order.ClearCommonValidationError();
 
         _service.UpdateOrder(order.ToOrder());
 

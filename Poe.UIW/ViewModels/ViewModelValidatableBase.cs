@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using CommunityToolkit.Mvvm.ComponentModel;
 
@@ -7,9 +8,26 @@ namespace Poe.UIW.ViewModels;
 
 public partial class ViewModelValidatableBase : ObservableValidator
 {
-    [ObservableProperty] private bool _hasValidationErrors;
+    public event EventHandler<DataErrorsChangedEventArgs> ValidationErrorsChanged;
+
     [ObservableProperty] private string _commonValidationError;
-    [ObservableProperty] private Dictionary<string, List<ValidationResult>> _validationErrors;
+
+    [ObservableProperty] private bool _hasValidationErrors;
+
+    private readonly Dictionary<string, List<ValidationResult>> _validationErrors = new();
+
+    public void SetCommonValidationError(string errorMessage)
+    {
+        CommonValidationError = errorMessage;
+        HasValidationErrors = true;
+    }
+
+    public void ClearCommonValidationError()
+    {
+        CommonValidationError = null;
+
+        HasValidationErrors = _validationErrors.Count > 0;
+    }
 
     public void AddValidationError(string errorMessage, IEnumerable<string> propertyNames)
     {
@@ -17,27 +35,50 @@ public partial class ViewModelValidatableBase : ObservableValidator
         foreach (var rawPropertyName in propertyNames)
         {
             var propertyName = rawPropertyName ?? "";
-            if (!ValidationErrors.TryAdd(propertyName, new List<ValidationResult> { validationResult }))
+            if (!_validationErrors.TryAdd(propertyName, new List<ValidationResult> { validationResult }))
             {
-                ValidationErrors[propertyName].Add(validationResult);
+                _validationErrors[propertyName].Add(validationResult);
             }
         }
+
+        HasValidationErrors = true;
     }
 
     public void AddValidationError(string errorMessage, string propertyName)
     {
         var validationResult = new ValidationResult(errorMessage, new[] { propertyName });
         propertyName ??= "";
-        if (!ValidationErrors.TryAdd(propertyName, new List<ValidationResult> { validationResult }))
+        if (!_validationErrors.TryAdd(propertyName, new List<ValidationResult> { validationResult }))
         {
-            ValidationErrors[propertyName].Add(validationResult);
+            _validationErrors[propertyName].Add(validationResult);
         }
+
+        HasValidationErrors = true;
+
+        ValidationErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
     }
 
     public void RemoveValidationError(string propertyName)
     {
-        propertyName ??= "";
-        ValidationErrors.Remove(propertyName);
+        if (string.IsNullOrWhiteSpace(propertyName))
+        {
+            return;
+        }
+
+        _validationErrors.Remove(propertyName);
+
+        HasValidationErrors = _validationErrors.Count > 0 || CommonValidationError is not null;
+
+        ValidationErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
+    }
+
+    public void RemoveValidationError()
+    {
+        _validationErrors.Remove("");
+
+        HasValidationErrors = _validationErrors.Count > 0 || CommonValidationError is not null;
+
+        ValidationErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(""));
     }
 
     public IEnumerable<ValidationResult> GetValidationErrors(string propertyName = null)
@@ -49,7 +90,10 @@ public partial class ViewModelValidatableBase : ObservableValidator
 
         if (HasValidationErrors)
         {
-            return ValidationErrors[propertyName ?? ""];
+            if (_validationErrors.TryGetValue(propertyName ?? "", out var validationError))
+            {
+                return validationError;
+            }
         }
 
         return Array.Empty<ValidationResult>();

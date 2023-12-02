@@ -62,6 +62,7 @@ public partial class Settings : INavigableView<SettingsViewModel>
             ViewModel.DefaultSoundNames.First(x => x.Path == UserSettings.Default.NotificationSoundPath);
 
         ViewModel.ErrorsChanged += ViewModelOnErrorsChanged;
+        ViewModel.ValidationErrorsChanged += ViewModelOnErrorsChanged;
         _validatablePoeSessIdTextBox = new ValidatableTextBox(PoeSessionIdTextBox, PoeSessIdErrorStackPanel);
     }
 
@@ -69,13 +70,13 @@ public partial class Settings : INavigableView<SettingsViewModel>
 
     private void ViewModelOnErrorsChanged(object sender, DataErrorsChangedEventArgs e)
     {
-        if (!ViewModel.HasErrors)
+        if (!ViewModel.HasErrors && !ViewModel.HasValidationErrors)
         {
             HideError(_validatablePoeSessIdTextBox);
             return;
         }
 
-        var error = ViewModel.GetErrors(e.PropertyName).FirstOrDefault();
+        var error = ViewModel.GetValidationErrors(e.PropertyName).FirstOrDefault();
 
         switch (e.PropertyName)
         {
@@ -185,5 +186,10 @@ public partial class Settings : INavigableView<SettingsViewModel>
         {
             ViewModel.OpenSoundFile();
         }
+    }
+
+    private void PoeSessionIdTextBox_OnTextChanged(object sender, TextChangedEventArgs e)
+    {
+        ViewModel.RemoveValidationError("PoeSessionId");
     }
 }

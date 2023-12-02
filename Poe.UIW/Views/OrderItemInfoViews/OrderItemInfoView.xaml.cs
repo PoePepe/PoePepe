@@ -17,6 +17,7 @@ public partial class OrderItemInfoView : Window
     public OrderItemInfoViewModel ViewModel { get; }
     private BitmapImage _bitmapImage;
     public event EventHandler<WhisperEventArgs> Whispered;
+    public event EventHandler ClosedByButton;
 
     public OrderItemInfoView()
     {
@@ -163,5 +164,10 @@ public partial class OrderItemInfoView : Window
     private void UIElement_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
     {
         DragMove();
+    }
+
+    private void ButtonClose_OnClick(object sender, RoutedEventArgs e)
+    {
+        ClosedByButton?.Invoke(sender, EventArgs.Empty);
     }
 }

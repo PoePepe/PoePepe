@@ -32,16 +32,16 @@
                     <ColumnDefinition Width="30*" />
                 </Grid.ColumnDefinitions>
 
-                <Border BorderBrush="White" BorderThickness="0 0 0.15 0"> </Border>
+                <Border BorderBrush="White" BorderThickness="0 0 0.15 0"/>
                 <Button
                     Command="{Binding ShowInfoCommand}"
+                    Click="ButtonBase_OnClick"
                     VerticalAlignment="Stretch"
                     HorizontalAlignment="Stretch"
                     Margin="5,0,0,0"
                     Style="{StaticResource smallNotifyButton}"
-                    Content="Info">
+                    Content="Info"/>
 
-                </Button>
                 <Button  Grid.Column="1" Style="{StaticResource smallNotifyButton}"
                          Click="CloseNotificationFromButton"
                          HorizontalAlignment="Center"

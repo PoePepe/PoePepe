@@ -19,14 +19,15 @@ public partial class OrderItemNotificationView
 
     private void OnLoaded(object sender, RoutedEventArgs e)
     {
-        var timer = new DispatcherTimer
+        _timer = new DispatcherTimer
         {
             Interval = TimeSpan.FromMilliseconds(100)
         };
-        timer.Tick += CloseTick;
-        timer.Start();
+        _timer.Tick += CloseTick;
+        _timer.Start();
     }
 
+    private DispatcherTimer _timer;
     private int _timeOut;
 
     private void CloseTick(object sender, EventArgs e)
@@ -38,9 +39,8 @@ public partial class OrderItemNotificationView
             return;
         }
 
-        var timer = (DispatcherTimer)sender;
-        timer.Stop();
-        timer.Tick -= CloseTick;
+        _timer.Stop();
+        _timer.Tick -= CloseTick;
         Close();
     }
 
@@ -49,8 +49,14 @@ public partial class OrderItemNotificationView
     protected override void OnInitialized(EventArgs eventArgs)
     {
         ViewModel.ClosingRequest += CloseNotificationFromInfoView;
+        ViewModel.InfoClosed += ViewModelOnInfoClosed;
 
         base.OnInitialized(eventArgs);
+    }
+
+    private void ViewModelOnInfoClosed(object sender, EventArgs e)
+    {
+        _timer.Start();
     }
 
     private void Close()
@@ -89,5 +95,10 @@ public partial class OrderItemNotificationView
     {
         NotificationTitle.Visibility = Visibility.Visible;
         ActionButtonsPanel.Visibility = Visibility.Collapsed;
+    }
+
+    private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+    {
+        _timer.Stop();
     }
 }

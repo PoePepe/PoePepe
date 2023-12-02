@@ -229,8 +229,19 @@ public partial class LiveSearchViewModel : ViewModelBase
         }
 
         order.Id = id;
-        order.IsActive = true;
-        order.Activity = OrderActivity.Enabled;
+
+        var activeOrderCount = _service.GetOrdersByLeague(order.LeagueName).Count(x => x.Activity == OrderActivity.Enabled);
+        if (activeOrderCount >= 20)
+        {
+            order.IsActive = false;
+            order.Activity = OrderActivity.Disabled;
+        }
+        else
+        {
+            order.IsActive = true;
+            order.Activity = OrderActivity.Enabled;
+        }
+
         order.CreatedAt = DateTimeOffset.UtcNow;
         _service.CreateOrder(order.ToOrder());
 
@@ -240,18 +251,26 @@ public partial class LiveSearchViewModel : ViewModelBase
             await _service.StartLiveSearchAsync(order.Id);
         }
 
-        OpenSnackbarOrderAdded(order.Name);
+        OpenSnackbarOrderAdded(order);
 
         OrdersChanged?.Invoke(this, EventArgs.Empty);
 
         Log.Information("Order {OrderName} has been created", order.Name);
     }
 
-    private void OpenSnackbarOrderAdded(string orderName)
+    private void OpenSnackbarOrderAdded(OrderViewModel order)
     {
+        var title = order.IsActive
+            ? $"Order {order.Name} added."
+            : $"Order {order.Name} added, but live search hasn't been run.";
+
+        var message = order.IsActive
+            ? "Live search is up and running!"
+            : "Live search hasn't been run. You exceed limit in 20 active orders. Please disable other orders to release slots.";
+
         _snackbarService.Show(
-            $"Order {orderName} added.",
-            null,
+            title,
+            message,
             SymbolRegular.CheckmarkCircle24,
             ControlAppearance.Success
         );
@@ -260,8 +279,26 @@ public partial class LiveSearchViewModel : ViewModelBase
     private void OpenSnackbarOrderEdited(string orderName)
     {
         _snackbarService.Show(
-            $"Order {orderName} edited.",
+            $"Order {orderName} updated.",
             null,
+            SymbolRegular.CheckmarkCircle24,
+            ControlAppearance.Success
+        );
+    }
+
+    private void OpenSnackbarOrderEnabled(OrderViewModel order)
+    {
+        var title = order.IsActive
+            ? $"Order {order.Name} enabled."
+            : $"Order {order.Name} hasn't been enabled.";
+
+        var message = order.IsActive
+            ? "Live search is up and running!"
+            : "Live search hasn't been run. You exceed limit in 20 active orders. Please disable other orders to release slots.";
+
+        _snackbarService.Show(
+            title,
+            message,
             SymbolRegular.CheckmarkCircle24,
             ControlAppearance.Success
         );
@@ -277,11 +314,25 @@ public partial class LiveSearchViewModel : ViewModelBase
             return;
         }
 
-        order.Activity = OrderActivity.Enabled;
-        order.IsActive = true;
-        order.ClearCommonValidationError();
+        var activeOrderCount = _service.GetOrdersByLeague(order.LeagueName).Count(x => x.Activity == OrderActivity.Enabled);
+        if (activeOrderCount >= 20)
+        {
+            order.IsActive = false;
+            order.Activity = OrderActivity.Disabled;
+        }
+        else
+        {
+            order.IsActive = true;
+            order.Activity = OrderActivity.Enabled;
 
-        _service.EnableLiveSearchOrder(order.Id);
+            order.ClearCommonValidationError();
+
+            _service.EnableLiveSearchOrder(order.Id);
+
+            _errorOrders.TryRemove(id, out _);
+        }
+
+        OpenSnackbarOrderEnabled(order);
 
         Log.Information("Order {OrderName} has been enabled", order.Name);
     }

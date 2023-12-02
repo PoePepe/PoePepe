@@ -145,7 +145,8 @@ public partial class SettingsViewModel : ViewModelValidatableBase
 
         if (!UserSettings.Default.Session.Contains(PoeSessionId))
         {
-            var isValid = await _poeTradeApiService.IsValidSessionAsync(PoeSessionId);
+            var sessValue = $"POESESSID={PoeSessionId}";
+            var isValid = await _poeTradeApiService.IsValidSessionAsync(sessValue);
             if (!isValid)
             {
                 HasValidationErrors = false;
@@ -154,7 +155,7 @@ public partial class SettingsViewModel : ViewModelValidatableBase
                 return;
             }
 
-            UserSettings.Default.Session = $"POESESSID={PoeSessionId}";
+            UserSettings.Default.Session = sessValue;
         }
 
         UserSettings.Default.HideIfPoeUnfocused = IsHide;

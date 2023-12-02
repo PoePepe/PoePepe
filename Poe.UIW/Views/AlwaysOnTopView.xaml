@@ -10,7 +10,7 @@
         ShowInTaskbar="False"
         Topmost="True"
         WindowStyle="None"
-        Width="400"
+        Width="150"
         Height="450"
         Top="0"
         Left="0"

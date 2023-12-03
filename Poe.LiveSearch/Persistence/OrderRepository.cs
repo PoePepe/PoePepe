@@ -55,7 +55,7 @@ public class OrderRepository : IOrderRepository
 
     public void UpdateAllMod(OrderMod mod)
     {
-        _collection.UpdateMany(x => new Order(x)
+        _collection.UpdateMany(x => new Order
         {
             Mod = mod
         }, p => p.Mod != mod);

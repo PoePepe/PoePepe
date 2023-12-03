@@ -38,6 +38,15 @@ public partial class ContainerView : INavigationWindow
 
         Loaded += OnLoaded;
         Closing += OnClosing;
+        IsVisibleChanged += OnIsVisibleChanged;
+    }
+
+    private void OnIsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+    {
+        if ((bool)e.NewValue && !(bool)e.OldValue)
+        {
+            ShowInTaskbar = true;
+        }
     }
 
     private bool _isTrayClose;

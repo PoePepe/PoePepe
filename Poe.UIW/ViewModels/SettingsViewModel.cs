@@ -73,9 +73,6 @@ public partial class SettingsViewModel : ViewModelValidatableBase
 
     [ObservableProperty] private ObservableCollection<Sound> _defaultSoundNames;
 
-    [ObservableProperty] private bool _hasValidationErrors;
-    [ObservableProperty] private string _validationError;
-
     private IDialogStorageFile _soundFile;
 
     public void TestSound()
@@ -149,10 +146,14 @@ public partial class SettingsViewModel : ViewModelValidatableBase
             var isValid = await _poeTradeApiService.IsValidSessionAsync(sessValue);
             if (!isValid)
             {
-                HasValidationErrors = false;
-                ValidationError = "Session id invalid";
+                AddValidationError("Session id invalid", "PoeSessionId");
 
                 return;
+            }
+
+            if (HasValidationErrors)
+            {
+                RemoveValidationError("PoeSessionId");
             }
 
             UserSettings.Default.Session = sessValue;

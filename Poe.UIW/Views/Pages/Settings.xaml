@@ -73,7 +73,7 @@
                                 Width="300"
                                 MinWidth="300"
                                 x:Name="PoeSessionIdTextBox"
-                                Text="{Binding PoeSessionId, ValidatesOnNotifyDataErrors=False}" />
+                                TextChanged="PoeSessionIdTextBox_OnTextChanged"Text="{Binding PoeSessionId, ValidatesOnNotifyDataErrors=False}" />
                     <StackPanel x:Name="PoeSessIdErrorStackPanel"
                                 Visibility="Hidden"
                                 Orientation="Horizontal"

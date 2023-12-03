@@ -359,7 +359,7 @@
 
                     <!-- Close Button -->
                     <StackPanel Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center">
-                        <Button IsCancel="True" Style="{StaticResource actionButtons}">Close</Button>
+                        <Button Click="ButtonClose_OnClick" IsCancel="True" Style="{StaticResource actionButtons}">Close</Button>
                     </StackPanel>
                 </Grid>
             </StackPanel>

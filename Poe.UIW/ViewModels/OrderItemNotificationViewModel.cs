@@ -26,6 +26,7 @@ public partial class OrderItemNotificationViewModel  : ViewModelBase
     }
     
     public event EventHandler ClosingRequest;
+    public event EventHandler InfoClosed;
 
     private void OnClosingRequest()
     {
@@ -37,6 +38,11 @@ public partial class OrderItemNotificationViewModel  : ViewModelBase
         ClosingRequest?.Invoke(sender, e);
     }
     
+    private void OnClosed(object sender, EventArgs e)
+    {
+        InfoClosed?.Invoke(sender, e);
+    }
+
     public void CloseNotification(object sender, EventArgs e)
     {
         OnClosingRequest();
@@ -45,6 +51,6 @@ public partial class OrderItemNotificationViewModel  : ViewModelBase
     [RelayCommand]
     private void ShowInfo()
     {
-        DialogServiceExtensions.ShowOrderItemInfo(OrderItem, OnWhispered);
+        DialogServiceExtensions.ShowOrderItemInfo(OrderItem, OnWhispered, OnClosed);
     }
 }

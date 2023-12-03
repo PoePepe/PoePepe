@@ -17,7 +17,7 @@ public interface IItemHistoryRepository
     /// </summary>
     void ClearByOrder(long orderId);
     
-    IEnumerable<ItemHistory> GetByOrderId(long orderId);
+    IEnumerable<ItemHistory> GetByOrderId(long orderId, int top, int skip);
     ItemHistory GetByItemId(string itemId);
     ItemHistory GetFullByItemId(string itemId);
 }

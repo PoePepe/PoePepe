@@ -40,6 +40,7 @@ public partial class LiveSearchViewModel : ViewModelBase
     [ObservableProperty] private ObservableCollection<OrderViewModel> _filteredOrders = new();
     [ObservableProperty] private OrderMod _modForSelectedOrders;
     [ObservableProperty] private bool _isSelectedAllOrders;
+    [ObservableProperty] private bool _isRowsSelected;
 
     public static IEnumerable<OrderMod> AvailableMods { get; } = new[] { OrderMod.Whisper, OrderMod.Notify };
 
@@ -494,14 +495,22 @@ public partial class LiveSearchViewModel : ViewModelBase
     [RelayCommand]
     private void EnableSelectedOrders()
     {
-        var selectedOrders = Orders.Where(x => x.IsSelected).Select(x => x.Id);
+        var selectedDisabledOrders = Orders.Where(x => x.IsSelected && !x.IsActive);
 
-        foreach (var selectedOrderId in selectedOrders)
+        var availableSlots = 20 - Orders.Count(x => x.Activity == OrderActivity.Enabled);
+        var ordersForEnable = selectedDisabledOrders.Take(availableSlots);
+
+        foreach (var orderViewModel in ordersForEnable)
         {
-            DisableOrder(selectedOrderId);
+            orderViewModel.IsActive = true;
+            orderViewModel.Activity = OrderActivity.Enabled;
+
+            orderViewModel.ClearCommonValidationError();
+
+            _service.EnableLiveSearchOrder(orderViewModel.Id);
         }
 
-        Log.Information("Selected orders has been paused");
+        Log.Information("Selected orders has been enabled");
     }
 
     [RelayCommand]
@@ -514,7 +523,7 @@ public partial class LiveSearchViewModel : ViewModelBase
             DisableOrder(selectedOrderId);
         }
 
-        Log.Information("Selected orders has been paused");
+        Log.Information("Selected orders has been disabled");
     }
 
     [RelayCommand]

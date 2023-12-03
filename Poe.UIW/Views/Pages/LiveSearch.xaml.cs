@@ -198,19 +198,43 @@ public partial class LiveSearch : INavigableView<LiveSearchViewModel>
         }
     }
 
-    private void ToggleButton_OnChecked(object sender, RoutedEventArgs e)
+    private void ToggleRow_OnChecked(object sender, RoutedEventArgs e)
     {
         if (sender is CheckBox { DataContext: OrderViewModel order })
         {
             order.IsSelected = true;
+
+            ViewModel.IsRowsSelected = true;
         }
     }
 
-    private void ToggleButton_OnUnchecked(object sender, RoutedEventArgs e)
+    private void ToggleRow_OnUnchecked(object sender, RoutedEventArgs e)
     {
         if (sender is CheckBox { DataContext: OrderViewModel order })
         {
             order.IsSelected = false;
+
+            ViewModel.IsRowsSelected = ViewModel.IsSelectedAllOrders || ViewModel.Orders.Any(x => x.IsSelected);
         }
+    }
+
+    private void ToggleHeader_OnChecked(object sender, RoutedEventArgs e)
+    {
+        foreach (var viewModelOrder in ViewModel.Orders)
+        {
+            viewModelOrder.IsSelected = true;
+        }
+
+        ViewModel.IsRowsSelected = true;
+    }
+
+    private void ToggleHeader_OnUnchecked(object sender, RoutedEventArgs e)
+    {
+        foreach (var viewModelOrder in ViewModel.Orders)
+        {
+            viewModelOrder.IsSelected = false;
+        }
+
+        ViewModel.IsRowsSelected = false;
     }
 }

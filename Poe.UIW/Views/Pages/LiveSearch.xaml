@@ -14,7 +14,6 @@
            d:DataContext="{d:DesignInstance vm:LiveSearchViewModel, IsDesignTimeCreatable=True}">
 
     <Grid>
-
         <Grid Margin="30 0 30 0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
@@ -24,6 +23,7 @@
                 <RowDefinition Height="*" />
                 <!-- Star-sized row for the DataGrid -->
             </Grid.RowDefinitions>
+
             <!-- Action buttons -->
             <Grid Margin="0 25 0 0">
                 <StackPanel Orientation="Horizontal">
@@ -38,8 +38,8 @@
                               x:Name="LeagueNameComboBox"
                               SelectionChanged="LeagueNameComboBox_OnSelectionChanged"
                               SelectedValue="{Binding Source={x:Static properties:UserSettings.Default}, Path=LeagueName}" />
-
                 </StackPanel>
+
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                     <Button HorizontalAlignment="Right"
                             VerticalAlignment="Top"
@@ -58,6 +58,7 @@
                             FontWeight="Medium" />
                 </StackPanel>
             </Grid>
+
             <StackPanel Grid.Row="1" Orientation="Horizontal"
                         HorizontalAlignment="Right"
                         Margin="0 10 0 20">
@@ -73,8 +74,6 @@
                           Style="{StaticResource SortByCombobox}"
                           ItemsSource="{x:Static vm:LiveSearchViewModel.AvailableSorting}"
                           SelectionChanged="SortComboBox_OnSelectionChanged" />
-
-
             </StackPanel>
 
             <DataGrid Grid.Row="2" Name="dataGrid_LifeSearch"
@@ -92,6 +91,7 @@
                         <DataGridTemplateColumn.HeaderTemplate>
                             <DataTemplate>
                                 <CheckBox
+                                    Checked="ToggleHeader_OnChecked" Unchecked="ToggleHeader_OnUnchecked"
                                     IsChecked="{Binding ViewModel.IsSelectedAllOrders, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=pages:LiveSearch}}"
                                     HorizontalAlignment="Center" Margin="1 0 0 0" />
                             </DataTemplate>
@@ -99,7 +99,7 @@
 
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <CheckBox Checked="ToggleButton_OnChecked" Unchecked="ToggleButton_OnUnchecked"
+                                <CheckBox Checked="ToggleRow_OnChecked" Unchecked="ToggleRow_OnUnchecked"
                                           IsChecked="{Binding IsSelected, Mode=TwoWay}" />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
@@ -225,7 +225,7 @@
             </DataGrid>
         </Grid>
         <Border
-            Visibility="{Binding IsSelectedAllOrders, Converter={StaticResource BooleanToVisibilityConverter}}"
+            Visibility="{Binding IsRowsSelected, Converter={StaticResource BooleanToVisibilityConverter}}"
             CornerRadius="5"
             Width="250"
             Height="56"
@@ -254,7 +254,8 @@
                 </ComboBox>
                 <StackPanel Orientation="Horizontal">
                     <ui:Button Icon="Play28" Height="38"
-                               Margin="0 0 3 0 " />
+                               Margin="0 0 3 0 "
+                               Command="{Binding EnableSelectedOrdersCommand}"/>
                     <ui:Button Icon="Pause28"
                                Margin="0 0 3 0 "
                                Height="38"

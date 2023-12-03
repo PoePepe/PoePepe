@@ -250,7 +250,7 @@ public partial class LiveSearchViewModel : ViewModelBase
         {
             Orders.Add(order);
             FilteredOrders.Add(order);
-            FilteredOrders.Sort(ActualSort);
+            FilteredOrders = new ObservableCollection<OrderViewModel>(FilteredOrders.Sort(ActualSort));
         }
 
         if (order.IsActive)

@@ -17,7 +17,6 @@ public partial class OrderHistoryViewModel: ViewModelBase
 {
     [ObservableProperty]
     private ObservableCollection<ItemHistoryDto> _historyItemViews;
-    private IEnumerable<ItemHistory> _historyItems;
 
     [ObservableProperty]
     private OrderViewModel _orderModel = new();
@@ -38,26 +37,19 @@ public partial class OrderHistoryViewModel: ViewModelBase
             OrderModel = order;
         }
 
-        _historyItems = _itemHistoryRepository.GetByOrderId(order.Id);
+        var history = _itemHistoryRepository.GetByOrderId(order.Id, 20, 0);
         HistoryItemViews =
-            new ObservableCollection<ItemHistoryDto>(_historyItems.ToItemHistoryDto().OrderByDescending(x => x.FoundDate));
+            new ObservableCollection<ItemHistoryDto>(history.ToItemHistoryDto().OrderByDescending(x => x.FoundDate));
     }
-    
-    private void OnWhispered(object sender, WhisperEventArgs e)
+
+    public IEnumerable<ItemHistory> LoadHistory(int top, int skip)
     {
-        var historyView = HistoryItemViews.FirstOrDefault(x => x.ItemId == e.ItemId);
-
-        if (historyView is null)
+        if (HistoryItemViews.Count >= skip + top)
         {
-            return;
+            return null;
         }
-
-        historyView.IsWhispered = true;
         
-        var history = _historyItems.First(x => x.ItemId == e.ItemId);
-
-        history.ItemData.IsWhispered = true;
-        _itemHistoryRepository.Update(history);
+        return _itemHistoryRepository.GetByOrderId(OrderModel.Id, top, skip);
     }
     
     [RelayCommand]
@@ -65,7 +57,7 @@ public partial class OrderHistoryViewModel: ViewModelBase
     {
         var itemHistory = _itemHistoryRepository.GetFullByItemId(itemId);
         var orderItem = itemHistory.ItemData.ToOrderItemDto();
-        DialogServiceExtensions.ShowOrderItemInfo(orderItem, OnWhispered);
+        DialogServiceExtensions.ShowOrderItemInfo(orderItem);
     }
 
     [RelayCommand]
@@ -79,12 +71,5 @@ public partial class OrderHistoryViewModel: ViewModelBase
         }
 
         await _whisperService.WhisperAsync(historyView);
-
-        historyView.IsWhispered = true;
-        
-        var history = _historyItems.First(x => x.ItemId == itemId);
-
-        history.ItemData.IsWhispered = true;
-        _itemHistoryRepository.Update(history);
     }
 }

@@ -37,6 +37,7 @@
                    Text="History" />
 
         <DataGrid Grid.Row="1"
+                  x:Name="ItemHistoryDataGrid"
                   Margin="30 20 30 20 "
                   ItemsSource="{Binding HistoryItemViews}"
                   Style="{StaticResource DataGrid_LifeSearch}"

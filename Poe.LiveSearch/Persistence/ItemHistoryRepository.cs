@@ -12,9 +12,9 @@ public class ItemHistoryRepository : IItemHistoryRepository
         _collection = liteDbContext.Database.GetCollection<ItemHistory>("ItemHistory");
     }
 
-    public IEnumerable<ItemHistory> GetByOrderId(long orderId)
+    public IEnumerable<ItemHistory> GetByOrderId(long orderId, int top, int skip)
     {
-        return _collection.Query().Where(x => x.OrderId == orderId).ToEnumerable();
+        return _collection.Query().OrderByDescending(x => x.FoundDate).Where(x => x.OrderId == orderId).Limit(top).Skip(skip).ToEnumerable();
     }
 
     public ItemHistory GetByItemId(string itemId)

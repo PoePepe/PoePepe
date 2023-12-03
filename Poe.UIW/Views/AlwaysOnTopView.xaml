@@ -18,45 +18,43 @@
         mc:Ignorable="d"
         Title="AlwaysOnTopView"
         DataContext="{Binding Source={StaticResource Locator}, Path=AlwaysOnTopView}">
-    <Grid>
-            <!--Adjust size grid-->
+ 
+
+        <StackPanel
+            MinWidth="150"
+            MaxWidth="150"
+            x:Name="NotificationStackPanel">
+        <!--Adjust size grid-->
         <Grid Visibility="Collapsed">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             <Border Background="#393939" />
-                <TextBlock Text="Notify"
-                           FontSize="20"
-                           Margin="5 5 5 8"
-                           Foreground="White"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Top" />
+            <TextBlock Text="Notify"
+                       FontSize="20"
+                       Margin="5 5 5 8"
+                       Foreground="White"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Top" />
             <Grid Grid.Row="1">
-                    <Border  Background="Black"
-                            Opacity="0.8"
-                            Width="150"
-                            Height="450">
-                    </Border>
-                <ui:Button  
-                    Content="Accept"                
-                    HorizontalAlignment="Center"                
-                    VerticalAlignment="Center"                              
-                    Background="#393939"
-                    Margin="0 0 0 35"/>
+                <Border  Background="Black"
+                         Opacity="0.8"
+                         Width="150"
+                         Height="450">
+                </Border>
+                <ui:Button Content="Accept"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Background="#393939"
+                           Margin="0 0 0 35" />
             </Grid>
         </Grid>
-        
-        <StackPanel
-            MinWidth="150"
-            MaxWidth="150"
-            x:Name="NotificationStackPanel">
-
-            <StackPanel.Resources>
+        <StackPanel.Resources>
                 <Style TargetType="{x:Type local:OrderItemNotificationView}">
                     <Setter Property="Margin" Value="0,0,0,2" />
                 </Style>
             </StackPanel.Resources>
         </StackPanel>
-    </Grid>
+
 </Window>

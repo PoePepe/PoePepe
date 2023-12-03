@@ -11,7 +11,7 @@
              WindowBackdropType="Mica"
              ResizeMode="NoResize"
              SizeToContent="Height"
-             MaxWidth="825"
+             MaxWidth="850"
              WindowStartupLocation="CenterScreen"
              MaxHeight="600"
 
@@ -128,7 +128,7 @@
                                            CommandParameter="{Binding ItemId}" />
 
                                 <ui:Button BorderThickness="0"
-                                           HorizontalAlignment="Center" Padding="10"
+                                           HorizontalAlignment="Center" Padding="10 10 0 10"
                                            Content="Whisper"
                                            Appearance="Transparent"
                                            Command="{Binding ViewModel.WhisperCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:OrderHistoryView}}"

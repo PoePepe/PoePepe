@@ -9,86 +9,138 @@
            xmlns:viewModels="clr-namespace:Poe.UIW.ViewModels"
            mc:Ignorable="d"
            d:DataContext="{d:DesignInstance viewModels:SettingsViewModel, IsDesignTimeCreatable=True}">
-
-    <Grid Margin="30 0 30 0">
-
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-
-        </Grid.RowDefinitions>
-        <!--Title-->
-        <TextBlock Text="Settings"
-                   HorizontalAlignment="Left"
-                   Margin="0 25 25 50"
-                   FontSize="25"
-                   FontWeight="SemiBold" />
-        <!--Settings-->
-        <StackPanel Grid.Row="1">
-            <!--POESESSID-->
-            <StackPanel HorizontalAlignment="Left">
-                <TextBlock FontSize="14"
-                           Margin="0 0 0 3">
-                    POESESSID
-                </TextBlock>
-                <ui:TextBox Margin="0"
-                            HorizontalAlignment="Left"
-                            Width="300"
-                            MinWidth="300"
-                            x:Name="PoeSessionIdTextBox"
-                            Text="{Binding PoeSessionId, ValidatesOnNotifyDataErrors=False}" />
-                <StackPanel x:Name="PoeSessIdErrorStackPanel"
-                            Visibility="Hidden"
-                            Orientation="Horizontal"
-                            Margin="0 2 0 0 ">
-                    <ui:SymbolIcon Symbol="ErrorCircle12"
-                                   Margin="0 0 4 0"
-                                   Foreground="#d50000" />
-                    <TextBlock VerticalAlignment="Center"
-                               Foreground="#d50000"
-                               FontSize="13" />
-                </StackPanel>
-            </StackPanel>
-
-            <StackPanel Margin="0 1 0 0">
-                <TextBlock FontSize="14"
-                           Margin="0 0 0 3"
-                           Text="Notification Sound" />
-                <ComboBox
-                    MinWidth="300"
-                    HorizontalAlignment="Left"
-                    FontSize="14"
-                    SelectedValue="{Binding CurrentSound, Mode=TwoWay}"
-                    ItemsSource="{Binding DefaultSoundNames}"
-                    SelectionChanged="Selector_OnSelectionChanged">
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock MouseDown="SoundElement_OnSelected" Text="{Binding Name}" />
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
-            </StackPanel>
-            <!--Hide_Notify-->
-            <Grid Margin="0,20,0,0">
-                <CheckBox Margin="0,0,0,0"
-                          Content="Hide notifications if PoE not foreground"
-                          IsChecked="{Binding IsHide}" />
+    <Grid>
+        <Border Background="Black"
+                Opacity="0.8"
+                Width="300" Height="400">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Border Background="#202020" />
+                <TextBlock Text="Item information"
+                           FontSize="20"
+                           Margin="5"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Top" />
             </Grid>
-        </StackPanel>
-        <!--Action_Buttons-->
-        <StackPanel Grid.Row="2"
-                    Margin="0,30,0,0">
-            <ui:Button Appearance="Primary"
-                       Width="100"
-                       HorizontalContentAlignment="Center"
-                       VerticalContentAlignment="Center"
-                       FontSize="16"
-                       FontWeight="DemiBold"
-                       Foreground="White"
-                       Background="#2562d1"
-                       Command="{Binding SaveCommand}"
-                       Content="Save" />
-        </StackPanel>
+        </Border>
+        
+        <Border Background="Black"
+                Opacity="0.8"
+                Width="150"
+                
+                Height="450">
+            <Grid
+                >
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Border Background="#202020" />
+                <TextBlock Text="Notify" 
+                           FontSize="20"
+                           Margin="5"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Top"/>
+            </Grid>
+
+        </Border>
+        
+        <Grid Margin="30 0 30 0">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+
+            </Grid.RowDefinitions>
+            <!--Title-->
+            <TextBlock Text="Settings"
+                       HorizontalAlignment="Left"
+                       Margin="0 25 25 50"
+                       FontSize="25"
+                       FontWeight="SemiBold" />
+            <!--Settings-->
+            <StackPanel Grid.Row="1">
+                <!--POESESSID-->
+                <StackPanel HorizontalAlignment="Left">
+                    <TextBlock FontSize="14"
+                               Margin="0 0 0 3">
+                        POESESSID
+                    </TextBlock>
+                    <ui:TextBox Margin="0"
+                                HorizontalAlignment="Left"
+                                Width="300"
+                                MinWidth="300"
+                                x:Name="PoeSessionIdTextBox"
+                                Text="{Binding PoeSessionId, ValidatesOnNotifyDataErrors=False}" />
+                    <StackPanel x:Name="PoeSessIdErrorStackPanel"
+                                Visibility="Hidden"
+                                Orientation="Horizontal"
+                                Margin="0 2 0 0 ">
+                        <ui:SymbolIcon Symbol="ErrorCircle12"
+                                       Margin="0 0 4 0"
+                                       Foreground="#d50000" />
+                        <TextBlock VerticalAlignment="Center"
+                                   Foreground="#d50000"
+                                   FontSize="13" />
+                    </StackPanel>
+                </StackPanel>
+                <!--Select sound-->
+                <StackPanel Margin="0 1 0 0">
+                    <TextBlock FontSize="14"
+                               Margin="0 0 0 3"
+                               Text="Notification Sound" />
+                    <ComboBox
+                        MinWidth="300"
+                        HorizontalAlignment="Left"
+                        FontSize="14"
+                        SelectedValue="{Binding CurrentSound, Mode=TwoWay}"
+                        ItemsSource="{Binding DefaultSoundNames}"
+                        SelectionChanged="Selector_OnSelectionChanged">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock MouseDown="SoundElement_OnSelected" Text="{Binding Name}" />
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                </StackPanel>
+                <!--Notify window location-->
+                <StackPanel Margin="0 15 0 0" Orientation="Vertical">
+                    <TextBlock FontSize="14"
+                               Margin="0 0 5 4"
+                               Text="Reposition of notification window" VerticalAlignment="Center"/>
+
+                    <StackPanel Orientation="Horizontal">
+                        <ui:Button Content="Adjust" 
+                                   Margin="0 0 5 0 " 
+                                   />
+                        <ui:Button Content="Reset"
+                                   />
+                    </StackPanel>
+                </StackPanel>
+                <!--Hide_Notify-->
+                <Grid Margin="0,20,0,0">
+                    <CheckBox Margin="0,0,0,0"
+                              Content="Hide notifications if PoE not foreground"
+                              IsChecked="{Binding IsHide}" />
+                </Grid>
+            </StackPanel>
+            <!--Action_Buttons-->
+            <StackPanel Grid.Row="2"
+                        Margin="0,30,0,0">
+                <ui:Button Appearance="Primary"
+                           Width="100"
+                           HorizontalContentAlignment="Center"
+                           VerticalContentAlignment="Center"
+                           FontSize="16"
+                           FontWeight="DemiBold"
+                           Foreground="White"
+                           Background="#2562d1"
+                           Command="{Binding SaveCommand}"
+                           Content="Save" />
+            </StackPanel>
+            
+        </Grid>
     </Grid>
 </ui:UiPage>

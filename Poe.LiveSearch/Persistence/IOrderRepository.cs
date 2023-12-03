@@ -14,6 +14,9 @@ public interface IOrderRepository
     /// </summary>
     Order Update(Order entity);
 
+    void UpdateManyMod(IEnumerable<long> orderIds, OrderMod mod);
+    void UpdateAllMod(OrderMod mod);
+
     /// <summary>
     /// Удаление данных.
     /// </summary>

@@ -12,7 +12,7 @@
            xmlns:properties="clr-namespace:Poe.UIW.Properties"
            mc:Ignorable="d"
            d:DataContext="{d:DesignInstance vm:LiveSearchViewModel, IsDesignTimeCreatable=True}">
-    
+
     <Grid>
 
         <Grid Margin="30 0 30 0">
@@ -58,49 +58,54 @@
                             FontWeight="Medium" />
                 </StackPanel>
             </Grid>
-            <StackPanel Grid.Row="1" Orientation="Horizontal" 
-                            HorizontalAlignment="Right"
+            <StackPanel Grid.Row="1" Orientation="Horizontal"
+                        HorizontalAlignment="Right"
                         Margin="0 10 0 20">
-                    <ui:AutoSuggestBox
-                        x:Name="OrderNameAutoSuggestBox"
-                        HorizontalAlignment="Left"
-                        Margin="0,0,5,0"
-                        TextChanged="TextBoxBase_OnTextChanged"
-                        PlaceholderText="Search by name" />
-                    
-                    <ComboBox SelectedValue="{Binding ActualSort, Mode=TwoWay}"
-                              DisplayMemberPath="Description"
-                              Style="{StaticResource SortByCombobox}"
-                              ItemsSource="{x:Static vm:LiveSearchViewModel.AvailableSorting}"
-                              SelectionChanged="SortComboBox_OnSelectionChanged" />
+                <ui:AutoSuggestBox
+                    x:Name="OrderNameAutoSuggestBox"
+                    HorizontalAlignment="Left"
+                    Margin="0,0,5,0"
+                    TextChanged="TextBoxBase_OnTextChanged"
+                    PlaceholderText="Search by name" />
+
+                <ComboBox SelectedValue="{Binding ActualSort, Mode=TwoWay}"
+                          DisplayMemberPath="Description"
+                          Style="{StaticResource SortByCombobox}"
+                          ItemsSource="{x:Static vm:LiveSearchViewModel.AvailableSorting}"
+                          SelectionChanged="SortComboBox_OnSelectionChanged" />
 
 
-                </StackPanel>
+            </StackPanel>
 
-            <DataGrid Grid.Row="2"  Name="dataGrid_LifeSearch"
-                       ItemsSource="{Binding FilteredOrders}"
-                       Style="{StaticResource DataGrid_LifeSearch}"
-                       CellStyle="{StaticResource DataGridCell_LifeSearch}"
-                       ColumnHeaderStyle="{StaticResource DataGridColumnHeaderStyle_LifeSearch}"
-                       RowStyle="{StaticResource DataGridRowStyle_LifeSearch}">
+            <DataGrid Grid.Row="2" Name="dataGrid_LifeSearch"
+                      SelectionMode="Extended"
+                      ItemsSource="{Binding FilteredOrders}"
+                      Style="{StaticResource DataGrid_LifeSearch}"
+                      CellStyle="{StaticResource DataGridCell_LifeSearch}"
+                      ColumnHeaderStyle="{StaticResource DataGridColumnHeaderStyle_LifeSearch}"
+                      RowStyle="{StaticResource DataGridRowStyle_LifeSearch}"
+                      MouseDoubleClick="DataGrid_LifeSearch_OnMouseDoubleClick">
                 <DataGrid.Columns>
-                    
+
+                    <!-- Selection -->
                     <DataGridTemplateColumn Width="Auto">
                         <DataGridTemplateColumn.HeaderTemplate>
                             <DataTemplate>
-                                <CheckBox HorizontalAlignment="Center" Margin="1 0 0 0" />
+                                <CheckBox
+                                    IsChecked="{Binding ViewModel.IsSelectedAllOrders, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=pages:LiveSearch}}"
+                                    HorizontalAlignment="Center" Margin="1 0 0 0" />
                             </DataTemplate>
                         </DataGridTemplateColumn.HeaderTemplate>
+
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <CheckBox  />
+                                <CheckBox Checked="ToggleButton_OnChecked" Unchecked="ToggleButton_OnUnchecked"
+                                          IsChecked="{Binding IsSelected, Mode=TwoWay}" />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
-                        
                     </DataGridTemplateColumn>
-                    
-                    
-                    
+
+                    <!-- Name -->
                     <DataGridTemplateColumn Width="280" Header="Name" CanUserResize="False">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
@@ -129,7 +134,7 @@
                         </DataGridTemplateColumn.HeaderTemplate>
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                
+
                                 <ComboBox Background="Transparent"
                                           BorderBrush="Transparent"
                                           HorizontalAlignment="Center"
@@ -148,7 +153,7 @@
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    
+
                     <!-- Activity -->
                     <DataGridTemplateColumn Width="*">
                         <DataGridTemplateColumn.HeaderTemplate>
@@ -180,6 +185,7 @@
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
 
+                    <!-- More options -->
                     <DataGridTemplateColumn Width="auto">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
@@ -189,7 +195,8 @@
                                                Background="Transparent"
                                                HorizontalAlignment="Left" Padding="10" Icon="MoreHorizontal28">
                                         <ui:Button.Resources>
-                                            <helpers:BindingProxy x:Key="Proxy" Data="{Binding ViewModel, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=pages:LiveSearch}}" />
+                                            <helpers:BindingProxy x:Key="Proxy"
+                                                                  Data="{Binding ViewModel, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=pages:LiveSearch}}" />
                                         </ui:Button.Resources>
                                         <ui:Button.ContextMenu>
                                             <ContextMenu>
@@ -199,7 +206,7 @@
                                                 <MenuItem Header="History"
                                                           Command="{Binding Source={StaticResource Proxy}, Path=Data.ShowOrderHistoryCommand}"
                                                           CommandParameter="{Binding Id}" />
-                                                <Separator/>
+                                                <Separator />
                                                 <MenuItem Header="Edit"
                                                           Command="{Binding Source={StaticResource Proxy}, Path=Data.EditOrderCommand}"
                                                           CommandParameter="{Binding Id}" />
@@ -217,46 +224,45 @@
                 </DataGrid.Columns>
             </DataGrid>
         </Grid>
-        <Border     
+        <Border
+            Visibility="{Binding IsSelectedAllOrders, Converter={StaticResource BooleanToVisibilityConverter}}"
             CornerRadius="5"
             Width="250"
-                Height="56"
-                Background="#202020"
+            Height="56"
+            Background="#202020"
             Margin="0 0 0 10"
             VerticalAlignment="Bottom"
-            HorizontalAlignment="Center"
-            >
-            <StackPanel 
-                        Orientation="Horizontal"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center">
-            
-            
+            HorizontalAlignment="Center">
+
+            <StackPanel
+                Orientation="Horizontal"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center">
 
                 <ComboBox Grid.Row="2"
-                        Grid.Column="1"
-                        VerticalAlignment="Stretch"
-                        Text="Whisper"
-                        FontSize="15"
-                          Margin="0 0 3 0 "
-                    
-                       >
-                <ComboBox.ItemTemplate>
-                    <DataTemplate>
-                        <TextBlock HorizontalAlignment="Stretch"
-                                    Text="huix2" />
-                    </DataTemplate>
-                </ComboBox.ItemTemplate>
-            </ComboBox>
+                          Grid.Column="1"
+                          VerticalAlignment="Stretch"
+                          FontSize="15"
+                          SelectedValue="{Binding ModForSelectedOrders}"
+                          ItemsSource="{x:Static vm:LiveSearchViewModel.AvailableMods}"
+                          Margin="0 0 3 0 ">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock MouseUp="SelectedModElement_OnSelected" Text="{Binding }" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
                 <StackPanel Orientation="Horizontal">
                     <ui:Button Icon="Play28" Height="38"
-                               Margin="0 0 3 0 "/>
+                               Margin="0 0 3 0 " />
                     <ui:Button Icon="Pause28"
                                Margin="0 0 3 0 "
-                               Height="38" />
+                               Height="38"
+                               Command="{Binding DisableSelectedOrdersCommand}" />
                     <ui:Button Icon="Delete28"
                                Margin="0 0 3 0 "
-                               Height="38" />
+                               Height="38"
+                               Command="{Binding DeleteSelectedOrdersCommand}" />
                 </StackPanel>
             </StackPanel>
         </Border>

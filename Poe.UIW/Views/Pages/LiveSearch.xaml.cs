@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Input;
 using Poe.LiveSearch.Models;
 using Poe.UIW.Helpers;
 using Poe.UIW.Properties;
@@ -134,14 +136,14 @@ public partial class LiveSearch : INavigableView<LiveSearchViewModel>
         var searchText = OrderNameAutoSuggestBox.Text;
         if (string.IsNullOrEmpty(searchText))
         {
-            ViewModel.FilteredOrders = ViewModel.Orders.Sort(ViewModel.ActualSort);
+            ViewModel.FilteredOrders = new ObservableCollection<OrderViewModel>(ViewModel.Orders.Sort(ViewModel.ActualSort));
         }
 
         var formattedText = searchText.ToLower().Trim();
 
-        ViewModel.FilteredOrders = ViewModel.Orders
+        ViewModel.FilteredOrders = new ObservableCollection<OrderViewModel>(ViewModel.Orders
             .Where(order => order.Name.ToLower().Contains(formattedText))
-            .Sort(ViewModel.ActualSort);
+            .Sort(ViewModel.ActualSort));
     }
 
     private void TextBoxBase_OnTextChanged(object sender, TextChangedEventArgs e)
@@ -166,9 +168,49 @@ public partial class LiveSearch : INavigableView<LiveSearchViewModel>
             return;
         }
 
-        ViewModel.FilteredOrders = ViewModel.FilteredOrders.Sort(ViewModel.ActualSort);
+        ViewModel.FilteredOrders = new ObservableCollection<OrderViewModel>(ViewModel.FilteredOrders.Sort(ViewModel.ActualSort));
 
         UserSettings.Default.LiveSearchSort = ViewModel.ActualSort.Kind.ToString();
         UserSettings.Default.Save();
+    }
+
+    private void SelectedModElement_OnSelected(object sender, MouseButtonEventArgs e)
+    {
+        var selectedOrders = ViewModel.Orders.Where(x => x.IsSelected);
+        ViewModel.UpdateManyOrderMod(selectedOrders.Select(x => x.Id), ViewModel.ModForSelectedOrders);
+
+        if (ViewModel.IsSelectedAllOrders)
+        {
+            ViewModel.UpdateAllOrderMod(ViewModel.ModForSelectedOrders);
+        }
+        
+        foreach (var viewModelOrder in selectedOrders)
+        {
+            viewModelOrder.Mod = ViewModel.ModForSelectedOrders;
+        }
+    }
+
+    private void DataGrid_LifeSearch_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
+    {
+        if (sender is DataGrid { SelectedValue: OrderViewModel order })
+        {
+            order.IsSelected = !order.IsSelected;
+        }
+    }
+
+    private void ToggleButton_OnChecked(object sender, RoutedEventArgs e)
+    {
+        if (sender is CheckBox { DataContext: OrderViewModel order })
+        {
+            order.IsSelected = true;
+        }
+    }
+
+    private void ToggleButton_OnUnchecked(object sender, RoutedEventArgs e)
+    {
+        if (sender is CheckBox { DataContext: OrderViewModel order })
+        {
+            order.IsSelected = false;
+        }
     }
 }

@@ -37,13 +37,9 @@ public partial class LiveSearchViewModel : ViewModelBase
     public readonly IDialogControl DialogControl;
 
     [ObservableProperty] private ObservableCollection<OrderViewModel> _orders;
-    private IEnumerable<OrderViewModel> _filteredOrders = new List<OrderViewModel>();
-
-    public IEnumerable<OrderViewModel> FilteredOrders
-    {
-        get => _filteredOrders;
-        set => SetProperty(ref _filteredOrders, value);
-    }
+    [ObservableProperty] private ObservableCollection<OrderViewModel> _filteredOrders = new();
+    [ObservableProperty] private OrderMod _modForSelectedOrders;
+    [ObservableProperty] private bool _isSelectedAllOrders;
 
     public static IEnumerable<OrderMod> AvailableMods { get; } = new[] { OrderMod.Whisper, OrderMod.Notify };
 
@@ -91,7 +87,7 @@ public partial class LiveSearchViewModel : ViewModelBase
         var orders = _service.GetOrdersByLeague(leagueName ?? UserSettings.Default.LeagueName).ToArray();
         _service.StartLiveSearchAsync(orders);
         Orders = new ObservableCollection<OrderViewModel>(orders.ToOrderModel());
-        FilteredOrders = Orders.Sort(ActualSort);
+        FilteredOrders = new ObservableCollection<OrderViewModel>(Orders.Sort(ActualSort));
     }
 
     public void StopSearchingForOrders(string leagueName = null)
@@ -177,7 +173,7 @@ public partial class LiveSearchViewModel : ViewModelBase
         await Da();
         return;
 
-        if (!Enumerable.Any(Orders))
+        if (!Orders.Any())
         {
             return;
         }
@@ -188,6 +184,36 @@ public partial class LiveSearchViewModel : ViewModelBase
             Orders.Clear();
             _service.ClearAllOrders();
         }
+
+        Log.Information("Orders cleared");
+    }
+    
+    private async Task ClearOrders2()
+    {
+        if (!Orders.Any())
+        {
+            return;
+        }
+        
+        var result = await DialogControl.ShowAndWaitAsync("",
+            "Clear orders?", true);
+
+        switch (result)
+        {
+            case IDialogControl.ButtonPressed.Left:
+                break;
+        
+            case IDialogControl.ButtonPressed.Right:
+            case IDialogControl.ButtonPressed.None:
+            default:
+                return;
+        }
+
+        Orders.Clear();
+        FilteredOrders.Clear();
+        OrdersChanged.Invoke(this, EventArgs.Empty);
+
+        _service.ClearAllOrders();
 
         Log.Information("Orders cleared");
     }
@@ -279,6 +305,20 @@ public partial class LiveSearchViewModel : ViewModelBase
         _service.DisableLiveSearchOrder(order.Id);
 
         Log.Information("Order {OrderName} has been disabled", order.Name);
+    }
+
+    public void UpdateManyOrderMod(IEnumerable<long> ids, OrderMod newMod)
+    {
+        _service.UpdateManyMod(ids, newMod);
+
+        Log.Information("Mod of orders {OrderIds} has been changed to {NewMod}", string.Join(',', ids), newMod);
+    }
+
+    public void UpdateAllOrderMod(OrderMod newMod)
+    {
+        _service.UpdateAllMod(newMod);
+
+        Log.Information("Mod of all orders has been changed to {NewMod}", newMod);
     }
 
     public void ChangeOrderMod(long id, OrderMod newMod, OrderMod oldMod)
@@ -404,5 +444,74 @@ public partial class LiveSearchViewModel : ViewModelBase
         OrdersChanged.Invoke(this, EventArgs.Empty);
 
         Log.Information("Order {OrderName} has been deleted", order.Name);
+    }
+
+    [RelayCommand]
+    private void EnableSelectedOrders()
+    {
+        var selectedOrders = Orders.Where(x => x.IsSelected).Select(x => x.Id);
+
+        foreach (var selectedOrderId in selectedOrders)
+        {
+            DisableOrder(selectedOrderId);
+        }
+
+        Log.Information("Selected orders has been paused");
+    }
+
+    [RelayCommand]
+    private void DisableSelectedOrders()
+    {
+        var selectedOrders = Orders.Where(x => x.IsSelected).Select(x => x.Id);
+
+        foreach (var selectedOrderId in selectedOrders)
+        {
+            DisableOrder(selectedOrderId);
+        }
+
+        Log.Information("Selected orders has been paused");
+    }
+
+    [RelayCommand]
+    private async Task DeleteSelectedOrders()
+    {
+        var result = await DialogControl.ShowAndWaitAsync("",
+            "Delete selected orders?", true);
+
+        switch (result)
+        {
+            case IDialogControl.ButtonPressed.Left:
+                break;
+
+            case IDialogControl.ButtonPressed.Right:
+            case IDialogControl.ButtonPressed.None:
+            default:
+                return;
+        }
+
+        if (IsSelectedAllOrders)
+        {
+            await ClearOrders2();
+
+            OrdersChanged.Invoke(this, EventArgs.Empty);
+            Log.Information("Selected orders has been deleted");
+
+            return;
+        }
+
+        var selectedOrders = Orders.Where(x => x.IsSelected).Select(x => x.Id);
+
+        var unselectedOrders = Orders.Where(x => !x.IsSelected);
+        Orders = new ObservableCollection<OrderViewModel>(unselectedOrders);
+        FilteredOrders = new ObservableCollection<OrderViewModel>(unselectedOrders);
+
+        foreach (var id in selectedOrders)
+        {
+            _service.DeleteOrder(id);
+        }
+
+        OrdersChanged.Invoke(this, EventArgs.Empty);
+
+        Log.Information("Selected orders has been deleted");
     }
 }

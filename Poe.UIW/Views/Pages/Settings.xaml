@@ -48,12 +48,14 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
+
             <!--Title-->
             <TextBlock Text="Settings"
                        HorizontalAlignment="Left"
                        Margin="0 25 25 50"
                        FontSize="25"
                        FontWeight="SemiBold" />
+
             <!--Settings-->
             <StackPanel Grid.Row="1">
                 <!--POESESSID-->

@@ -38,6 +38,16 @@ public class Service
         return order;
     }
     
+    public void UpdateManyMod(IEnumerable<long> orderIds, OrderMod mod)
+    {
+        _orderRepository.UpdateManyMod(orderIds, mod);
+    }
+
+    public void UpdateAllMod(OrderMod mod)
+    {
+        _orderRepository.UpdateAllMod(mod);
+    }
+
     public Order GetOrder(long id)
     {
         return _orderRepository.GetById(id);

@@ -1,5 +1,4 @@
-﻿#nullable enable
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 using LiteDB;
 using Poe.LiveSearch.Models;
 
@@ -9,13 +8,13 @@ public class OrderRepository : IOrderRepository
 {
     private readonly ILiteCollection<Order> _collection;
     private readonly ConcurrentDictionary<long, Order> _cache;
-    
+
     public OrderRepository(ILiteDbContext liteDbContext)
     {
         _collection = liteDbContext.Database.GetCollection<Order>("Order");
 
         var data = _collection.Find(Query.All()).ToArray();
-        
+
         _cache = new ConcurrentDictionary<long, Order>(data.ToDictionary(x => x.Id, y => y));
     }
 
@@ -24,7 +23,7 @@ public class OrderRepository : IOrderRepository
         return _cache.Values;
     }
 
-    public Order? GetById(long id)
+    public Order GetById(long id)
     {
         return !_cache.TryGetValue(id, out var order) ? null : order;
     }
@@ -44,6 +43,22 @@ public class OrderRepository : IOrderRepository
         }
 
         return entity;
+    }
+
+    public void UpdateManyMod(IEnumerable<long> orderIds, OrderMod mod)
+    {
+        _collection.UpdateMany(x => new Order
+        {
+            Mod = mod
+        }, p => orderIds.Contains(p.Id) && p.Mod != mod);
+    }
+
+    public void UpdateAllMod(OrderMod mod)
+    {
+        _collection.UpdateMany(x => new Order(x)
+        {
+            Mod = mod
+        }, p => p.Mod != mod);
     }
 
     public Order Update(Order entity)

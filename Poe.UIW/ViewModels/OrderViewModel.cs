@@ -41,6 +41,7 @@ public partial class OrderViewModel : ViewModelValidatableBase
     [ObservableProperty] private OrderMod _mod;
 
     [ObservableProperty] private bool _isActive;
+    [ObservableProperty] private bool _isSelected;
 
     public void ReValidateAllProperties()
     {

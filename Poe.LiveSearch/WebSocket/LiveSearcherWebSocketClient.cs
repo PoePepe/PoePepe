@@ -18,6 +18,9 @@ public class LiveSearcherWebSocketClient
     private readonly ChannelWriter<OrderError> _orderErrorChannelWriter;
     private bool _isConnected;
 
+    public EventHandler OnConnected;
+    public EventHandler OnConnectionFailed;
+
     public LiveSearcherWebSocketClient(PoeApiOptions poeApiOptions, ServiceState serviceState)
     {
         _poeApiOptions = poeApiOptions;
@@ -81,7 +84,7 @@ public class LiveSearcherWebSocketClient
         }
         catch (Exception e)
         {
-            _orderErrorChannelWriter.TryWrite(new OrderError(_order.Id, e.Message));
+            _orderErrorChannelWriter.TryWrite(new OrderError(_order.Id, e.Message, OrderErrorType.Process));
 
             Log.Error(e, "Error receiving data from web socket for order {OrderName}", _order.Name);
         }
@@ -103,8 +106,11 @@ public class LiveSearcherWebSocketClient
             await _clientWebSocket.ConnectAsync(uri, token);
             
             _isConnected = true;
-            
+            OnConnected?.Invoke(this, EventArgs.Empty);
+
             Log.Information("Connected to web socket for order {OrderName}", _order.Name);
+
+            return;
         }
         catch (WebSocketException e) when(e.WebSocketErrorCode == WebSocketError.NotAWebSocket && e.Message.Contains("404"))
         {
@@ -134,6 +140,8 @@ public class LiveSearcherWebSocketClient
 
             Log.Error(e, "Error connecting to web socket for order {OrderName}", _order.Name);
         }
+        
+        OnConnectionFailed?.Invoke(this, EventArgs.Empty);
     }
 
     private async Task ProcessReceivedMessageAsync(Stream messageStream, CancellationToken cancellationToken)

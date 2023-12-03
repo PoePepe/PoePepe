@@ -124,6 +124,20 @@ public class Service
 
         return _orderRepository.Delete(orderId);
     }
+    
+    public void TryEnableLiveSearchOrder(long orderId, Action<object, EventArgs> onConnected, Action<object, EventArgs> onConnectionFailed)
+    {
+        var order = _orderRepository.GetById(orderId);
+
+        if (order is null)
+        {
+            Log.Warning("The order {OrderId} not found", orderId);
+
+            return;
+        }
+
+        AddLiveSearchOrder(order, onConnected, onConnectionFailed);
+    }
 
     public void EnableLiveSearchOrder(long orderId)
     {
@@ -173,7 +187,7 @@ public class Service
         StopSearchingForOrder(orderId);
     }
     
-    private void AddLiveSearchOrder(Order order)
+    private void AddLiveSearchOrder(Order order, Action<object, EventArgs> onConnected = null, Action<object, EventArgs> onConnectionFailed = null)
     {
         if (_serviceState.LiveSearches.ContainsKey(order.Id))
         {
@@ -192,9 +206,20 @@ public class Service
 
         if (_serviceState.LiveSearches.TryAdd(order.Id, data))
         {
+            var client = new LiveSearcherWebSocketClient(_poeApiOptions, _serviceState);
+
+            if (onConnected is not null)
+            {
+                client.OnConnected += (sender, args) => onConnected(sender, args);
+            }
+            
+            if (onConnectionFailed is not null)
+            {
+                client.OnConnectionFailed += (sender, args) => onConnectionFailed(sender, args);
+            }
+
             Task.Run(async () =>
             {
-                var client = new LiveSearcherWebSocketClient(_poeApiOptions, _serviceState);
                 await client.ConnectAsync(order, token);
 
                 await client.StartReceiveAsync(token);
@@ -202,6 +227,11 @@ public class Service
             
             Log.Information("Сreated a search by order {OrderName}", order.Name);
         }
+    }
+
+    private void OnConnected(object sender, EventArgs e)
+    {
+        throw new NotImplementedException();
     }
 
     private void StopSearchingForOrder(long orderId)

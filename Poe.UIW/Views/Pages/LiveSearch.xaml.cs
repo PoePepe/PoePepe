@@ -176,17 +176,22 @@ public partial class LiveSearch : INavigableView<LiveSearchViewModel>
 
     private void SelectedModElement_OnSelected(object sender, MouseButtonEventArgs e)
     {
+        if (sender is not TextBlock { DataContext: OrderMod mod })
+        {
+            return;
+        }
+
         var selectedOrders = ViewModel.Orders.Where(x => x.IsSelected);
-        ViewModel.UpdateManyOrderMod(selectedOrders.Select(x => x.Id), ViewModel.ModForSelectedOrders);
+        ViewModel.UpdateManyOrderMod(selectedOrders.Select(x => x.Id), mod);
 
         if (ViewModel.IsSelectedAllOrders)
         {
-            ViewModel.UpdateAllOrderMod(ViewModel.ModForSelectedOrders);
+            ViewModel.UpdateAllOrderMod(mod);
         }
         
         foreach (var viewModelOrder in selectedOrders)
         {
-            viewModelOrder.Mod = ViewModel.ModForSelectedOrders;
+            viewModelOrder.Mod = mod;
         }
     }
 

@@ -524,6 +524,17 @@ public partial class LiveSearchViewModel : ViewModelBase
             _service.EnableLiveSearchOrder(orderViewModel.Id);
         }
 
+        var outstandingOrders = selectedDisabledOrders.Skip(availableSlots);
+        if (outstandingOrders.Any())
+        {
+            _snackbarService.Show(
+                $"{outstandingOrders.Count()} orders hasn't been enabled.",
+                "You exceed limit in 20 active orders. Please disable other orders to release slots.",
+                SymbolRegular.Warning24,
+                ControlAppearance.Caution
+            );
+        }
+
         Log.Information("Selected orders has been enabled");
     }
 

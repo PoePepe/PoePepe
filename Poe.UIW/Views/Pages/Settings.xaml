@@ -25,34 +25,28 @@
                            VerticalAlignment="Top" />
             </Grid>
         </Border>
-        
         <Border Background="Black"
                 Opacity="0.8"
                 Width="150"
-                
                 Height="450">
-            <Grid
-                >
+            <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <Border Background="#202020" />
-                <TextBlock Text="Notify" 
+                <TextBlock Text="Notify"
                            FontSize="20"
                            Margin="5"
                            HorizontalAlignment="Center"
-                           VerticalAlignment="Top"/>
+                           VerticalAlignment="Top" />
             </Grid>
-
         </Border>
-        
-        <Grid Margin="30 0 30 0">
 
+        <Grid Margin="30 0 30 0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
-
             </Grid.RowDefinitions>
             <!--Title-->
             <TextBlock Text="Settings"
@@ -73,7 +67,8 @@
                                 Width="300"
                                 MinWidth="300"
                                 x:Name="PoeSessionIdTextBox"
-                                TextChanged="PoeSessionIdTextBox_OnTextChanged"Text="{Binding PoeSessionId, ValidatesOnNotifyDataErrors=False}" />
+                                TextChanged="PoeSessionIdTextBox_OnTextChanged"
+                                Text="{Binding PoeSessionId, ValidatesOnNotifyDataErrors=False}" />
                     <StackPanel x:Name="PoeSessIdErrorStackPanel"
                                 Visibility="Hidden"
                                 Orientation="Horizontal"
@@ -109,14 +104,12 @@
                 <StackPanel Margin="0 15 0 0" Orientation="Vertical">
                     <TextBlock FontSize="14"
                                Margin="0 0 5 4"
-                               Text="Reposition of notification window" VerticalAlignment="Center"/>
+                               Text="Reposition of notification window" VerticalAlignment="Center" />
 
                     <StackPanel Orientation="Horizontal">
-                        <ui:Button Content="Adjust" 
-                                   Margin="0 0 5 0 " 
-                                   />
-                        <ui:Button Content="Reset"
-                                   />
+                        <ui:Button Content="Adjust"
+                                   Margin="0 0 5 0 " />
+                        <ui:Button Content="Reset" />
                     </StackPanel>
                 </StackPanel>
                 <!--Hide_Notify-->
@@ -140,7 +133,7 @@
                            Command="{Binding SaveCommand}"
                            Content="Save" />
             </StackPanel>
-            
+
         </Grid>
     </Grid>
 </ui:UiPage>

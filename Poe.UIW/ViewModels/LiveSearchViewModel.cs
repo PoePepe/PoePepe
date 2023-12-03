@@ -123,7 +123,8 @@ public partial class LiveSearchViewModel : ViewModelBase
             return;
         }
 
-        order.SetCommonValidationError(orderError.ErrorMessage);
+        order.CommonValidationError = orderError.ErrorMessage;
+        order.HasValidationErrors = true;
 
         DisableOrder(orderError.OrderId);
 
@@ -172,6 +173,7 @@ public partial class LiveSearchViewModel : ViewModelBase
     [RelayCommand]
     private async Task ClearOrders()
     {
+        // _soundService.Play();
         await Da();
         return;
 
@@ -203,19 +205,8 @@ public partial class LiveSearchViewModel : ViewModelBase
         }
 
         order.Id = id;
-
-        var activeOrderCount = _service.GetOrdersByLeague(order.LeagueName).Count(x => x.Activity == OrderActivity.Enabled);
-        if (activeOrderCount >= 20)
-        {
-            order.IsActive = false;
-            order.Activity = OrderActivity.Disabled;
-        }
-        else
-        {
-            order.IsActive = true;
-            order.Activity = OrderActivity.Enabled;
-        }
-
+        order.IsActive = true;
+        order.Activity = OrderActivity.Enabled;
         order.CreatedAt = DateTimeOffset.UtcNow;
         _service.CreateOrder(order.ToOrder());
 
@@ -225,26 +216,18 @@ public partial class LiveSearchViewModel : ViewModelBase
             await _service.StartLiveSearchAsync(order.Id);
         }
 
-        OpenSnackbarOrderAdded(order);
+        OpenSnackbarOrderAdded(order.Name);
 
         OrdersChanged?.Invoke(this, EventArgs.Empty);
 
         Log.Information("Order {OrderName} has been created", order.Name);
     }
 
-    private void OpenSnackbarOrderAdded(OrderViewModel order)
+    private void OpenSnackbarOrderAdded(string orderName)
     {
-        var title = order.IsActive
-            ? $"Order {order.Name} added."
-            : $"Order {order.Name} added, but live search hasn't been run.";
-
-        var message = order.IsActive
-            ? "Live search is up and running!"
-            : "Live search hasn't been run. You exceed limit in 20 active orders. Please disable other orders to release slots.";
-
         _snackbarService.Show(
-            title,
-            message,
+            $"Order {orderName} added.",
+            null,
             SymbolRegular.CheckmarkCircle24,
             ControlAppearance.Success
         );
@@ -253,26 +236,8 @@ public partial class LiveSearchViewModel : ViewModelBase
     private void OpenSnackbarOrderEdited(string orderName)
     {
         _snackbarService.Show(
-            $"Order {orderName} updated.",
+            $"Order {orderName} edited.",
             null,
-            SymbolRegular.CheckmarkCircle24,
-            ControlAppearance.Success
-        );
-    }
-
-    private void OpenSnackbarOrderEnabled(OrderViewModel order)
-    {
-        var title = order.IsActive
-            ? $"Order {order.Name} enabled."
-            : $"Order {order.Name} hasn't been enabled.";
-
-        var message = order.IsActive
-            ? "Live search is up and running!"
-            : "Live search hasn't been run. You exceed limit in 20 active orders. Please disable other orders to release slots.";
-
-        _snackbarService.Show(
-            title,
-            message,
             SymbolRegular.CheckmarkCircle24,
             ControlAppearance.Success
         );
@@ -288,25 +253,12 @@ public partial class LiveSearchViewModel : ViewModelBase
             return;
         }
 
-        var activeOrderCount = _service.GetOrdersByLeague(order.LeagueName).Count(x => x.Activity == OrderActivity.Enabled);
-        if (activeOrderCount >= 20)
-        {
-            order.IsActive = false;
-            order.Activity = OrderActivity.Disabled;
-        }
-        else
-        {
-            order.IsActive = true;
-            order.Activity = OrderActivity.Enabled;
+        order.Activity = OrderActivity.Enabled;
+        order.IsActive = true;
+        order.HasValidationErrors = false;
+        order.CommonValidationError = null!;
 
-            order.ClearCommonValidationError();
-
-            _service.EnableLiveSearchOrder(order.Id);
-
-            _errorOrders.TryRemove(id, out _);
-        }
-
-        OpenSnackbarOrderEnabled(order);
+        _service.EnableLiveSearchOrder(order.Id);
 
         Log.Information("Order {OrderName} has been enabled", order.Name);
     }
@@ -400,7 +352,8 @@ public partial class LiveSearchViewModel : ViewModelBase
             return;
         }
 
-        order.ClearCommonValidationError();
+        order.HasValidationErrors = false;
+        order.CommonValidationError = null!;
 
         _service.UpdateOrder(order.ToOrder());
 

@@ -1,9 +1,4 @@
-﻿// This Source Code Form is subject to the terms of the MIT License.
-// If a copy of the MIT was not distributed with this file, You can obtain one at https://opensource.org/licenses/MIT.
-// Copyright (C) Leszek Pomianowski and WPF UI Contributors.
-// All Rights Reserved.
-
-using System;
+﻿using System;
 using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Windows;
@@ -16,9 +11,6 @@ using Wpf.Ui.Mvvm.Contracts;
 
 namespace Poe.UIW.Views;
 
-/// <summary>
-/// Interaction logic for Container.xaml
-/// </summary>
 public partial class ContainerView : INavigationWindow
 {
     public ContainerViewModel ViewModel { get; }
@@ -45,6 +37,21 @@ public partial class ContainerView : INavigationWindow
         dialogService.SetDialogControl(RootDialogYesNo);
 
         Loaded += OnLoaded;
+        Closing += OnClosing;
+    }
+
+    private bool _isTrayClose;
+
+    private void OnClosing(object sender, CancelEventArgs e)
+    {
+        if (_isTrayClose)
+        {
+            return;
+        }
+
+        e.Cancel = true;
+        Hide();
+        ShowInTaskbar = false;
     }
 
     private void OnLoaded(object sender, RoutedEventArgs e)
@@ -65,9 +72,6 @@ public partial class ContainerView : INavigationWindow
         });
     }
 
-    /// <summary>
-    /// Raises the closed event.
-    /// </summary>
     protected override void OnClosed(EventArgs e)
     {
         base.OnClosed(e);
@@ -97,10 +101,12 @@ public partial class ContainerView : INavigationWindow
     {
         Show();
         Activate();
+        ShowInTaskbar = true;
     }
 
     private void MenuItem_OnClick_Close(object sender, RoutedEventArgs e)
     {
+        _isTrayClose = true;
         Close();
         OnClosing(new CancelEventArgs());
     }

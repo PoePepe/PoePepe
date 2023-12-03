@@ -328,8 +328,6 @@ public partial class LiveSearchViewModel : ViewModelBase
             order.ClearCommonValidationError();
 
             _service.EnableLiveSearchOrder(order.Id);
-
-            _errorOrders.TryRemove(id, out _);
         }
 
         OpenSnackbarOrderEnabled(order);

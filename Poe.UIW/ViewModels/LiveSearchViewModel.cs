@@ -249,6 +249,12 @@ public partial class LiveSearchViewModel : ViewModelBase
         if (order.LeagueName == UserSettings.Default.LeagueName)
         {
             Orders.Add(order);
+            FilteredOrders.Add(order);
+            FilteredOrders.Sort(ActualSort);
+        }
+
+        if (order.IsActive)
+        {
             await _service.StartLiveSearchAsync(order.Id);
         }
 
@@ -297,11 +303,19 @@ public partial class LiveSearchViewModel : ViewModelBase
             ? "Live search is up and running!"
             : "Live search hasn't been run. You exceed limit in 20 active orders. Please disable other orders to release slots.";
 
+        var color = order.IsActive
+            ? ControlAppearance.Success
+            : ControlAppearance.Caution;
+
+        var icon = order.IsActive
+            ? SymbolRegular.CheckmarkCircle24
+            : SymbolRegular.Warning24;
+
         _snackbarService.Show(
             title,
             message,
-            SymbolRegular.CheckmarkCircle24,
-            ControlAppearance.Success
+            icon,
+            color
         );
     }
 

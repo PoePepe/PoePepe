@@ -4,15 +4,18 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using System.Windows;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using HanumanInstitute.MvvmDialogs;
 using HanumanInstitute.MvvmDialogs.FileSystem;
+using Microsoft.Extensions.DependencyInjection;
 using Poe.LiveSearch.Api.Trade;
 using Poe.LiveSearch.Services;
 using Poe.UIW.Models;
 using Poe.UIW.Properties;
 using Poe.UIW.Services;
+using Poe.UIW.Views;
 using Serilog;
 using Wpf.Ui.Common;
 using Wpf.Ui.Mvvm.Contracts;
@@ -129,6 +132,24 @@ public partial class SettingsViewModel : ViewModelValidatableBase
         }
 
         _soundService.Load(_soundFile.Name);
+    }
+
+    [RelayCommand]
+    private void ModifyNotificationWindowPosition()
+    {
+        var view = App.Current.Services.GetRequiredService<AlwaysOnTopView>();
+        view.ModifyGrid.Visibility = Visibility.Visible;
+    }
+
+    [RelayCommand]
+    private void RestoreNotificationWindowPosition()
+    {
+        var view = App.Current.Services.GetRequiredService<AlwaysOnTopView>();
+        view.ModifyGrid.Visibility = Visibility.Collapsed;
+        UserSettings.Default.NotificationPositionTop = 0;
+        UserSettings.Default.NotificationPositionLeft = 0;
+        view.Top = 0;
+        view.Left = 0;
     }
 
     [RelayCommand]

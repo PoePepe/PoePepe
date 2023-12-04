@@ -66,12 +66,22 @@ public static class DialogServiceExtensions
         orderItemInfoView.Closed += (sender, args) => onClosed(sender, args);
     }
 
-    public static void ShowOrderItemInfo(OrderItemDto orderItem, Action<object, WhisperEventArgs> onWhispered = null, Action<object, EventArgs> onClosed = null)
+    public static void ShowOrderItemInfo(OrderItemDto orderItem)
     {
         var orderItemInfoViewModel = App.Current.Services.GetRequiredService<OrderItemInfoViewModel>();
         orderItemInfoViewModel.SetOrderItem(orderItem);
 
         var orderItemInfoView = new OrderItemInfoView(orderItemInfoViewModel);
+
+        orderItemInfoView.ShowDialog();
+    }
+
+    public static void ShowOrderItemInfo(OrderItemDto orderItem, AlwaysOnTopView ownerView, Action<object, WhisperEventArgs> onWhispered = null, Action<object, EventArgs> onClosed = null)
+    {
+        var orderItemInfoViewModel = App.Current.Services.GetRequiredService<OrderItemInfoViewModel>();
+        orderItemInfoViewModel.SetOrderItem(orderItem);
+
+        var orderItemInfoView = new OrderItemInfoView(orderItemInfoViewModel, ownerView);
         if (onWhispered is not null)
         {
             orderItemInfoView.Whispered += (sender, args) => onWhispered(sender, args);

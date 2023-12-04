@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using HanumanInstitute.MvvmDialogs;
 using Poe.UIW.Models;
+using Poe.UIW.Views;
 
 namespace Poe.UIW.ViewModels;
 
@@ -23,6 +24,13 @@ public partial class OrderItemNotificationViewModel  : ViewModelBase
         {
             OrderItem = orderItem;
         }
+    }
+
+    private AlwaysOnTopView _ownerView;
+    
+    public void SetOwnerView(AlwaysOnTopView view)
+    {
+        _ownerView = view;
     }
     
     public event EventHandler ClosingRequest;
@@ -51,6 +59,6 @@ public partial class OrderItemNotificationViewModel  : ViewModelBase
     [RelayCommand]
     private void ShowInfo()
     {
-        DialogServiceExtensions.ShowOrderItemInfo(OrderItem, OnWhispered, OnClosed);
+        DialogServiceExtensions.ShowOrderItemInfo(OrderItem, _ownerView, OnWhispered, OnClosed);
     }
 }

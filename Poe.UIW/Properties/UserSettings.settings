@@ -13,10 +13,10 @@
     <Setting Name="HideIfPoeUnfocused" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
-    <Setting Name="NotificationPositionTop" Type="System.Int32" Scope="User">
+    <Setting Name="NotificationPositionTop" Type="System.Double" Scope="User">
       <Value Profile="(Default)">0</Value>
     </Setting>
-    <Setting Name="NotificationPositionLeft" Type="System.Int32" Scope="User">
+    <Setting Name="NotificationPositionLeft" Type="System.Double" Scope="User">
       <Value Profile="(Default)">0</Value>
     </Setting>
     <Setting Name="LiveSearchSort" Type="System.String" Scope="User">

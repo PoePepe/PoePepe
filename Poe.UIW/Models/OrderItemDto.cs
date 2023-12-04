@@ -24,6 +24,7 @@ public class NotableProperty
 
 public class ItemInfo
 {
+    public int ImageWidth { get; set; }
     public ItemFrameType ItemFrameType { get; set; }
     public int FoilVariation { get; set; }
 

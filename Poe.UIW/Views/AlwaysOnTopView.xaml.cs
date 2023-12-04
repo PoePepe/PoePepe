@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Threading;
 using Microsoft.Extensions.DependencyInjection;
@@ -95,6 +96,7 @@ public partial class AlwaysOnTopView
 
             var orderItem = result.ToOrderItemDto();
             vm.SetOrderItem(orderItem);
+            vm.SetOwnerView(this);
             var uc = new OrderItemNotificationView(vm)
             {
                 DataContext = vm
@@ -113,5 +115,18 @@ public partial class AlwaysOnTopView
     private void UcOnLoaded(object sender, RoutedEventArgs e)
     {
         _soundService.Play();
+    }
+
+    private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+    {
+        UserSettings.Default.NotificationPositionTop = Top;
+        UserSettings.Default.NotificationPositionLeft = Left;
+
+        ModifyGrid.Visibility = Visibility.Collapsed;
+    }
+
+    private void ModifyGrid_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+    {
+        DragMove();
     }
 }

@@ -253,17 +253,21 @@
                     </ComboBox.ItemTemplate>
                 </ComboBox>
                 <StackPanel Orientation="Horizontal">
-                    <ui:Button Icon="Play28" Height="38"
-                               Margin="0 0 3 0 "
-                               Command="{Binding EnableSelectedOrdersCommand}"/>
-                    <ui:Button Icon="Pause28"
-                               Margin="0 0 3 0 "
-                               Height="38"
-                               Command="{Binding DisableSelectedOrdersCommand}" />
-                    <ui:Button Icon="Delete28"
-                               Margin="0 0 3 0 "
-                               Height="38"
-                               Command="{Binding DeleteSelectedOrdersCommand}" />
+                    <ui:Button
+                        IsEnabled="{Binding IsOrdersEnabling, Converter={StaticResource BooleanToInvertedVisibilityConverter}}"
+                        Icon="Play28" Height="38"
+                        Margin="0 0 3 0 "
+                        Command="{Binding EnableSelectedOrdersCommand}" />
+                    <ui:Button
+                        Icon="Pause28"
+                        Margin="0 0 3 0 "
+                        Height="38"
+                        Command="{Binding DisableSelectedOrdersCommand}" />
+                    <ui:Button
+                        Icon="Delete28"
+                        Margin="0 0 3 0 "
+                        Height="38"
+                        Command="{Binding DeleteSelectedOrdersCommand}" />
                 </StackPanel>
             </StackPanel>
         </Border>

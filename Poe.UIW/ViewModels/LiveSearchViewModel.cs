@@ -86,7 +86,10 @@ public partial class LiveSearchViewModel : ViewModelBase
     public void LoadOrders(string leagueName = null)
     {
         var orders = _service.GetOrdersByLeague(leagueName ?? UserSettings.Default.LeagueName).ToArray();
-        _service.StartLiveSearchAsync(orders);
+        ThreadPool.QueueUserWorkItem(async _ =>
+        {
+            await _service.StartLiveSearchAsync(orders);
+        });
         Orders = new ObservableCollection<OrderViewModel>(orders.ToOrderModel());
         FilteredOrders = new ObservableCollection<OrderViewModel>(Orders.Sort(ActualSort));
     }
@@ -320,7 +323,7 @@ public partial class LiveSearchViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private void EnableOrder(long id)
+    private async Task EnableOrder(long id)
     {
         var order = Orders.FirstOrDefault(x => x.Id == id);
 
@@ -342,7 +345,7 @@ public partial class LiveSearchViewModel : ViewModelBase
 
             order.ClearCommonValidationError();
 
-            _service.EnableLiveSearchOrder(order.Id);
+            await _service.EnableLiveSearchOrder(order.Id);
         }
 
         OpenSnackbarOrderEnabled(order);
@@ -506,8 +509,26 @@ public partial class LiveSearchViewModel : ViewModelBase
         Log.Information("Order {OrderName} has been deleted", order.Name);
     }
 
+    private readonly SemaphoreSlim _enablingSelectedOrderSemaphoreSlim = new(1, 1);
+    [ObservableProperty] private bool _isOrdersEnabling;
+
     [RelayCommand]
-    private void EnableSelectedOrders()
+    private async Task EnableSelectedOrders()
+    {
+        try
+        {
+            await _enablingSelectedOrderSemaphoreSlim.WaitAsync();
+            IsOrdersEnabling = true;
+            await InternalEnableSelectedOrders();
+        }
+        finally
+        {
+            IsOrdersEnabling = false;
+            _enablingSelectedOrderSemaphoreSlim.Release();
+        }
+    }
+
+    private async Task InternalEnableSelectedOrders()
     {
         var selectedDisabledOrders = Orders.Where(x => x.IsSelected && !x.IsActive);
 
@@ -516,17 +537,17 @@ public partial class LiveSearchViewModel : ViewModelBase
 
         foreach (var orderViewModel in ordersForEnable)
         {
+            await _service.EnableLiveSearchOrder(orderViewModel.Id);
+
             orderViewModel.IsActive = true;
             orderViewModel.Activity = OrderActivity.Enabled;
 
             orderViewModel.ClearCommonValidationError();
-
-            _service.EnableLiveSearchOrder(orderViewModel.Id);
         }
 
         if (selectedDisabledOrders.Any())
         {
-            _snackbarService.Show(
+            await _snackbarService.ShowAsync(
                 $"{selectedDisabledOrders.Count()} orders hasn't been enabled.",
                 "You exceed limit in 20 active orders. Please disable other orders to release slots.",
                 SymbolRegular.Warning24,

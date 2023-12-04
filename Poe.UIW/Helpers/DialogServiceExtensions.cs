@@ -13,6 +13,7 @@ using Poe.UIW.ViewModels;
 using Poe.UIW.ViewModels.OrderItemInfoViewModels;
 using Poe.UIW.Views;
 using Poe.UIW.Views.OrderItemInfoViews;
+using Syroot.Windows.IO;
 using ManageOrderViewModel = Poe.UIW.ViewModels.ManageOrderViewModel;
 using OrderViewModel = Poe.UIW.ViewModels.OrderViewModel;
 
@@ -100,7 +101,7 @@ public static class DialogServiceExtensions
     {
         var settings = new OpenFileDialogSettings
         {
-            Title = "Open Sound file",
+            Title = "Open sound file",
             InitialDirectory = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!,
                 "Resources/Sounds"),
             Filters = new List<FileFilter>
@@ -109,7 +110,22 @@ public static class DialogServiceExtensions
             }
         };
 
-        return service.ShowOpenFileDialog(null, settings);
+        return service.ShowOpenFileDialog(owner, settings);
     }
-            
+
+    public static Task<IDialogStorageFile> OpenImportFileAsync(this IDialogService service, INotifyPropertyChanged owner)
+    {
+        var settings = new OpenFileDialogSettings
+        {
+            Title = "Open import file",
+            InitialDirectory = KnownFolders.Downloads.Path,
+            Filters = new List<FileFilter>
+            {
+                new("Better trading backup", new [] {"txt"}),
+                new("PoePepe backup", new [] {"json"})
+            }
+        };
+
+        return service.ShowOpenFileDialogAsync(owner, settings);
+    }
 }

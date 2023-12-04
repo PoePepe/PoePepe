@@ -242,4 +242,13 @@ public partial class LiveSearch : INavigableView<LiveSearchViewModel>
 
         ViewModel.IsRowsSelected = false;
     }
+
+    private void OptionsButton_OnClick(object sender, RoutedEventArgs e)
+    {
+        var button = sender as Wpf.Ui.Controls.Button;
+        var contextMenu = button!.ContextMenu;
+        contextMenu!.PlacementTarget = button;
+        contextMenu.Placement = PlacementMode.Bottom;
+        contextMenu.IsOpen = true;
+    }
 }

@@ -56,6 +56,39 @@
                             Content="Clear all"
                             FontSize="15"
                             FontWeight="Medium" />
+
+                    <ui:Button x:Name="OptionsButton"
+                               HorizontalAlignment="Right"
+                               VerticalAlignment="Top"
+                               VerticalContentAlignment="Center"
+                               Margin="5 0 0 0"
+                               FontSize="15"
+                               FontWeight="Medium"
+                               Content="Options"
+                               Click="OptionsButton_OnClick">
+
+                        <ui:Button.Resources>
+                            <helpers:BindingProxy x:Key="Proxy"
+                                                  Data="{Binding ViewModel, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=pages:LiveSearch}}" />
+                        </ui:Button.Resources>
+
+                        <ui:Button.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Clear all"
+                                          FontSize="15"
+                                          FontWeight="Medium"
+                                          Command="{Binding ClearOrdersCommand}"/>
+                                <Separator />
+                                <MenuItem Header="Import"
+                                          Command="{Binding ImportOrdersCommand}">
+                                    <MenuItem Header="Open file" Command="{Binding ImportOrdersCommand}" />
+                                    <MenuItem Header="Paste text" Command="{Binding ImportOrdersCommand}" />
+                                </MenuItem>
+                                <MenuItem Header="Export"
+                                          Command="{Binding ImportOrdersCommand}"/>
+                            </ContextMenu>
+                        </ui:Button.ContextMenu>
+                    </ui:Button>
                 </StackPanel>
             </Grid>
 

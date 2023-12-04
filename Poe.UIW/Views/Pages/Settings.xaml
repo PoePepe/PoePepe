@@ -10,38 +10,6 @@
            mc:Ignorable="d"
            d:DataContext="{d:DesignInstance viewModels:SettingsViewModel, IsDesignTimeCreatable=True}">
     <Grid>
-        <Border Background="Black"
-                Opacity="0.8"
-                Width="300" Height="400">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
-                <Border Background="#202020" />
-                <TextBlock Text="Item information"
-                           FontSize="20"
-                           Margin="5"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Top" />
-            </Grid>
-        </Border>
-        <Border Background="Black"
-                Opacity="0.8"
-                Width="150"
-                Height="450">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
-                <Border Background="#202020" />
-                <TextBlock Text="Notify"
-                           FontSize="20"
-                           Margin="5"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Top" />
-            </Grid>
-        </Border>
-
         <Grid Margin="30 0 30 0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
@@ -106,12 +74,12 @@
                 <StackPanel Margin="0 15 0 0" Orientation="Vertical">
                     <TextBlock FontSize="14"
                                Margin="0 0 5 4"
-                               Text="Reposition of notification window" VerticalAlignment="Center" />
+                               Text="Notification window position" VerticalAlignment="Center" />
 
                     <StackPanel Orientation="Horizontal">
-                        <ui:Button Content="Adjust"
+                        <ui:Button Content="Modify"
                                    Margin="0 0 5 0 " />
-                        <ui:Button Content="Reset" />
+                        <ui:Button Content="Restore default" />
                     </StackPanel>
                 </StackPanel>
                 <!--Hide_Notify-->

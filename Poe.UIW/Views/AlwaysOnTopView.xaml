@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
         xmlns:local="clr-namespace:Poe.UIW.Views"
         AllowsTransparency="True"
         Background="Transparent"
@@ -17,16 +18,43 @@
         mc:Ignorable="d"
         Title="AlwaysOnTopView"
         DataContext="{Binding Source={StaticResource Locator}, Path=AlwaysOnTopView}">
+ 
 
-    <StackPanel
-        MinWidth="150"
-        MaxWidth="150"
-        x:Name="NotificationStackPanel">
-
+        <StackPanel
+            MinWidth="150"
+            MaxWidth="150"
+            x:Name="NotificationStackPanel">
+        <!--Adjust size grid-->
+        <Grid Visibility="Collapsed">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Border Background="#393939" />
+            <TextBlock Text="Notify"
+                       FontSize="20"
+                       Margin="5 5 5 8"
+                       Foreground="White"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Top" />
+            <Grid Grid.Row="1">
+                <Border  Background="Black"
+                         Opacity="0.8"
+                         Width="150"
+                         Height="450">
+                </Border>
+                <ui:Button Content="Accept"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Background="#393939"
+                           Margin="0 0 0 35" />
+            </Grid>
+        </Grid>
         <StackPanel.Resources>
-            <Style TargetType="{x:Type local:OrderItemNotificationView}">
-                <Setter Property="Margin" Value="0,0,0,2" />
-            </Style>
-        </StackPanel.Resources>
-    </StackPanel>
+                <Style TargetType="{x:Type local:OrderItemNotificationView}">
+                    <Setter Property="Margin" Value="0,0,0,2" />
+                </Style>
+            </StackPanel.Resources>
+        </StackPanel>
+
 </Window>

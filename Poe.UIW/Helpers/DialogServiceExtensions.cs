@@ -128,4 +128,20 @@ public static class DialogServiceExtensions
 
         return service.ShowOpenFileDialogAsync(owner, settings);
     }
+
+    public static async Task OpenImport(this IDialogService service, INotifyPropertyChanged ownerViewModel)
+    {
+        var da = App.Current.Services.GetRequiredService<ContainerViewModel>();
+        
+        var vm = service.CreateViewModel<ImportOrdersViewModel>();
+        await service.ShowDialogAsync(da, vm);
+    }
+
+    public static async Task OpenExport(this IDialogService service, INotifyPropertyChanged ownerViewModel)
+    {
+        var da = App.Current.Services.GetRequiredService<ContainerViewModel>();
+        
+        var vm = service.CreateViewModel<ExportOrdersViewModel>();
+        await service.ShowDialogAsync(da, vm);
+    }
 }

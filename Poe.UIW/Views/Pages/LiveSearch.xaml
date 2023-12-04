@@ -74,18 +74,10 @@
 
                         <ui:Button.ContextMenu>
                             <ContextMenu>
-                                <MenuItem Header="Clear all"
-                                          FontSize="15"
-                                          FontWeight="Medium"
-                                          Command="{Binding ClearOrdersCommand}"/>
+                                <MenuItem Header="Clear all" Command="{Binding ClearOrdersCommand}"/>
                                 <Separator />
-                                <MenuItem Header="Import"
-                                          Command="{Binding ImportOrdersCommand}">
-                                    <MenuItem Header="Open file" Command="{Binding ImportOrdersCommand}" />
-                                    <MenuItem Header="Paste text" Command="{Binding ImportOrdersCommand}" />
-                                </MenuItem>
-                                <MenuItem Header="Export"
-                                          Command="{Binding ImportOrdersCommand}"/>
+                                <MenuItem Header="Import" Command="{Binding ImportOrdersCommand}"/>
+                                <MenuItem Header="Export" Command="{Binding ExportOrdersCommand}"/>
                             </ContextMenu>
                         </ui:Button.ContextMenu>
                     </ui:Button>

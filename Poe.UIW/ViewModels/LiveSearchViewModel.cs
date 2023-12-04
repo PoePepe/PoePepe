@@ -277,9 +277,15 @@ public partial class LiveSearchViewModel : ViewModelBase
     }
 
     [RelayCommand]
+    private async Task ImportOrders()
+    {
+        await _dialogService.OpenImport(this);
+    }
+    
+    [RelayCommand]
     private async Task ExportOrders()
     {
-        
+        await _dialogService.OpenExport(this);
     }
 
     [RelayCommand]

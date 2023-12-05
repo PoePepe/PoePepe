@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
@@ -16,7 +18,6 @@ using Poe.UIW.Helpers;
 using Poe.UIW.Mapping;
 using Poe.UIW.Models;
 using Poe.UIW.Properties;
-using Poe.UIW.Services;
 using Serilog;
 using Wpf.Ui.Common;
 using Wpf.Ui.Controls.Interfaces;
@@ -86,7 +87,7 @@ public partial class LiveSearchViewModel : ViewModelBase
     public void LoadOrders(string leagueName = null)
     {
         var orders = _service.GetOrdersByLeague(leagueName ?? UserSettings.Default.LeagueName).ToArray();
-        _service.StartLiveSearchAsync(orders);
+        ThreadPool.QueueUserWorkItem(async _ => { await _service.StartLiveSearchAsync(orders); });
         Orders = new ObservableCollection<OrderViewModel>(orders.ToOrderModel());
         FilteredOrders = new ObservableCollection<OrderViewModel>(Orders.Sort(ActualSort));
     }
@@ -166,6 +167,127 @@ public partial class LiveSearchViewModel : ViewModelBase
         await _serviceState.FoundItemsChannel.Writer.WriteAsync(da);
     }
 
+    private bool TryParseImportData(string data, out IEnumerable<OrderImportDto> orders)
+    {
+        if (data.StartsWith('{') && data.EndsWith('}') || data.StartsWith('[') && data.EndsWith(']'))
+        {
+            orders = JsonSerializer.Deserialize<IEnumerable<OrderImportDto>>(data);
+
+            return true;
+        }
+
+        if (data.StartsWith("poepepe:"))
+        {
+            data = data[8..];
+
+            var encodedDataBytes = Convert.FromBase64String(data);
+            data = System.Text.Encoding.UTF8.GetString(encodedDataBytes);
+
+            orders = JsonSerializer.Deserialize<IEnumerable<OrderImportDto>>(data);
+
+            return true;
+        }
+
+        if (data.StartsWith("2:"))
+        {
+            var lastIndexBase64 = data.LastIndexOf('=');
+            data = data[2..lastIndexBase64];
+
+            var encodedDataBytes = Convert.FromBase64String(data);
+            data = System.Text.Encoding.UTF8.GetString(encodedDataBytes);
+
+            var betterTradingItems = JsonSerializer.Deserialize<BetterTradingItems>(data);
+
+            orders = betterTradingItems.Items.Select(x => new OrderImportDto
+            {
+                QueryHash = x.Query[7..],
+                Name = x.Title
+            });
+
+            return true;
+        }
+
+        orders = null;
+
+        return false;
+    }
+
+    private async Task ImportOrdersFromJsonFileAsync(Stream fileStream)
+    {
+        var orders = await JsonSerializer.DeserializeAsync<OrderImportDto[]>(fileStream);
+        ImportOrders(orders);
+    }
+
+    [RelayCommand]
+    private async Task ImportOrdersFromFile()
+    {
+        var importFile = await _dialogService.OpenImportFileAsync(this);
+
+        await using var fileStream = await importFile.OpenReadAsync();
+        if (importFile.Name.EndsWith(".json"))
+        {
+            await ImportOrdersFromJsonFileAsync(fileStream);
+
+            return;
+        }
+
+        using var streamReader = new StreamReader(fileStream);
+        var importData = await streamReader.ReadToEndAsync();
+
+        if (TryParseImportData(importData, out var orders))
+        {
+            ImportOrders(orders);
+        }
+    }
+
+    [RelayCommand]
+    private void ImportOrdersFromPasteText(string importText)
+    {
+        if (TryParseImportData(importText, out var orders))
+        {
+            ImportOrders(orders);
+        }
+    }
+
+    private void ImportOrders(IEnumerable<OrderImportDto> items)
+    {
+        var lastId = !Orders.Any() ? 1 : Orders.MaxBy(x => x.Id).Id;
+
+        foreach (var item in items)
+        {
+            var orderViewModel = new OrderViewModel
+            {
+                Id = ++lastId,
+                CreatedAt = DateTimeOffset.UtcNow,
+                LeagueName = UserSettings.Default.LeagueName,
+                QueryHash = item.QueryHash,
+                Name = item.Name,
+                Link = $"https://www.pathofexile.com/trade/search/{UserSettings.Default.LeagueName}/{item.QueryHash}",
+                Activity = OrderActivity.Disabled,
+                Mod = OrderMod.Notify,
+                IsActive = false
+            };
+
+            Orders.Add(orderViewModel);
+            FilteredOrders.Add(orderViewModel);
+            _service.CreateOrder(orderViewModel.ToOrder());
+        }
+
+        FilteredOrders = new ObservableCollection<OrderViewModel>(FilteredOrders.Sort(ActualSort));
+    }
+
+    [RelayCommand]
+    private async Task ImportOrders()
+    {
+        await _dialogService.OpenImport(this);
+    }
+    
+    [RelayCommand]
+    private async Task ExportOrders()
+    {
+        await _dialogService.OpenExport(this);
+    }
+
     [RelayCommand]
     private async Task ClearOrders()
     {
@@ -186,14 +308,14 @@ public partial class LiveSearchViewModel : ViewModelBase
 
         Log.Information("Orders cleared");
     }
-    
+
     private async Task ClearOrders2()
     {
         if (!Orders.Any())
         {
             return;
         }
-        
+
         var result = await DialogControl.ShowAndWaitAsync("",
             "Clear orders?", true);
 
@@ -201,7 +323,7 @@ public partial class LiveSearchViewModel : ViewModelBase
         {
             case IDialogControl.ButtonPressed.Left:
                 break;
-        
+
             case IDialogControl.ButtonPressed.Right:
             case IDialogControl.ButtonPressed.None:
             default:
@@ -231,7 +353,8 @@ public partial class LiveSearchViewModel : ViewModelBase
 
         order.Id = id;
 
-        var activeOrderCount = _service.GetOrdersByLeague(order.LeagueName).Count(x => x.Activity == OrderActivity.Enabled);
+        var activeOrderCount =
+            _service.GetOrdersByLeague(order.LeagueName).Count(x => x.Activity == OrderActivity.Enabled);
         if (activeOrderCount >= 20)
         {
             order.IsActive = false;
@@ -320,7 +443,7 @@ public partial class LiveSearchViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private void EnableOrder(long id)
+    private async Task EnableOrder(long id)
     {
         var order = Orders.FirstOrDefault(x => x.Id == id);
 
@@ -329,7 +452,8 @@ public partial class LiveSearchViewModel : ViewModelBase
             return;
         }
 
-        var activeOrderCount = _service.GetOrdersByLeague(order.LeagueName).Count(x => x.Activity == OrderActivity.Enabled);
+        var activeOrderCount =
+            _service.GetOrdersByLeague(order.LeagueName).Count(x => x.Activity == OrderActivity.Enabled);
         if (activeOrderCount >= 20)
         {
             order.IsActive = false;
@@ -342,7 +466,7 @@ public partial class LiveSearchViewModel : ViewModelBase
 
             order.ClearCommonValidationError();
 
-            _service.EnableLiveSearchOrder(order.Id);
+            await _service.EnableLiveSearchOrder(order.Id);
         }
 
         OpenSnackbarOrderEnabled(order);
@@ -399,12 +523,12 @@ public partial class LiveSearchViewModel : ViewModelBase
     }
 
     private string _openedHistoryForOrder;
-    
+
     private void OnHistoryClosed(object sender, EventArgs e)
     {
         _openedHistoryForOrder = null;
     }
-    
+
     [RelayCommand]
     private void ShowOrderHistory(long id)
     {
@@ -506,8 +630,26 @@ public partial class LiveSearchViewModel : ViewModelBase
         Log.Information("Order {OrderName} has been deleted", order.Name);
     }
 
+    private readonly SemaphoreSlim _enablingSelectedOrderSemaphoreSlim = new(1, 1);
+    [ObservableProperty] private bool _isOrdersEnabling;
+
     [RelayCommand]
-    private void EnableSelectedOrders()
+    private async Task EnableSelectedOrders()
+    {
+        try
+        {
+            await _enablingSelectedOrderSemaphoreSlim.WaitAsync();
+            IsOrdersEnabling = true;
+            await InternalEnableSelectedOrders();
+        }
+        finally
+        {
+            IsOrdersEnabling = false;
+            _enablingSelectedOrderSemaphoreSlim.Release();
+        }
+    }
+
+    private async Task InternalEnableSelectedOrders()
     {
         var selectedDisabledOrders = Orders.Where(x => x.IsSelected && !x.IsActive);
 
@@ -516,17 +658,17 @@ public partial class LiveSearchViewModel : ViewModelBase
 
         foreach (var orderViewModel in ordersForEnable)
         {
+            await _service.EnableLiveSearchOrder(orderViewModel.Id);
+
             orderViewModel.IsActive = true;
             orderViewModel.Activity = OrderActivity.Enabled;
 
             orderViewModel.ClearCommonValidationError();
-
-            _service.EnableLiveSearchOrder(orderViewModel.Id);
         }
 
         if (selectedDisabledOrders.Any())
         {
-            _snackbarService.Show(
+            await _snackbarService.ShowAsync(
                 $"{selectedDisabledOrders.Count()} orders hasn't been enabled.",
                 "You exceed limit in 20 active orders. Please disable other orders to release slots.",
                 SymbolRegular.Warning24,

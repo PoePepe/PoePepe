@@ -56,6 +56,31 @@
                             Content="Clear all"
                             FontSize="15"
                             FontWeight="Medium" />
+
+                    <ui:Button x:Name="OptionsButton"
+                               HorizontalAlignment="Right"
+                               VerticalAlignment="Top"
+                               VerticalContentAlignment="Center"
+                               Margin="5 0 0 0"
+                               FontSize="15"
+                               FontWeight="Medium"
+                               Content="Options"
+                               Click="OptionsButton_OnClick">
+
+                        <ui:Button.Resources>
+                            <helpers:BindingProxy x:Key="Proxy"
+                                                  Data="{Binding ViewModel, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=pages:LiveSearch}}" />
+                        </ui:Button.Resources>
+
+                        <ui:Button.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Clear all" Command="{Binding ClearOrdersCommand}"/>
+                                <Separator />
+                                <MenuItem Header="Import" Command="{Binding ImportOrdersCommand}"/>
+                                <MenuItem Header="Export" Command="{Binding ExportOrdersCommand}"/>
+                            </ContextMenu>
+                        </ui:Button.ContextMenu>
+                    </ui:Button>
                 </StackPanel>
             </Grid>
 
@@ -253,17 +278,21 @@
                     </ComboBox.ItemTemplate>
                 </ComboBox>
                 <StackPanel Orientation="Horizontal">
-                    <ui:Button Icon="Play28" Height="38"
-                               Margin="0 0 3 0 "
-                               Command="{Binding EnableSelectedOrdersCommand}"/>
-                    <ui:Button Icon="Pause28"
-                               Margin="0 0 3 0 "
-                               Height="38"
-                               Command="{Binding DisableSelectedOrdersCommand}" />
-                    <ui:Button Icon="Delete28"
-                               Margin="0 0 3 0 "
-                               Height="38"
-                               Command="{Binding DeleteSelectedOrdersCommand}" />
+                    <ui:Button
+                        IsEnabled="{Binding IsOrdersEnabling, Converter={StaticResource BooleanToInvertedVisibilityConverter}}"
+                        Icon="Play28" Height="38"
+                        Margin="0 0 3 0 "
+                        Command="{Binding EnableSelectedOrdersCommand}" />
+                    <ui:Button
+                        Icon="Pause28"
+                        Margin="0 0 3 0 "
+                        Height="38"
+                        Command="{Binding DisableSelectedOrdersCommand}" />
+                    <ui:Button
+                        Icon="Delete28"
+                        Margin="0 0 3 0 "
+                        Height="38"
+                        Command="{Binding DeleteSelectedOrdersCommand}" />
                 </StackPanel>
             </StackPanel>
         </Border>

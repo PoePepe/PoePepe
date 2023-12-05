@@ -13,6 +13,7 @@ using Poe.UIW.ViewModels;
 using Poe.UIW.ViewModels.OrderItemInfoViewModels;
 using Poe.UIW.Views;
 using Poe.UIW.Views.OrderItemInfoViews;
+using Syroot.Windows.IO;
 using ManageOrderViewModel = Poe.UIW.ViewModels.ManageOrderViewModel;
 using OrderViewModel = Poe.UIW.ViewModels.OrderViewModel;
 
@@ -66,12 +67,22 @@ public static class DialogServiceExtensions
         orderItemInfoView.Closed += (sender, args) => onClosed(sender, args);
     }
 
-    public static void ShowOrderItemInfo(OrderItemDto orderItem, Action<object, WhisperEventArgs> onWhispered = null, Action<object, EventArgs> onClosed = null)
+    public static void ShowOrderItemInfo(OrderItemDto orderItem)
     {
         var orderItemInfoViewModel = App.Current.Services.GetRequiredService<OrderItemInfoViewModel>();
         orderItemInfoViewModel.SetOrderItem(orderItem);
 
         var orderItemInfoView = new OrderItemInfoView(orderItemInfoViewModel);
+
+        orderItemInfoView.ShowDialog();
+    }
+
+    public static void ShowOrderItemInfo(OrderItemDto orderItem, AlwaysOnTopView ownerView, Action<object, WhisperEventArgs> onWhispered = null, Action<object, EventArgs> onClosed = null)
+    {
+        var orderItemInfoViewModel = App.Current.Services.GetRequiredService<OrderItemInfoViewModel>();
+        orderItemInfoViewModel.SetOrderItem(orderItem);
+
+        var orderItemInfoView = new OrderItemInfoView(orderItemInfoViewModel, ownerView);
         if (onWhispered is not null)
         {
             orderItemInfoView.Whispered += (sender, args) => onWhispered(sender, args);
@@ -90,7 +101,7 @@ public static class DialogServiceExtensions
     {
         var settings = new OpenFileDialogSettings
         {
-            Title = "Open Sound file",
+            Title = "Open sound file",
             InitialDirectory = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!,
                 "Resources/Sounds"),
             Filters = new List<FileFilter>
@@ -99,7 +110,38 @@ public static class DialogServiceExtensions
             }
         };
 
-        return service.ShowOpenFileDialog(null, settings);
+        return service.ShowOpenFileDialog(owner, settings);
     }
-            
+
+    public static Task<IDialogStorageFile> OpenImportFileAsync(this IDialogService service, INotifyPropertyChanged owner)
+    {
+        var settings = new OpenFileDialogSettings
+        {
+            Title = "Open import file",
+            InitialDirectory = KnownFolders.Downloads.Path,
+            Filters = new List<FileFilter>
+            {
+                new("Better trading backup", new [] {"txt"}),
+                new("PoePepe backup", new [] {"json"})
+            }
+        };
+
+        return service.ShowOpenFileDialogAsync(owner, settings);
+    }
+
+    public static async Task OpenImport(this IDialogService service, INotifyPropertyChanged ownerViewModel)
+    {
+        var da = App.Current.Services.GetRequiredService<ContainerViewModel>();
+        
+        var vm = service.CreateViewModel<ImportOrdersViewModel>();
+        await service.ShowDialogAsync(da, vm);
+    }
+
+    public static async Task OpenExport(this IDialogService service, INotifyPropertyChanged ownerViewModel)
+    {
+        var da = App.Current.Services.GetRequiredService<ContainerViewModel>();
+        
+        var vm = service.CreateViewModel<ExportOrdersViewModel>();
+        await service.ShowDialogAsync(da, vm);
+    }
 }

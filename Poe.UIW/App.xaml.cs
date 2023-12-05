@@ -78,6 +78,8 @@ namespace Poe.UIW
             var locator = new StrongViewLocator()
                 .Register<ContainerViewModel, ContainerView>()
                 .Register<ManageOrderViewModel, ManageOrderView>()
+                .Register<ExportOrdersViewModel, ExportOrdersView>()
+                .Register<ImportOrdersViewModel, ImportOrdersView>()
                 .Register<OrderItemInfoViewModel, OrderItemInfoView>();
             
             services.AddSingleton<IDialogService>(sp => new DialogService(new DialogManager(locator,
@@ -109,7 +111,13 @@ namespace Poe.UIW
         
             services.AddTransient<ManageOrderViewModel>();
             services.AddTransient<ManageOrderView>();
-            
+
+            services.AddTransient<ExportOrdersViewModel>();
+            services.AddTransient<ExportOrdersView>();
+
+            services.AddTransient<ImportOrdersViewModel>();
+            services.AddTransient<ImportOrdersView>();
+
             services.AddSingleton<AlwaysOnTopView>();
             services.AddSingleton<AlwaysOnTopViewModel>();
             

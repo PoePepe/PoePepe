@@ -63,11 +63,11 @@ public class Service
         return _orderRepository.GetAll().Where(x => x.LeagueName == leagueName);
     }
     
-    public void StartLiveSearchAsync(IEnumerable<Order> orders)
+    public async Task StartLiveSearchAsync(IEnumerable<Order> orders)
     {
         foreach (var order in orders.Where(x => x.Activity == OrderActivity.Enabled))
         {
-            AddLiveSearchOrder(order);
+            await AddLiveSearchOrderAsync(order);
         }
     }
     
@@ -92,7 +92,7 @@ public class Service
         // var da = fetchResponse.Content.Results.FirstOrDefault();
         // await _serviceState.FoundItemsChannel.Writer.WriteAsync(da);
 
-        AddLiveSearchOrder(order);
+        await AddLiveSearchOrderAsync(order);
     }
     
     public void StopSearchingForOrders(string leagueName = null)
@@ -125,7 +125,7 @@ public class Service
         return _orderRepository.Delete(orderId);
     }
     
-    public void TryEnableLiveSearchOrder(long orderId, Action<object, EventArgs> onConnected, Action<object, EventArgs> onConnectionFailed)
+    public async Task TryEnableLiveSearchOrderAsync(long orderId, Action<object, EventArgs> onConnected, Action<object, EventArgs> onConnectionFailed)
     {
         var order = _orderRepository.GetById(orderId);
 
@@ -136,10 +136,10 @@ public class Service
             return;
         }
 
-        AddLiveSearchOrder(order, onConnected, onConnectionFailed);
+        await AddLiveSearchOrderAsync(order, onConnected, onConnectionFailed);
     }
 
-    public void EnableLiveSearchOrder(long orderId)
+    public async Task EnableLiveSearchOrder(long orderId)
     {
         var order = _orderRepository.GetById(orderId);
 
@@ -160,7 +160,7 @@ public class Service
         order.Activity = OrderActivity.Enabled;
         _orderRepository.Update(order);
 
-        AddLiveSearchOrder(order);
+        await AddLiveSearchOrderAsync(order);
     }
 
     public void DisableLiveSearchOrder(long orderId)
@@ -187,7 +187,7 @@ public class Service
         StopSearchingForOrder(orderId);
     }
     
-    private void AddLiveSearchOrder(Order order, Action<object, EventArgs> onConnected = null, Action<object, EventArgs> onConnectionFailed = null)
+    private async Task AddLiveSearchOrderAsync(Order order, Action<object, EventArgs> onConnected = null, Action<object, EventArgs> onConnectionFailed = null)
     {
         if (_serviceState.LiveSearches.ContainsKey(order.Id))
         {
@@ -218,13 +218,13 @@ public class Service
                 client.OnConnectionFailed += (sender, args) => onConnectionFailed(sender, args);
             }
 
-            Task.Run(async () =>
-            {
-                await client.ConnectAsync(order, token);
+            await client.ConnectAsync(order, token);
 
+            await Task.Factory.StartNew(async () =>
+            {
                 await client.StartReceiveAsync(token);
-            }, token);
-            
+            }, cancellationToken: token, creationOptions: TaskCreationOptions.LongRunning, scheduler: TaskScheduler.Current);
+
             Log.Information("Сreated a search by order {OrderName}", order.Name);
         }
     }

@@ -61,9 +61,9 @@ namespace Poe.UIW.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public int NotificationPositionTop {
+        public double NotificationPositionTop {
             get {
-                return ((int)(this["NotificationPositionTop"]));
+                return ((double)(this["NotificationPositionTop"]));
             }
             set {
                 this["NotificationPositionTop"] = value;
@@ -73,9 +73,9 @@ namespace Poe.UIW.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public int NotificationPositionLeft {
+        public double NotificationPositionLeft {
             get {
-                return ((int)(this["NotificationPositionLeft"]));
+                return ((double)(this["NotificationPositionLeft"]));
             }
             set {
                 this["NotificationPositionLeft"] = value;

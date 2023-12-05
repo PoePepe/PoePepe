@@ -94,6 +94,7 @@ public static class OrderItemMapper
     {
         return new ItemInfo
         {
+            ImageWidth = item.Width * 47,
             ItemFrameType = ParseFrameType(item.FrameType),
             FoilVariation = item.FoilVariation,
 

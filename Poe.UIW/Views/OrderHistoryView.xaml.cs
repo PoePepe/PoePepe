@@ -31,8 +31,6 @@ public partial class OrderHistoryView
 
     private void ScrollViewerOnScrollChanged(object sender, ScrollChangedEventArgs e)
     {
-        Console.WriteLine(e.VerticalOffset);
-
         var shift = (int)Math.Floor(e.VerticalOffset / 9);
         if (shift == 0)
         {

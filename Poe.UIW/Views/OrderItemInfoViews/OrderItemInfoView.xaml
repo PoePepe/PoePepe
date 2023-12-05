@@ -12,19 +12,20 @@
         ResizeMode="NoResize"
         SizeToContent="WidthAndHeight"
         ShowInTaskbar="False"
-        WindowStartupLocation="Manual"
+        WindowStartupLocation="CenterScreen"
         Background="Transparent"
         AllowsTransparency="True"
         Topmost="True"
         d:DesignHeight="300" d:DesignWidth="300"
         d:DataContext="{d:DesignInstance orderItemInfoViewModels:OrderItemInfoViewModel, IsDesignTimeCreatable=True}">
 
-    <Grid>    
-        <Border Background="Black"                
-                Opacity="0.8"></Border>
-                
+    <Grid x:Name="ItemInfoGrid" SizeChanged="ItemInfoGrid_OnSizeChanged">
+        <Border Background="Black"
+                Opacity="0.8">
+        </Border>
+
         <!--Adjust size grid-->
-        <Grid Visibility="Collapsed"              
+        <Grid Visibility="Collapsed"
               Width="450"
               Height="450">
             <Grid>
@@ -33,11 +34,11 @@
                 </Grid.RowDefinitions>
                 <Border Background="#393939" />
                 <TextBlock Text="Item Details"
-                       FontSize="20"
-                       Margin="5 5 5 8"
-                       Foreground="White"
-                       HorizontalAlignment="Center"
-                       VerticalAlignment="Top" />
+                           FontSize="20"
+                           Margin="5 5 5 8"
+                           Foreground="White"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Top" />
             </Grid>
             <ui:Button Content="Accept"
                        HorizontalAlignment="Center"
@@ -45,8 +46,8 @@
                        Background="#393939"
                        Margin="0 0 0 35" />
         </Grid>
-        
-        <Grid SnapsToDevicePixels="True"             >
+
+        <Grid SnapsToDevicePixels="True">
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="*" />
@@ -69,7 +70,7 @@
                 <StackPanel Orientation="Horizontal" Margin="5,0,5,0">
                     <Grid MouseEnter="ItemImagePanel_OnMouseEnter" MouseLeave="ItemImagePanel_OnMouseLeave"
                           x:Name="ItemImagePanel" HorizontalAlignment="Center" VerticalAlignment="Center">
-                        <Image x:Name="ItemBackImage" />
+                        <Image Width="{Binding OrderItemInfo.ImageWidth}" x:Name="ItemBackImage" />
 
                         <RelativePanel x:Name="ItemSocketImageRelativePanel" />
 
@@ -224,7 +225,7 @@
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <TextBlock Style="{StaticResource mods_Crafted}"
-                                               HorizontalAlignment="Center" Text="{Binding  }"></TextBlock>
+                                               HorizontalAlignment="Center" Text="{Binding  }"/>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>

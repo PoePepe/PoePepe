@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Threading;
 using System.Windows;
+using System.Windows.Forms;
 using System.Windows.Input;
+using System.Windows.Interop;
 using System.Windows.Media.Imaging;
 using Poe.UIW.Helpers;
 using Poe.UIW.Models;
@@ -9,6 +11,7 @@ using Poe.UIW.Services;
 using Poe.UIW.Services.Currency;
 using Poe.UIW.Services.Separator;
 using Poe.UIW.ViewModels.OrderItemInfoViewModels;
+using MouseEventArgs = System.Windows.Input.MouseEventArgs;
 
 namespace Poe.UIW.Views.OrderItemInfoViews;
 
@@ -34,10 +37,41 @@ public partial class OrderItemInfoView : Window
         InitializeComponent();
     }
 
+    public OrderItemInfoView(OrderItemInfoViewModel orderItemInfoViewModel, AlwaysOnTopView ownerView):this(orderItemInfoViewModel)
+    {
+        WindowStartupLocation = WindowStartupLocation.Manual;
+        _ownerView = ownerView;
+    }
+
+    private readonly AlwaysOnTopView _ownerView;
+
     private void OnLoaded(object sender, RoutedEventArgs e)
     {
         RenderSeparators();
         RenderPrice();
+    }
+
+    private void SetPosition()
+    {
+        if (WindowStartupLocation != WindowStartupLocation.Manual)
+        {
+            return;
+        }
+
+        Top = _ownerView.Top;
+
+        var helper = new WindowInteropHelper(this);
+        var currentScreen = Screen.FromHandle(helper.Handle);
+        var halfScreenWidth = currentScreen.Bounds.Width / 2;
+
+        if (_ownerView.Left > halfScreenWidth)
+        {
+            Left = _ownerView.Left - ItemInfoGrid.RenderSize.Width;
+        }
+        else
+        {
+            Left = _ownerView.Left + _ownerView.Width;
+        }
     }
 
     protected override void OnInitialized(EventArgs eventArgs)
@@ -48,6 +82,7 @@ public partial class OrderItemInfoView : Window
             {
                 _bitmapImage = await ViewModel.LoadItemImageAsync(_bitmapImage);
                 RenderSocketsAndLinks();
+                SetPosition();
             });
         });
 
@@ -169,5 +204,10 @@ public partial class OrderItemInfoView : Window
     private void ButtonClose_OnClick(object sender, RoutedEventArgs e)
     {
         ClosedByButton?.Invoke(sender, EventArgs.Empty);
+    }
+
+    private void ItemInfoGrid_OnSizeChanged(object sender, SizeChangedEventArgs e)
+    {
+        SetPosition();
     }
 }

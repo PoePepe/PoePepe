@@ -26,16 +26,18 @@ namespace HanumanInstitute.MvvmDialogs;
 /// </summary>
 public static class DialogServiceExtensions
 {
-    public static async Task<OrderViewModel> AddNewOrderAsync(this IDialogService service, INotifyPropertyChanged ownerViewModel)
+    public static async Task<OrderViewModel> AddNewOrderAsync(this IDialogService service,
+        INotifyPropertyChanged ownerViewModel)
     {
         var da = App.Current.Services.GetRequiredService<ContainerViewModel>();
-        
+
         var vm = service.CreateViewModel<ManageOrderViewModel>();
         await service.ShowDialogAsync(da, vm);
         return vm.DialogResult == true ? vm.ManageOrderModel : null;
     }
-    
-    public static async Task<OrderViewModel> EditOrderAsync(this IDialogService service, INotifyPropertyChanged ownerViewModel, OrderViewModel order)
+
+    public static async Task<OrderViewModel> EditOrderAsync(this IDialogService service,
+        INotifyPropertyChanged ownerViewModel, OrderViewModel order)
     {
         var da = App.Current.Services.GetRequiredService<ContainerViewModel>();
         var vm = service.CreateViewModel<ManageOrderViewModel>();
@@ -44,8 +46,9 @@ public static class DialogServiceExtensions
         await service.ShowDialogAsync(da, vm);
         return vm.DialogResult == true ? vm.ManageOrderModel : null;
     }
-    
-    public static Task<bool?> ShowMessageBoxAsync(this IDialogService service, INotifyPropertyChanged ownerViewModel, string text, string title = "")
+
+    public static Task<bool?> ShowMessageBoxAsync(this IDialogService service, INotifyPropertyChanged ownerViewModel,
+        string text, string title = "")
     {
         var da = App.Current.Services.GetRequiredService<ContainerViewModel>();
 
@@ -55,7 +58,7 @@ public static class DialogServiceExtensions
             title,
             MessageBoxButton.YesNo);
     }
-    
+
     public static void ShowOrderHistory(this OrderViewModel order, Action<object, EventArgs> onClosed)
     {
         var orderHistoryViewModel = App.Current.Services.GetRequiredService<OrderHistoryViewModel>();
@@ -77,7 +80,8 @@ public static class DialogServiceExtensions
         orderItemInfoView.ShowDialog();
     }
 
-    public static void ShowOrderItemInfo(OrderItemDto orderItem, AlwaysOnTopView ownerView, Action<object, WhisperEventArgs> onWhispered = null, Action<object, EventArgs> onClosed = null)
+    public static void ShowOrderItemInfo(OrderItemDto orderItem, AlwaysOnTopView ownerView,
+        Action<object, WhisperEventArgs> onWhispered = null, Action<object, EventArgs> onClosed = null)
     {
         var orderItemInfoViewModel = App.Current.Services.GetRequiredService<OrderItemInfoViewModel>();
         orderItemInfoViewModel.SetOrderItem(orderItem);
@@ -92,7 +96,6 @@ public static class DialogServiceExtensions
         {
             orderItemInfoView.ClosedByButton += (sender, args) => onClosed(sender, args);
         }
-        
 
         orderItemInfoView.ShowDialog();
     }
@@ -106,42 +109,65 @@ public static class DialogServiceExtensions
                 "Resources/Sounds"),
             Filters = new List<FileFilter>
             {
-                new("Media files", new [] {"wav", "mp3"})
+                new("Media files", new[] { "wav", "mp3" })
             }
         };
 
         return service.ShowOpenFileDialog(owner, settings);
     }
 
-    public static Task<IDialogStorageFile> OpenImportFileAsync(this IDialogService service, INotifyPropertyChanged owner)
+    public static Task<IDialogStorageFile> OpenImportFileAsync(this IDialogService service,
+        INotifyPropertyChanged owner)
     {
         var settings = new OpenFileDialogSettings
         {
-            Title = "Open import file",
+            Title = "Open backup file",
             InitialDirectory = KnownFolders.Downloads.Path,
             Filters = new List<FileFilter>
             {
-                new("Better trading backup", new [] {"txt"}),
-                new("PoePepe backup", new [] {"json"})
+                new("Text file", new[] { "txt" })
             }
         };
 
         return service.ShowOpenFileDialogAsync(owner, settings);
     }
 
-    public static async Task OpenImport(this IDialogService service, INotifyPropertyChanged ownerViewModel)
+    public static Task<IDialogStorageFile> OpenExportFolderAsync(this IDialogService service,
+        INotifyPropertyChanged owner, string fileName)
+    {
+        var settings = new SaveFileDialogSettings
+        {
+            Title = "Export as",
+            InitialDirectory = KnownFolders.Downloads.Path,
+            Filters = new List<FileFilter>()
+            {
+                new("Text Documents", "txt"),
+                new("All Files", "*")
+            },
+            DefaultExtension = ".txt",
+            InitialFile = fileName
+        };
+
+        return service.ShowSaveFileDialogAsync(owner, settings);
+    }
+
+    public static async Task OpenImport(this IDialogService service, LiveSearchViewModel ownerViewModel)
     {
         var da = App.Current.Services.GetRequiredService<ContainerViewModel>();
-        
+
         var vm = service.CreateViewModel<ImportOrdersViewModel>();
+        vm.SetOwnerViewModel(ownerViewModel);
+
         await service.ShowDialogAsync(da, vm);
     }
 
-    public static async Task OpenExport(this IDialogService service, INotifyPropertyChanged ownerViewModel)
+    public static async Task OpenExport(this IDialogService service, LiveSearchViewModel ownerViewModel)
     {
         var da = App.Current.Services.GetRequiredService<ContainerViewModel>();
-        
+
         var vm = service.CreateViewModel<ExportOrdersViewModel>();
+        vm.SetOwnerViewModel(ownerViewModel);
+
         await service.ShowDialogAsync(da, vm);
     }
 }

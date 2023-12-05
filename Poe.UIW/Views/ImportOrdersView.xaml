@@ -23,12 +23,12 @@
              d:DesignWidth="200">
 
     <Grid>
-
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
+
         <ui:TitleBar Icon="pack://application:,,,/Resources/Icons/logo.png"
                      Grid.Row="0"
                      ForceShutdown="False"
@@ -39,60 +39,57 @@
                      ShowMinimize="False"
                      ShowClose="True">
         </ui:TitleBar>
-        <TextBlock x:Name="TitleTextBlock"
-                   Grid.Row="0"
+
+        <TextBlock Grid.Row="0"
                    HorizontalAlignment="Center"
                    FontSize="20"
                    Margin="0 10 10 0"
                    Text="Import" />
+
         <StackPanel Grid.Row="1"
                     Margin="20 15 20  0">
-
             <StackPanel Margin="0 0 0 2">
+
                 <!-- Title Code -->
-                <TextBlock  FontSize="16"
-                            FontWeight="DemiBold"
-                            Text="Import code:"
-                            Margin="0 0 0 3 " />
+                <TextBlock FontSize="16"
+                           FontWeight="DemiBold"
+                           Text="Import code:"
+                           Margin="0 0 0 3 " />
+
                 <!-- Code -->
-                <ui:TextBox Grid.Row="1"
-                         x:Name="NameTextBox"
-                         Height="120"
-                         TextWrapping="Wrap"
-                         HorizontalAlignment="Stretch" />
-                <StackPanel x:Name="NameErrorStackPanel"
-                            Visibility="Hidden"
-                            Orientation="Horizontal"
-                            Margin="0 1 0 0 ">
+                <ui:TextBox 
+                    TextChanged="TextBoxBase_OnTextChanged"
+                    Grid.Row="1"
+                            Height="120"
+                            TextWrapping="Wrap"
+                            HorizontalAlignment="Stretch"
+                            Text="{Binding ImportText, Mode=TwoWay}" />
+
+                <StackPanel
+                    Visibility="{Binding Path=HasValidationErrors, Converter={StaticResource BooleanToVisibilityConverter}}"
+                    Orientation="Horizontal"
+                    Margin="0 1 0 0 ">
                     <ui:SymbolIcon Symbol="ErrorCircle12"
                                    Margin="0 0 4 0"
                                    Foreground="#d50000" />
-                    <TextBlock  VerticalAlignment="Center"
-                                Foreground="#d50000"
-                                FontSize="13" 
-                                />
+
+                    <TextBlock VerticalAlignment="Center"
+                               Foreground="#d50000"
+                               FontSize="13"
+                               Text="{Binding CommonValidationError}" />
                 </StackPanel>
             </StackPanel>
 
-            <StackPanel Margin="0 0 0 4">       
-                <!-- LinkEdit -->
+            <StackPanel Margin="0 0 0 4">
+
+                <!-- Import from file -->
                 <Button HorizontalAlignment="Stretch"
                         VerticalAlignment="Top"
                         VerticalContentAlignment="Center"
                         Content="Import from file"
                         FontSize="15"
-                        FontWeight="Medium" />
-                <StackPanel x:Name="LinkErrorStackPanel"
-                            Visibility="Hidden"
-                            Orientation="Horizontal"
-                            Margin="0 1 0 0 ">
-                    <ui:SymbolIcon Symbol="ErrorCircle12"
-                                   Margin="0 0 4 0"
-                                   Foreground="#d50000" />
-                    <TextBlock VerticalAlignment="Center"
-                               Foreground="#d50000"
-                               FontSize="13"/>
-                </StackPanel>
+                        FontWeight="Medium"
+                        Command="{Binding ImportFromFileCommand}" />
             </StackPanel>
 
         </StackPanel>
@@ -110,8 +107,6 @@
                        Background="#2562d1"
                        Command="{Binding SubmitCommand}"
                        Content="Submit" />
-            <!-- IsEnabled="{Binding OrderModel.Validator.IsValid}" -->
         </StackPanel>
-
     </Grid>
 </ui:UiWindow>

@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
-using System.Text.Json;
 using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
@@ -167,121 +165,12 @@ public partial class LiveSearchViewModel : ViewModelBase
         await _serviceState.FoundItemsChannel.Writer.WriteAsync(da);
     }
 
-    private bool TryParseImportData(string data, out IEnumerable<OrderImportDto> orders)
-    {
-        if (data.StartsWith('{') && data.EndsWith('}') || data.StartsWith('[') && data.EndsWith(']'))
-        {
-            orders = JsonSerializer.Deserialize<IEnumerable<OrderImportDto>>(data);
-
-            return true;
-        }
-
-        if (data.StartsWith("poepepe:"))
-        {
-            data = data[8..];
-
-            var encodedDataBytes = Convert.FromBase64String(data);
-            data = System.Text.Encoding.UTF8.GetString(encodedDataBytes);
-
-            orders = JsonSerializer.Deserialize<IEnumerable<OrderImportDto>>(data);
-
-            return true;
-        }
-
-        if (data.StartsWith("2:"))
-        {
-            var lastIndexBase64 = data.LastIndexOf('=');
-            data = data[2..lastIndexBase64];
-
-            var encodedDataBytes = Convert.FromBase64String(data);
-            data = System.Text.Encoding.UTF8.GetString(encodedDataBytes);
-
-            var betterTradingItems = JsonSerializer.Deserialize<BetterTradingItems>(data);
-
-            orders = betterTradingItems.Items.Select(x => new OrderImportDto
-            {
-                QueryHash = x.Query[7..],
-                Name = x.Title
-            });
-
-            return true;
-        }
-
-        orders = null;
-
-        return false;
-    }
-
-    private async Task ImportOrdersFromJsonFileAsync(Stream fileStream)
-    {
-        var orders = await JsonSerializer.DeserializeAsync<OrderImportDto[]>(fileStream);
-        ImportOrders(orders);
-    }
-
-    [RelayCommand]
-    private async Task ImportOrdersFromFile()
-    {
-        var importFile = await _dialogService.OpenImportFileAsync(this);
-
-        await using var fileStream = await importFile.OpenReadAsync();
-        if (importFile.Name.EndsWith(".json"))
-        {
-            await ImportOrdersFromJsonFileAsync(fileStream);
-
-            return;
-        }
-
-        using var streamReader = new StreamReader(fileStream);
-        var importData = await streamReader.ReadToEndAsync();
-
-        if (TryParseImportData(importData, out var orders))
-        {
-            ImportOrders(orders);
-        }
-    }
-
-    [RelayCommand]
-    private void ImportOrdersFromPasteText(string importText)
-    {
-        if (TryParseImportData(importText, out var orders))
-        {
-            ImportOrders(orders);
-        }
-    }
-
-    private void ImportOrders(IEnumerable<OrderImportDto> items)
-    {
-        var lastId = !Orders.Any() ? 1 : Orders.MaxBy(x => x.Id).Id;
-
-        foreach (var item in items)
-        {
-            var orderViewModel = new OrderViewModel
-            {
-                Id = ++lastId,
-                CreatedAt = DateTimeOffset.UtcNow,
-                LeagueName = UserSettings.Default.LeagueName,
-                QueryHash = item.QueryHash,
-                Name = item.Name,
-                Link = $"https://www.pathofexile.com/trade/search/{UserSettings.Default.LeagueName}/{item.QueryHash}",
-                Activity = OrderActivity.Disabled,
-                Mod = OrderMod.Notify,
-                IsActive = false
-            };
-
-            Orders.Add(orderViewModel);
-            FilteredOrders.Add(orderViewModel);
-            _service.CreateOrder(orderViewModel.ToOrder());
-        }
-
-        FilteredOrders = new ObservableCollection<OrderViewModel>(FilteredOrders.Sort(ActualSort));
-    }
-
     [RelayCommand]
     private async Task ImportOrders()
     {
         await _dialogService.OpenImport(this);
     }
-    
+
     [RelayCommand]
     private async Task ExportOrders()
     {

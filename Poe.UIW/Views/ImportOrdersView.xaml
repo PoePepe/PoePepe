@@ -57,7 +57,7 @@
                 <!-- Code -->
                 <ui:TextBox Grid.Row="1"
                          x:Name="NameTextBox"
-                         Height="80"
+                         Height="120"
                          TextWrapping="Wrap"
                          HorizontalAlignment="Stretch" />
                 <StackPanel x:Name="NameErrorStackPanel"

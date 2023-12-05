@@ -44,39 +44,59 @@
                    FontSize="20"
                    Margin="0 10 10 0"
                    Text="Export" />
-        <Grid Grid.Row="1"
+        <StackPanel Grid.Row="1"
                     Margin="20 15 20  20">
+            <Grid              >
 
-            <StackPanel Margin="0 0 0 0">
-                <!-- Title Code -->
-                <TextBlock  FontSize="16" FontWeight="DemiBold"  Text="Export code:" Margin="0 0 0 3 " />
-                <!-- Code -->
-                <TextBox Grid.Row="1"
-                            x:Name="NameTextBox"
-                            Height="120"
-                            TextWrapping="Wrap"
-                            HorizontalAlignment="Stretch" />
+                <StackPanel Margin="0 0 0 0">
+                    <!-- Title Code -->
+                    <TextBlock  FontSize="16" FontWeight="DemiBold"  Text="Export code:" Margin="0 0 0 3 " />
+                    <!-- Code -->
+                    <TextBox Grid.Row="1"
+                                x:Name="NameTextBox"
+                                Height="120"
+                                TextWrapping="Wrap"
+                                HorizontalAlignment="Stretch" />
               
-            </StackPanel>
-            <ui:Button VerticalAlignment="Bottom"  
-                       Background="#202020"
-                       HorizontalAlignment="Right" 
-                       Margin="0 0  0 2 "
-                       BorderThickness="1"
-                       BorderBrush="#9f9f9f"
-                       Icon="Copy24"></ui:Button>
+                </StackPanel>
+                <ui:Button VerticalAlignment="Bottom"  
+                           Background="#202020"
+                           HorizontalAlignment="Right" 
+                           Margin="0 0  0 2 "
+                           BorderThickness="1"
+                           BorderBrush="#9f9f9f"
+                           Icon="Copy24"></ui:Button>
       
-        </Grid>
-        <StackPanel Grid.Row="2"  Margin="20 0 20 15">
-            <!-- Title File -->
-
-            <!-- File -->
-            <Button HorizontalAlignment="Stretch"
+            </Grid>
+            <Button 
+                Margin="0 20 0 0"
+                HorizontalAlignment="Stretch"
                     VerticalAlignment="Top"
                     VerticalContentAlignment="Center"
                     Content="Save to file"
                     FontSize="15"
                     FontWeight="Medium" />
+        </StackPanel>
+        <StackPanel Grid.Row="2"  Margin="20 0 20 15">
+            <!-- Title File -->
+            <StackPanel Grid.Row="2"
+                        >
+                <ui:Button Appearance="Primary"
+                           Height="38"
+                           HorizontalAlignment="Stretch"
+                           VerticalAlignment="Bottom"
+                           HorizontalContentAlignment="Center"
+                           VerticalContentAlignment="Center"
+                           FontSize="16"
+                           FontWeight="DemiBold"
+                           Foreground="White"
+                           Background="#2562d1"
+                           Command="{Binding SubmitCommand}"
+                           Content="Close" />
+                <!-- IsEnabled="{Binding OrderModel.Validator.IsValid}" -->
+            </StackPanel>
+            <!-- File -->
+           
         </StackPanel>
 
 

@@ -21,6 +21,8 @@
                 <RowDefinition Height="Auto" />
                 <!-- Auto-sized row for your "hehe" StackPanel -->
                 <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+
                 <!-- Star-sized row for the DataGrid -->
             </Grid.RowDefinitions>
 
@@ -48,14 +50,7 @@
                             Content="Add new order"
                             FontSize="15"
                             FontWeight="Medium" />
-                    <Button HorizontalAlignment="Right"
-                            VerticalAlignment="Top"
-                            VerticalContentAlignment="Center"
-                            Margin="5 0 0 0"
-                            Command="{Binding ClearOrdersCommand}"
-                            Content="Clear all"
-                            FontSize="15"
-                            FontWeight="Medium" />
+              
 
                     <ui:Button x:Name="OptionsButton"
                                HorizontalAlignment="Right"
@@ -64,7 +59,8 @@
                                Margin="5 0 0 0"
                                FontSize="15"
                                FontWeight="Medium"
-                               Content="Options"
+                               Icon="MoreHorizontal28"
+                               Padding="8 8 8 7"
                                Click="OptionsButton_OnClick">
 
                         <ui:Button.Resources>
@@ -248,6 +244,43 @@
                     </DataGridTemplateColumn>
                 </DataGrid.Columns>
             </DataGrid>
+            <Grid Grid.Row="3">
+                <StackPanel Orientation="Horizontal">
+                    
+                  
+
+                    <TextBlock  
+                                VerticalAlignment="Center"
+                                FontWeight="DemiBold"
+                                Text="Updating..." />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 1 13 2">
+                    <!--Green-->
+                    <StackPanel  Orientation="Horizontal"
+                                 Margin="0 0 3 0">
+
+                        <TextBlock  Foreground="#15cb6f"
+                                    FontWeight="DemiBold"
+                                    Text="15 Active "/>
+                    </StackPanel>
+                    <!--Red-->
+                    <StackPanel  Orientation="Horizontal"
+                                 Margin=" 0 0 4 0">
+                        <TextBlock Foreground="Red"
+                                   FontWeight="DemiBold"
+                                   Text="15 Errors" />
+                    </StackPanel>
+                    <!--Red-->
+                    <StackPanel  Orientation="Horizontal"
+                                 Margin=" 0 0 4 0">
+                        <TextBlock Foreground="#a9a9a9"
+                                   FontWeight="DemiBold"
+                                   Text="15 Total" />
+                    </StackPanel>
+
+
+                </StackPanel>
+            </Grid>
         </Grid>
         <Border
             Visibility="{Binding IsRowsSelected, Converter={StaticResource BooleanToVisibilityConverter}}"

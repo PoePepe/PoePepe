@@ -4,13 +4,81 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:Poe.UIW.Views"
+             xmlns:vm="clr-namespace:Poe.UIW.ViewModels"
              xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
-             xmlns:viewModels="clr-namespace:Poe.UIW.ViewModels"
-
+             Background="{ui:ThemeResource ApplicationBackgroundBrush}"
+             WindowCornerPreference="Round"
+             WindowStartupLocation="CenterOwner"
+             ExtendsContentIntoTitleBar="True"
+             WindowBackdropType="Mica"
+             ResizeMode="NoResize"
+             Width="500"
+             SizeToContent="Height"
+             MinWidth="250"
+             MinHeight="200"
              mc:Ignorable="d"
-             Title="ExportOrdersView" Height="450" Width="800"
-             d:DataContext="{d:DesignInstance viewModels:ExportOrdersViewModel, IsDesignTimeCreatable=True}">
+             
+             Title="ExportOrdersView" 
+             d:DataContext="{d:DesignInstance vm:ExportOrdersViewModel, IsDesignTimeCreatable=True}"
+            d:DesignHeight="200" d:DesignWidth="200">
     <Grid>
-        
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <ui:TitleBar Icon="pack://application:,,,/Resources/Icons/logo.png"
+                     Grid.Row="0"
+                     ForceShutdown="False"
+                     FontSize="15"
+                     MinimizeToTray="False"
+                     ShowHelp="False"
+                     ShowMaximize="False"
+                     ShowMinimize="False"
+                     ShowClose="True">
+        </ui:TitleBar>
+        <TextBlock x:Name="TitleTextBlock"
+                   Grid.Row="0"
+                   HorizontalAlignment="Center"
+                   FontSize="20"
+                   Margin="0 10 10 0"
+                   Text="Export" />
+        <Grid Grid.Row="1"
+                    Margin="20 15 20  20">
+
+            <StackPanel Margin="0 0 0 0">
+                <!-- Title Code -->
+                <TextBlock  FontSize="16" FontWeight="DemiBold"  Text="Export code:" Margin="0 0 0 3 " />
+                <!-- Code -->
+                <TextBox Grid.Row="1"
+                            x:Name="NameTextBox"
+                            Height="120"
+                            TextWrapping="Wrap"
+                            HorizontalAlignment="Stretch" />
+              
+            </StackPanel>
+            <ui:Button VerticalAlignment="Bottom"  
+                       Background="#202020"
+                       HorizontalAlignment="Right" 
+                       Margin="0 0  0 2 "
+                       BorderThickness="1"
+                       BorderBrush="#9f9f9f"
+                       Icon="Copy24"></ui:Button>
+      
+        </Grid>
+        <StackPanel Grid.Row="2"  Margin="20 0 20 15">
+            <!-- Title File -->
+
+            <!-- File -->
+            <Button HorizontalAlignment="Stretch"
+                    VerticalAlignment="Top"
+                    VerticalContentAlignment="Center"
+                    Content="Save to file"
+                    FontSize="15"
+                    FontWeight="Medium" />
+        </StackPanel>
+
+
     </Grid>
 </ui:UiWindow>

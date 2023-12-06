@@ -70,7 +70,7 @@ public partial class ExportOrdersViewModel : ViewModelBase, IModalDialogViewMode
             return;
         }
 
-        var exportFolder = await _dialogService.OpenExportFolderAsync(this, "PoePepe_backup");
+        var exportFolder = await _dialogService.OpenExportFolderAsync("PoePepe_backup");
 
         var path = exportFolder?.Path?.LocalPath;
 

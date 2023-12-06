@@ -78,7 +78,7 @@ public partial class ImportOrdersViewModel : ViewModelValidatableBase, IModalDia
     [RelayCommand]
     private async Task ImportFromFile()
     {
-        var importFile = await _dialogService.OpenImportFileAsync(this);
+        var importFile = await _dialogService.OpenImportFileAsync();
 
         await using var fileStream = await importFile.OpenReadAsync();
         using var streamReader = new StreamReader(fileStream);

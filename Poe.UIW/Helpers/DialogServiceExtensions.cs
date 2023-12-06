@@ -100,13 +100,14 @@ public static class DialogServiceExtensions
         orderItemInfoView.ShowDialog();
     }
 
-    public static IDialogStorageFile OpenSoundFile(this IDialogService service, INotifyPropertyChanged owner)
+    public static IDialogStorageFile OpenSoundFile(this IDialogService service)
     {
+        var owner = App.Current.Services.GetRequiredService<ContainerViewModel>();
+
         var settings = new OpenFileDialogSettings
         {
             Title = "Open sound file",
-            InitialDirectory = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!,
-                "Resources/Sounds"),
+            InitialDirectory = KnownFolders.Downloads.Path,
             Filters = new List<FileFilter>
             {
                 new("Media files", new[] { "wav", "mp3" })
@@ -116,9 +117,10 @@ public static class DialogServiceExtensions
         return service.ShowOpenFileDialog(owner, settings);
     }
 
-    public static Task<IDialogStorageFile> OpenImportFileAsync(this IDialogService service,
-        INotifyPropertyChanged owner)
+    public static Task<IDialogStorageFile> OpenImportFileAsync(this IDialogService service)
     {
+        var owner = App.Current.Services.GetRequiredService<ContainerViewModel>();
+
         var settings = new OpenFileDialogSettings
         {
             Title = "Open backup file",
@@ -132,9 +134,10 @@ public static class DialogServiceExtensions
         return service.ShowOpenFileDialogAsync(owner, settings);
     }
 
-    public static Task<IDialogStorageFile> OpenExportFolderAsync(this IDialogService service,
-        INotifyPropertyChanged owner, string fileName)
+    public static Task<IDialogStorageFile> OpenExportFolderAsync(this IDialogService service, string fileName)
     {
+        var owner = App.Current.Services.GetRequiredService<ContainerViewModel>();
+
         var settings = new SaveFileDialogSettings
         {
             Title = "Export as",

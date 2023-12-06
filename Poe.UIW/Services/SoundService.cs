@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Reflection;
 using System.Windows.Media;
 using Poe.UIW.Properties;
 using Serilog;
@@ -33,8 +32,7 @@ public class SoundService
 
     public void TestPlay(string path)
     {
-        var fileInAppFolder = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!,
-            "Resources/Sounds/", path);
+        var fileInAppFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources/Sounds/", path);
         _testPlayer.Open(new Uri(fileInAppFolder, UriKind.Absolute));
         _testPlayer.Play();
     }

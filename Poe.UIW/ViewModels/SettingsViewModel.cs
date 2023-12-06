@@ -1,8 +1,8 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -93,7 +93,7 @@ public partial class SettingsViewModel : ViewModelValidatableBase
     {
         _soundFile?.Dispose();
 
-        _soundFile = _dialogService.OpenSoundFile(this);
+        _soundFile = _dialogService.OpenSoundFile();
         if (_soundFile is null)
         {
             Log.Warning("File has not been chosen");
@@ -110,8 +110,7 @@ public partial class SettingsViewModel : ViewModelValidatableBase
 
     private Task SaveSoundFile()
     {
-        var fileInAppFolder = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!,
-            "Resources/Sounds/", CurrentSound.Path);
+        var fileInAppFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources/Sounds/", CurrentSound.Path);
 
         if (File.Exists(fileInAppFolder))
         {

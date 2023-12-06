@@ -1,5 +1,4 @@
-﻿using System.Threading.Channels;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using Poe.LiveSearch.Api;
 using Poe.LiveSearch.Models;
 using Poe.LiveSearch.WebSocket;
@@ -9,8 +8,6 @@ namespace Poe.LiveSearch.Services;
 
 public class OrderStartSearchWorker
 {
-    private readonly ChannelReader<Order> _orderStartSearchChannelReader;
-    private readonly ChannelWriter<Order> _orderStartSearchChannelWriter;
     private readonly ServiceState _serviceState;
     private readonly PoeApiOptions _poeApiOptions;
 
@@ -20,8 +17,6 @@ public class OrderStartSearchWorker
     {
         _serviceState = serviceState;
         _poeApiOptions = poeApiOptions.Value;
-        _orderStartSearchChannelReader = serviceState.OrderStartSearchChannel.Reader;
-        _orderStartSearchChannelWriter = serviceState.OrderStartSearchChannel.Writer;
     }
 
     private Timer _timer;
@@ -33,19 +28,32 @@ public class OrderStartSearchWorker
 
         Task.Factory.StartNew(async () =>
         {
-            var isPreviousAttemptSuccess = true;
-            while (isPreviousAttemptSuccess && await _orderStartSearchChannelReader.WaitToReadAsync(token))
+            try
             {
-                while (isPreviousAttemptSuccess && _orderStartSearchChannelReader.TryRead(out var order) &&
-                       !token.IsCancellationRequested)
+                var isPreviousAttemptSuccess = true;
+                while (isPreviousAttemptSuccess &&
+                       await _serviceState.OrderStartSearchChannel.Reader.WaitToReadAsync(token))
                 {
-                    isPreviousAttemptSuccess = await AddLiveSearchOrderAsync(order);
-                    if (!isPreviousAttemptSuccess)
+                    while (isPreviousAttemptSuccess &&
+                           _serviceState.OrderStartSearchChannel.Reader.TryRead(out var order) &&
+                           !token.IsCancellationRequested)
                     {
-                        _timer.Change(TimeSpan.Zero, TimeSpan.FromSeconds(30));
+                        isPreviousAttemptSuccess = await AddLiveSearchOrderAsync(order);
+                        if (!isPreviousAttemptSuccess)
+                        {
+                            _timer.Change(TimeSpan.Zero, TimeSpan.FromSeconds(30));
+                        }
                     }
                 }
             }
+            catch (OperationCanceledException)
+            {
+            }
+            catch (Exception e)
+            {
+                Log.Error(e, "Error starting order queue");
+            }
+            
         }, token);
     }
 
@@ -123,7 +131,7 @@ public class OrderStartSearchWorker
         data.Client.Dispose();
         data.CancellationTokenSource.Dispose();
 
-        _orderStartSearchChannelWriter.TryWrite(data.Order);
+        _serviceState.OrderStartSearchChannel.Writer.TryWrite(data.Order);
 
         Log.Debug("Failed search order {OrderName} sent for new connect", data.Order.Name);
     }

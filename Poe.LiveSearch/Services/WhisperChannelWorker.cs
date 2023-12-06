@@ -1,5 +1,4 @@
-﻿using System.Threading.Channels;
-using Poe.LiveSearch.Api.Trade;
+﻿using Poe.LiveSearch.Api.Trade;
 using Poe.LiveSearch.Models;
 using Serilog;
 
@@ -7,13 +6,13 @@ namespace Poe.LiveSearch.Services;
 
 public class WhisperChannelWorker
 {
-    private readonly ChannelReader<WhisperRequestData> _whisperChannel;
+    private readonly ServiceState _serviceState;
     private readonly PoeTradeApiService _poeTradeApiService;
 
     public WhisperChannelWorker(ServiceState serviceState, PoeTradeApiService poeTradeApiService)
     {
+        _serviceState = serviceState;
         _poeTradeApiService = poeTradeApiService;
-        _whisperChannel = serviceState.WhisperItemsChannel.Reader;
     }
 
     public void Start(CancellationToken token)
@@ -22,13 +21,16 @@ public class WhisperChannelWorker
         {
             try
             {
-                while (await _whisperChannel.WaitToReadAsync(token))
+                while (await _serviceState.WhisperItemsChannel.Reader.WaitToReadAsync(token))
                 {
-                    while (_whisperChannel.TryRead(out var whisperRequest) && !token.IsCancellationRequested)
+                    while (_serviceState.WhisperItemsChannel.Reader.TryRead(out var whisperRequest) && !token.IsCancellationRequested)
                     {
                         await ProcessWhisperItemAsync(whisperRequest, token);
                     }
                 }
+            }
+            catch (OperationCanceledException)
+            {
             }
             catch (Exception e)
             {

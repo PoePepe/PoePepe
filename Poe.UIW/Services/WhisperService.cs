@@ -12,11 +12,11 @@ namespace Poe.UIW.Services;
 
 public class WhisperService
 {
-    private readonly ChannelWriter<WhisperRequestData> _whisperChannel;
+    private readonly ServiceState _serviceState;
 
     public WhisperService(ServiceState serviceState)
     {
-        _whisperChannel = serviceState.WhisperItemsChannel.Writer;
+        _serviceState = serviceState;
     }
 
     public async Task WhisperAsync(OrderItemDto orderItem)
@@ -30,7 +30,7 @@ public class WhisperService
         cts.CancelAfter(TimeSpan.FromSeconds(3));
         cts.Token.Register(() => InputKeyboardService.SendInputToPoe(orderItem.WhisperMessage));
         
-        await _whisperChannel.WriteAsync(new WhisperRequestData(new WhisperRequest(orderItem.WhisperToken), cts, orderItem.OrderName));
+        await _serviceState.WhisperItemsChannel.Writer.WriteAsync(new WhisperRequestData(new WhisperRequest(orderItem.WhisperToken), cts, orderItem.OrderName));
     }
 
     public async Task WhisperAsync(ItemHistoryDto itemHistory)
@@ -44,6 +44,6 @@ public class WhisperService
         cts.CancelAfter(TimeSpan.FromSeconds(3));
         cts.Token.Register(() => InputKeyboardService.SendInputToPoe(itemHistory.WhisperMessage));
 
-        await _whisperChannel.WriteAsync(new WhisperRequestData(new WhisperRequest(itemHistory.WhisperToken), cts, itemHistory.OrderName));
+        await _serviceState.WhisperItemsChannel.Writer.WriteAsync(new WhisperRequestData(new WhisperRequest(itemHistory.WhisperToken), cts, itemHistory.OrderName));
     }
 }

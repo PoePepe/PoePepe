@@ -1,5 +1,4 @@
-﻿using System.Threading.Channels;
-using Poe.LiveSearch.Api.Trade.Models;
+﻿using Poe.LiveSearch.Api.Trade.Models;
 using Poe.LiveSearch.Models;
 using Poe.LiveSearch.Persistence;
 using Poe.LiveSearch.WebSocket;
@@ -9,32 +8,36 @@ namespace Poe.LiveSearch.Services;
 
 public class FoundChannelWorker
 {
-    private readonly ChannelReader<FetchResponseResult> _foundItemsChannel;
-    private readonly ChannelWriter<FetchResponseResult> _notificationItemsChannel;
-    private readonly ChannelWriter<WhisperRequestData> _whisperItemsChannel;
-    private readonly ChannelWriter<FetchResponseResult> _historyItemsChannel;
+    private readonly ServiceState _serviceState;
     private readonly IOrderRepository _orderRepository;
 
     public FoundChannelWorker(ServiceState serviceState, IOrderRepository orderRepository)
     {
+        _serviceState = serviceState;
         _orderRepository = orderRepository;
-
-        _foundItemsChannel = serviceState.FoundItemsChannel.Reader;
-        _notificationItemsChannel = serviceState.NotificationItemsChannel.Writer;
-        _whisperItemsChannel = serviceState.WhisperItemsChannel.Writer;
-        _historyItemsChannel = serviceState.HistoryItemsChannel.Writer;
     }
 
     public void Start(CancellationToken token)
     {
         Task.Factory.StartNew(async () =>
         {
-            while (await _foundItemsChannel.WaitToReadAsync(token))
+            try
             {
-                while (_foundItemsChannel.TryRead(out var fetchResponse) && !token.IsCancellationRequested)
+                while (await _serviceState.FoundItemsChannel.Reader.WaitToReadAsync(token))
                 {
-                    await ProcessFoundItemsAsync(fetchResponse, token);
+                    while (_serviceState.FoundItemsChannel.Reader.TryRead(out var fetchResponse) &&
+                           !token.IsCancellationRequested)
+                    {
+                        await ProcessFoundItemsAsync(fetchResponse, token);
+                    }
                 }
+            }
+            catch (OperationCanceledException)
+            {
+            }
+            catch (Exception e)
+            {
+                Log.Error(e, "Error processing found orders");
             }
         }, token, TaskCreationOptions.LongRunning, TaskScheduler.Current);
         
@@ -73,7 +76,7 @@ public class FoundChannelWorker
             }
             result.OrderName = orderInfo.OrderName;
             result.OrderId = orderInfo.OrderId;
-            var historyTask = _historyItemsChannel.WriteAsync(result, token);
+            var historyTask = _serviceState.HistoryItemsChannel.Writer.WriteAsync(result, token);
 
             if (order.Activity == OrderActivity.Disabled)
             {
@@ -86,7 +89,7 @@ public class FoundChannelWorker
             {
                 Log.Debug("Order {OrderName} sent to whisper channel", orderInfo.OrderName);
 
-                var whisperTask = _whisperItemsChannel.WriteAsync(
+                var whisperTask = _serviceState.WhisperItemsChannel.Writer.WriteAsync(
                     new WhisperRequestData(new WhisperRequest(result.Listing.WhisperToken), order.Name), token);
 
                 return WhenAll(whisperTask, historyTask);
@@ -94,7 +97,7 @@ public class FoundChannelWorker
 
             Log.Debug("Order {OrderName} sent to notification channel", orderInfo.OrderName);
 
-            var notificationTask = _notificationItemsChannel.WriteAsync(result, token);
+            var notificationTask = _serviceState.NotificationItemsChannel.Writer.WriteAsync(result, token);
 
             return WhenAll(notificationTask, historyTask);
         }

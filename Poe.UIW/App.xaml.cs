@@ -46,16 +46,10 @@ namespace Poe.UIW
             var appService = Services.GetRequiredService<ApplicationHostService>();
             appService.Start();
             
-            var liveSearchChannelWorker = Services.GetRequiredService<LiveSearchChannelWorker>();
-            var foundChannelWorker = Services.GetRequiredService<FoundChannelWorker>();
-            var whisperChannelWorker = Services.GetRequiredService<WhisperChannelWorker>();
-            var historyChannelWorker = Services.GetRequiredService<HistoryChannelWorker>();
-            var orderStartSearchWorker = Services.GetRequiredService<OrderStartSearchWorker>();
-            liveSearchChannelWorker.Start(_applicationCancelSource.Token);
-            foundChannelWorker.Start(_applicationCancelSource.Token);
-            whisperChannelWorker.Start(_applicationCancelSource.Token);
-            historyChannelWorker.Start(_applicationCancelSource.Token);
-            orderStartSearchWorker.Start(_applicationCancelSource.Token);
+            var alwaysOnTopViewModel = Services.GetRequiredService<AlwaysOnTopViewModel>();
+            alwaysOnTopViewModel.Start(_applicationCancelSource.Token);
+            var workerManager = Services.GetRequiredService<WorkerManager>();
+            workerManager.StartWorkers(_applicationCancelSource.Token);
 
             base.OnStartup(e);
         }

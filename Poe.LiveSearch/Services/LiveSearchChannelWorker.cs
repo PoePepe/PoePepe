@@ -1,6 +1,4 @@
-﻿using System.Threading.Channels;
-using Poe.LiveSearch.Api.Trade;
-using Poe.LiveSearch.Api.Trade.Models;
+﻿using Poe.LiveSearch.Api.Trade;
 using Poe.LiveSearch.Models;
 using Poe.LiveSearch.Persistence;
 using Poe.LiveSearch.WebSocket;
@@ -12,16 +10,14 @@ public class LiveSearchChannelWorker : IDisposable, IAsyncDisposable
 {
     private readonly IOrderRepository _orderRepository;
     private readonly PoeTradeApiService _poeTradeApiService;
-    private readonly ChannelReader<ItemLiveResponse> _liveSearchChannelReader;
-    private readonly ChannelWriter<FetchResponseResult> _foundItemsChannelWriter;
+    private readonly ServiceState _serviceState;
     private Timer _timer;
 
     public LiveSearchChannelWorker(PoeTradeApiService poeTradeApiService, ServiceState state, IOrderRepository orderRepository)
     {
         _poeTradeApiService = poeTradeApiService;
+        _serviceState = state;
         _orderRepository = orderRepository;
-        _liveSearchChannelReader = state.LiveSearchChannel.Reader;
-        _foundItemsChannelWriter = state.FoundItemsChannel.Writer;
     }
     
     public void Stop()
@@ -38,7 +34,20 @@ public class LiveSearchChannelWorker : IDisposable, IAsyncDisposable
     {
         Log.Information("Started receiving from channel of searched items");
 
-        _timer = new Timer(_ => Task.Run(async () => await ReceiveSearchedItemsAsync(token), token), null, TimeSpan.Zero, TimeSpan.FromMilliseconds(1000));
+        _timer = new Timer(_ => Task.Run(async () =>
+        {
+            try
+            {
+                await ReceiveSearchedItemsAsync(token);
+            }
+            catch (OperationCanceledException)
+            {
+            }
+            catch (Exception e)
+            {
+                Log.Error(e, "Error processing from channel of searched items");
+            }
+        }, token), null, TimeSpan.Zero, TimeSpan.FromMilliseconds(1000));
     }
     
     private async Task ReceiveSearchedItemsAsync(CancellationToken token)
@@ -48,7 +57,7 @@ public class LiveSearchChannelWorker : IDisposable, IAsyncDisposable
             Log.Verbose("Receiving channel of searched items");
 
             var batch = new List<ItemLiveResponse>(10);
-            while (batch.Count < 10 && _liveSearchChannelReader.TryRead(out var liveResponse))
+            while (batch.Count < 10 && _serviceState.LiveSearchChannel.Reader.TryRead(out var liveResponse))
             {
                 if (_orderRepository.GetById(liveResponse.OrderId).Activity == OrderActivity.Enabled)
                 {
@@ -95,7 +104,7 @@ public class LiveSearchChannelWorker : IDisposable, IAsyncDisposable
                     var orders = batch.Where(x => x.ItemId == result.Id);
                     result.Orders = orders;
                 
-                    tasks.Add(_foundItemsChannelWriter.WriteAsync(result, token));
+                    tasks.Add(_serviceState.FoundItemsChannel.Writer.WriteAsync(result, token));
                 }
             
                 await WhenAll(tasks);

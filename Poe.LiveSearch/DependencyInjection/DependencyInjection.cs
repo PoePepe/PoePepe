@@ -26,6 +26,7 @@ public static class DependencyInjection
 
     private static IServiceCollection AddWorkers(this IServiceCollection services, IConfiguration configuration)
     {
+        services.AddSingleton<WorkerManager>();
         services.AddSingleton<FoundChannelWorker>();
         services.AddSingleton<LiveSearchChannelWorker>();
         services.AddSingleton<WhisperChannelWorker>();

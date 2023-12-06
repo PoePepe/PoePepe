@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
-using System.Threading.Channels;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using HanumanInstitute.MvvmDialogs;
+using Microsoft.Extensions.DependencyInjection;
 using Poe.LiveSearch.Api.Trade;
 using Poe.LiveSearch.Models;
 using Poe.LiveSearch.Services;
@@ -32,14 +32,14 @@ public partial class LiveSearchViewModel : ViewModelBase
     private readonly ServiceState _serviceState;
     private readonly Service _service;
     private readonly IDialogService _dialogService;
-    private readonly ChannelReader<OrderError> _orderErrorChannel;
     public readonly IDialogControl DialogControl;
+    private readonly WorkerManager _workerManager;
 
     [ObservableProperty] private int _totalOrders;
     [ObservableProperty] private int _activeOrders;
     [ObservableProperty] private int _failedOrders;
 
-    private EventHandler OrdersChanged;
+    private readonly EventHandler _ordersChanged;
     public EventHandler FilteredOrdersChanged;
     [ObservableProperty] private ObservableCollection<OrderViewModel> _orders;
     [ObservableProperty] private ObservableCollection<OrderViewModel> _filteredOrders = new();
@@ -69,7 +69,7 @@ public partial class LiveSearchViewModel : ViewModelBase
 
     public LiveSearchViewModel(IDialogService customDialogService, Service service, ServiceState serviceState,
         PoeTradeApiService poeTradeApiService, Wpf.Ui.Mvvm.Contracts.IDialogService dialogService,
-        ISnackbarService snackbarService)
+        ISnackbarService snackbarService, WorkerManager workerManager)
     {
         _dialogService = customDialogService;
         DialogControl = dialogService.GetDialogControl();
@@ -77,14 +77,14 @@ public partial class LiveSearchViewModel : ViewModelBase
         _service = service;
         _poeTradeApiService = poeTradeApiService;
         _snackbarService = snackbarService;
-        _orderErrorChannel = serviceState.OrderErrorChannel.Reader;
+        _workerManager = workerManager;
 
         var sortKind = Enum.TryParse<OrderSortKind>(UserSettings.Default.LiveSearchSort, out var sort)
             ? sort
             : OrderSortKind.CreationDateDesc;
         ActualSort = AvailableSorting.First(x => x.Kind == sortKind);
         
-        OrdersChanged += OrdersChangedHandler;
+        _ordersChanged += OrdersChangedHandler;
 
         LoadOrders();
         Start(CancellationToken.None);
@@ -104,13 +104,17 @@ public partial class LiveSearchViewModel : ViewModelBase
         Orders = new ObservableCollection<OrderViewModel>(orders.ToOrderModel());
         FilteredOrders = new ObservableCollection<OrderViewModel>(Orders.Sort(ActualSort));
 
-        OrdersChanged?.Invoke(this, EventArgs.Empty);
+        _ordersChanged?.Invoke(this, EventArgs.Empty);
     }
 
     public void ChangeLeagueSearchingOrders()
     {
         _service.StopSearchingForOrders();
         _serviceState.LeagueName = UserSettings.Default.LeagueName;
+
+        _workerManager.RestartWorkers();
+        App.Current.Services.GetRequiredService<AlwaysOnTopViewModel>().Restart();
+
         var orders = _service.GetOrders().ToArray();
         ThreadPool.QueueUserWorkItem(async _ => { await _service.StartLiveSearchAsync(orders); });
     }
@@ -119,9 +123,9 @@ public partial class LiveSearchViewModel : ViewModelBase
     {
         Task.Factory.StartNew(async () =>
         {
-            while (await _orderErrorChannel.WaitToReadAsync(token))
+            while (await _serviceState.OrderErrorChannel.Reader.WaitToReadAsync(token))
             {
-                while (_orderErrorChannel.TryRead(out var orderError) && !token.IsCancellationRequested)
+                while (_serviceState.OrderErrorChannel.Reader.TryRead(out var orderError) && !token.IsCancellationRequested)
                 {
                     SetErrorToOrder(orderError);
                 }
@@ -143,7 +147,7 @@ public partial class LiveSearchViewModel : ViewModelBase
 
         DisableOrder(orderError.OrderId);
 
-        OrdersChanged?.Invoke(this, EventArgs.Empty);
+        _ordersChanged?.Invoke(this, EventArgs.Empty);
 
         _snackbarService.Show(
             $"Error {orderError.ErrorMessage} occurred in order {order.Name}.",
@@ -191,7 +195,7 @@ public partial class LiveSearchViewModel : ViewModelBase
     private async Task ImportOrders()
     {
         await _dialogService.OpenImport(this);
-        OrdersChanged?.Invoke(this, EventArgs.Empty);
+        _ordersChanged?.Invoke(this, EventArgs.Empty);
     }
 
     [RelayCommand]
@@ -245,7 +249,7 @@ public partial class LiveSearchViewModel : ViewModelBase
         Orders.Clear();
         FilteredOrders.Clear();
         FilteredOrdersChanged.Invoke(this, EventArgs.Empty);
-        OrdersChanged?.Invoke(this, EventArgs.Empty);
+        _ordersChanged?.Invoke(this, EventArgs.Empty);
 
         _service.ClearAllOrders();
 
@@ -291,7 +295,7 @@ public partial class LiveSearchViewModel : ViewModelBase
         OpenSnackbarOrderAdded(order);
 
         FilteredOrdersChanged?.Invoke(this, EventArgs.Empty);
-        OrdersChanged?.Invoke(this, EventArgs.Empty);
+        _ordersChanged?.Invoke(this, EventArgs.Empty);
 
         Log.Information("Order {OrderName} has been created", order.Name);
     }
@@ -376,7 +380,7 @@ public partial class LiveSearchViewModel : ViewModelBase
             await _service.EnableLiveSearchOrder(order.Id);
         }
 
-        OrdersChanged?.Invoke(this, EventArgs.Empty);
+        _ordersChanged?.Invoke(this, EventArgs.Empty);
         OpenSnackbarOrderEnabled(order);
 
         Log.Information("Order {OrderName} has been enabled", order.Name);
@@ -397,7 +401,7 @@ public partial class LiveSearchViewModel : ViewModelBase
 
         _service.DisableLiveSearchOrder(order.Id);
 
-        OrdersChanged?.Invoke(this, EventArgs.Empty);
+        _ordersChanged?.Invoke(this, EventArgs.Empty);
 
         Log.Information("Order {OrderName} has been disabled", order.Name);
     }
@@ -493,7 +497,7 @@ public partial class LiveSearchViewModel : ViewModelBase
 
         order = updatedOrder;
 
-        OrdersChanged?.Invoke(this, EventArgs.Empty);
+        _ordersChanged?.Invoke(this, EventArgs.Empty);
 
         OpenSnackbarOrderEdited(order.Name);
 
@@ -538,7 +542,7 @@ public partial class LiveSearchViewModel : ViewModelBase
         }
 
         FilteredOrdersChanged.Invoke(this, EventArgs.Empty);
-        OrdersChanged?.Invoke(this, EventArgs.Empty);
+        _ordersChanged?.Invoke(this, EventArgs.Empty);
 
         Log.Information("Order {OrderName} has been deleted", order.Name);
     }
@@ -586,7 +590,7 @@ public partial class LiveSearchViewModel : ViewModelBase
             );
         }
 
-        OrdersChanged?.Invoke(this, EventArgs.Empty);
+        _ordersChanged?.Invoke(this, EventArgs.Empty);
 
         Log.Information("Selected orders has been enabled");
     }
@@ -601,7 +605,7 @@ public partial class LiveSearchViewModel : ViewModelBase
             DisableOrder(selectedOrderId);
         }
 
-        OrdersChanged?.Invoke(this, EventArgs.Empty);
+        _ordersChanged?.Invoke(this, EventArgs.Empty);
 
         Log.Information("Selected orders has been disabled");
     }
@@ -645,7 +649,7 @@ public partial class LiveSearchViewModel : ViewModelBase
         }
 
         FilteredOrdersChanged.Invoke(this, EventArgs.Empty);
-        OrdersChanged?.Invoke(this, EventArgs.Empty);
+        _ordersChanged?.Invoke(this, EventArgs.Empty);
 
         Log.Information("Selected orders has been deleted");
     }

@@ -1,6 +1,5 @@
 ﻿using System.Net.WebSockets;
 using System.Text.Json;
-using System.Threading.Channels;
 using Poe.LiveSearch.Api;
 using Poe.LiveSearch.Models;
 using Poe.LiveSearch.Services;
@@ -14,8 +13,6 @@ public class LiveSearcherWebSocketClient : IDisposable
     private readonly PoeApiOptions _poeApiOptions;
     private readonly ServiceState _serviceState;
     private readonly ClientWebSocket _clientWebSocket;
-    private readonly ChannelWriter<ItemLiveResponse> _liveResponseChannelWriter;
-    private readonly ChannelWriter<OrderError> _orderErrorChannelWriter;
     private bool _isConnected;
 
     public EventHandler OnConnected;
@@ -26,8 +23,6 @@ public class LiveSearcherWebSocketClient : IDisposable
     {
         _poeApiOptions = poeApiOptions;
         _serviceState = serviceState;
-        _liveResponseChannelWriter = serviceState.LiveSearchChannel.Writer;
-        _orderErrorChannelWriter = serviceState.OrderErrorChannel.Writer;
 
         _order = order;
         _clientWebSocket = new ClientWebSocket();
@@ -108,7 +103,7 @@ public class LiveSearcherWebSocketClient : IDisposable
         }
         catch (Exception e)
         {
-            _orderErrorChannelWriter.TryWrite(new OrderError(_order.Id, e.Message, OrderErrorType.Process));
+            _serviceState.OrderErrorChannel.Writer.TryWrite(new OrderError(_order.Id, e.Message, OrderErrorType.Process));
 
             Log.Error(e, "Error receiving data from web socket for order {OrderName}", _order.Name);
 
@@ -140,7 +135,7 @@ public class LiveSearcherWebSocketClient : IDisposable
         catch (WebSocketException e) when (e.WebSocketErrorCode == WebSocketError.NotAWebSocket &&
                                            e.Message.Contains("404"))
         {
-            _orderErrorChannelWriter.TryWrite(new OrderError(_order.Id, "Invalid link"));
+            _serviceState.OrderErrorChannel.Writer.TryWrite(new OrderError(_order.Id, "Invalid link"));
 
             Log.Error(e, "The URI {Uri} not a correct websocket address", uri);
 
@@ -149,13 +144,13 @@ public class LiveSearcherWebSocketClient : IDisposable
         catch (WebSocketException e) when (e.WebSocketErrorCode == WebSocketError.NotAWebSocket &&
                                            e.Message.Contains("429"))
         {
-            _orderErrorChannelWriter.TryWrite(new OrderError(_order.Id, "Rate limit exceed. Wait a little time."));
+            _serviceState.OrderErrorChannel.Writer.TryWrite(new OrderError(_order.Id, "Rate limit exceed. Wait a little time."));
 
             Log.Error(e, "The URI {Uri} rate limit exceed. Wait a little time", uri);
         }
         catch (WebSocketException e)
         {
-            _orderErrorChannelWriter.TryWrite(new OrderError(_order.Id, $"Connection error: {e.Message}"));
+            _serviceState.OrderErrorChannel.Writer.TryWrite(new OrderError(_order.Id, $"Connection error: {e.Message}"));
 
             Log.Error(e, "The URI {Uri} occured error {Error}", uri, e.Message);
         }
@@ -167,7 +162,7 @@ public class LiveSearcherWebSocketClient : IDisposable
         }
         catch (Exception e)
         {
-            _orderErrorChannelWriter.TryWrite(new OrderError(_order.Id, e.Message));
+            _serviceState.OrderErrorChannel.Writer.TryWrite(new OrderError(_order.Id, e.Message));
 
             Log.Error(e, "Error connecting to web socket for order {OrderName}", _order.Name);
         }
@@ -185,7 +180,7 @@ public class LiveSearcherWebSocketClient : IDisposable
             foreach (var itemId in message.ItemIds)
             {
                 var itemLiveResponse = new ItemLiveResponse(itemId, _order.Id, _order.Name);
-                await _liveResponseChannelWriter.WriteAsync(itemLiveResponse, cancellationToken);
+                await _serviceState.LiveSearchChannel.Writer.WriteAsync(itemLiveResponse, cancellationToken);
             }
 
             Log.Debug("Received item of order {OrderName}", _order.Name);

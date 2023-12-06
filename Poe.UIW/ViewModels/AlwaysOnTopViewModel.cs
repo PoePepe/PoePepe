@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading;
-using System.Threading.Channels;
 using System.Threading.Tasks;
 using Poe.LiveSearch.Api.Trade.Models;
 using Poe.LiveSearch.Services;
@@ -10,31 +9,52 @@ namespace Poe.UIW.ViewModels;
 
 public class AlwaysOnTopViewModel : ViewModelBase
 {
+    private readonly ServiceState _serviceState;
+    private CancellationToken _globalCancellationToken;
+    private CancellationTokenSource _workerCancellationTokenSource;
+
+    public Func<FetchResponseResult, Task> NotifyItem;
+
     public AlwaysOnTopViewModel(ServiceState serviceState)
     {
-        _notificationItemsChannel = serviceState.NotificationItemsChannel.Reader;
-        Start(CancellationToken.None);
+        _serviceState = serviceState;
     }
 
     public AlwaysOnTopViewModel()
     {
     }
 
-    private readonly ChannelReader<FetchResponseResult> _notificationItemsChannel;
-    
-    public Func<FetchResponseResult, Task> NotifyItem;
-
-    private void Start(CancellationToken token)
+    public void Restart()
     {
+        _workerCancellationTokenSource.Cancel();
+        Start(_globalCancellationToken);
+    }
+
+    public void Start(CancellationToken token)
+    {
+        _globalCancellationToken = token;
+        _workerCancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(_globalCancellationToken);
+
         Task.Factory.StartNew(async () =>
         {
-            while (await _notificationItemsChannel.WaitToReadAsync(token))
+            try
             {
-                while (_notificationItemsChannel.TryRead(out var fetchResponse) && !token.IsCancellationRequested)
+                while (await _serviceState.NotificationItemsChannel.Reader.WaitToReadAsync(token))
                 {
-                    await NotifyItem(fetchResponse);
+                    while (_serviceState.NotificationItemsChannel.Reader.TryRead(out var fetchResponse) && !token.IsCancellationRequested)
+                    {
+                        await NotifyItem(fetchResponse);
+                    }
                 }
             }
+            catch (OperationCanceledException)
+            {
+            }
+            catch (Exception e)
+            {
+                Log.Error(e, "Error notify orders queue");
+            }
+
         }, token, TaskCreationOptions.LongRunning, TaskScheduler.Current);
 
         Log.Information("Started receiving data from notification channel");

@@ -13,7 +13,7 @@ If you enjoy PoePepe. Support us on <a href="https://www.patreon.com/PoePepe">Pa
 </p>
 <p align="center">
    
-   <a href="https://discord.gg/enMrbEZb" style="text-decoration: none">
+   <a href="https://discord.gg/enMrbEZb" style="text-decoration: none;">
    <img src="https://github.com/PoePepe/PoePepe/assets/152653866/56af7a6c-3b1e-4f3a-93cc-9818f85fa2b7" width="80" height="80">     </a>
    &nbsp
    <a href="https://www.patreon.com/PoePepe">

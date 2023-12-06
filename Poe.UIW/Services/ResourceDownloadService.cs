@@ -18,7 +18,7 @@ public class ResourceDownloadService
     {
         _httpClient = httpClient;
 
-        var path = @".\images";
+        var path = @".\Resources\Images";
         var directoryInfo = new DirectoryInfo(path);
 
         if (!directoryInfo.Exists)
@@ -53,7 +53,7 @@ public class ResourceDownloadService
 
         var stream = await response.Content.ReadAsStreamAsync();
 
-        await using var file = File.Create($"images/{cardName}");
+        await using var file = File.Create($"Resources/Images/{cardName}");
         await stream.CopyToAsync(file);
         file.Close();
 
@@ -88,7 +88,7 @@ public class ResourceDownloadService
 
             var stream = await response.Content.ReadAsStreamAsync();
 
-            await using var file = File.Create($"images/{imageName}");
+            await using var file = File.Create($"Resources/Images/{imageName}");
             await stream.CopyToAsync(file);
             file.Close();
 
@@ -128,7 +128,7 @@ public class ResourceDownloadService
 
             var stream = await response.Content.ReadAsStreamAsync();
 
-            await using var file = File.Create($"images/{imageName}");
+            await using var file = File.Create($"Resources/Images/{imageName}");
             await stream.CopyToAsync(file);
             file.Close();
 
@@ -152,7 +152,7 @@ public class ResourceDownloadService
     {
         if (!_downloadedResources.Add(value))
         {
-            var fileStream = File.OpenRead($"images/{value}");
+            var fileStream = File.OpenRead($"Resources/Images/{value}");
             bitmap = new BitmapImage();
             bitmap.BeginInit();
             bitmap.StreamSource = fileStream;
@@ -169,7 +169,7 @@ public class ResourceDownloadService
     {
         if (!_downloadedResources.Add(value))
         {
-            var fileStream = File.OpenRead($"images/{value}");
+            var fileStream = File.OpenRead($"Resources/Images/{value}");
             outBitmap = new BitmapImage();
             outBitmap.BeginInit();
             outBitmap.StreamSource = fileStream;

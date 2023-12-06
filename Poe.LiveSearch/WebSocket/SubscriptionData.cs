@@ -7,14 +7,10 @@ namespace Poe.LiveSearch.WebSocket
     /// </summary>
     public class SubscriptionData
     {
-        /// <summary>
-        /// Код экспотр-события.
-        /// </summary>
         public Order Order { get; set; }
 
-        /// <summary>
-        /// Источник для токенов отмены подписки на топик и обработки полученных сообщений.
-        /// </summary>
         public CancellationTokenSource CancellationTokenSource { get; set; }
+
+        public LiveSearcherWebSocketClient Client { get; set; }
     }
 }

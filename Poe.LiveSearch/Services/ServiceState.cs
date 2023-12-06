@@ -17,4 +17,6 @@ public class ServiceState
 
     public Channel<WhisperRequestData> WhisperItemsChannel { get; } = Channel.CreateUnbounded<WhisperRequestData>();
     public Channel<OrderError> OrderErrorChannel { get; } = Channel.CreateUnbounded<OrderError>();
+
+    public Channel<Order> OrderStartSearchChannel { get; } = Channel.CreateUnbounded<Order>();
 }

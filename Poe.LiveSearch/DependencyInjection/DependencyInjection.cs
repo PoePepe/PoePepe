@@ -30,6 +30,7 @@ public static class DependencyInjection
         services.AddSingleton<LiveSearchChannelWorker>();
         services.AddSingleton<WhisperChannelWorker>();
         services.AddSingleton<HistoryChannelWorker>();
+        services.AddSingleton<OrderStartSearchWorker>();
         services.AddSingleton<Service>();
         services.AddSingleton<ServiceState>();
         

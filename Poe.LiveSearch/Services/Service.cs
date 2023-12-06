@@ -1,9 +1,6 @@
-﻿using Microsoft.Extensions.Options;
-using Poe.LiveSearch.Api;
-using Poe.LiveSearch.Api.Trade;
+﻿using Poe.LiveSearch.Api.Trade;
 using Poe.LiveSearch.Models;
 using Poe.LiveSearch.Persistence;
-using Poe.LiveSearch.WebSocket;
 using Serilog;
 
 namespace Poe.LiveSearch.Services;
@@ -15,15 +12,13 @@ public class Service
     private readonly ServiceState _serviceState;
     private readonly IOrderRepository _orderRepository;
     private readonly IItemHistoryRepository _itemHistoryRepository;
-    private readonly PoeApiOptions _poeApiOptions;
 
-    public Service(PoeTradeApiService poeTradeApiService, ServiceState serviceState, IOrderRepository orderRepository, IOptions<PoeApiOptions> options, IItemHistoryRepository itemHistoryRepository)
+    public Service(PoeTradeApiService poeTradeApiService, ServiceState serviceState, IOrderRepository orderRepository, IItemHistoryRepository itemHistoryRepository)
     {
         _poeTradeApiService = poeTradeApiService;
         _serviceState = serviceState;
         _orderRepository = orderRepository;
         _itemHistoryRepository = itemHistoryRepository;
-        _poeApiOptions = options.Value;
     }
 
     public Order CreateOrder(Order order)
@@ -124,20 +119,6 @@ public class Service
 
         return _orderRepository.Delete(orderId);
     }
-    
-    public async Task TryEnableLiveSearchOrderAsync(long orderId, Action<object, EventArgs> onConnected, Action<object, EventArgs> onConnectionFailed)
-    {
-        var order = _orderRepository.GetById(orderId);
-
-        if (order is null)
-        {
-            Log.Warning("The order {OrderId} not found", orderId);
-
-            return;
-        }
-
-        await AddLiveSearchOrderAsync(order, onConnected, onConnectionFailed);
-    }
 
     public async Task EnableLiveSearchOrder(long orderId)
     {
@@ -187,51 +168,9 @@ public class Service
         StopSearchingForOrder(orderId);
     }
     
-    private async Task AddLiveSearchOrderAsync(Order order, Action<object, EventArgs> onConnected = null, Action<object, EventArgs> onConnectionFailed = null)
+    private async Task AddLiveSearchOrderAsync(Order order)
     {
-        if (_serviceState.LiveSearches.ContainsKey(order.Id))
-        {
-            Log.Warning("The search by order {OrderName} already exists", order.Name);
-
-            return;
-        }
-
-        var data = new SubscriptionData
-        {
-            Order = order,
-            CancellationTokenSource = new CancellationTokenSource()
-        };
-
-        var token = data.CancellationTokenSource.Token;
-
-        if (_serviceState.LiveSearches.TryAdd(order.Id, data))
-        {
-            var client = new LiveSearcherWebSocketClient(_poeApiOptions, _serviceState);
-
-            if (onConnected is not null)
-            {
-                client.OnConnected += (sender, args) => onConnected(sender, args);
-            }
-            
-            if (onConnectionFailed is not null)
-            {
-                client.OnConnectionFailed += (sender, args) => onConnectionFailed(sender, args);
-            }
-
-            await client.ConnectAsync(order, token);
-
-            await Task.Factory.StartNew(async () =>
-            {
-                await client.StartReceiveAsync(token);
-            }, cancellationToken: token, creationOptions: TaskCreationOptions.LongRunning, scheduler: TaskScheduler.Current);
-
-            Log.Information("Сreated a search by order {OrderName}", order.Name);
-        }
-    }
-
-    private void OnConnected(object sender, EventArgs e)
-    {
-        throw new NotImplementedException();
+        await _serviceState.OrderStartSearchChannel.Writer.WriteAsync(order);
     }
 
     private void StopSearchingForOrder(long orderId)

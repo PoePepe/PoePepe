@@ -26,6 +26,7 @@ namespace Poe.UIW
     {
         public IServiceProvider Services { get; }
         public new static App Current => (App)Application.Current;
+        private readonly CancellationTokenSource _applicationCancelSource = new();
 
         public App()
         {
@@ -49,16 +50,20 @@ namespace Poe.UIW
             var foundChannelWorker = Services.GetRequiredService<FoundChannelWorker>();
             var whisperChannelWorker = Services.GetRequiredService<WhisperChannelWorker>();
             var historyChannelWorker = Services.GetRequiredService<HistoryChannelWorker>();
-            liveSearchChannelWorker.Start(CancellationToken.None);
-            foundChannelWorker.Start(CancellationToken.None);
-            whisperChannelWorker.Start(CancellationToken.None);
-            historyChannelWorker.Start(CancellationToken.None);
+            var orderStartSearchWorker = Services.GetRequiredService<OrderStartSearchWorker>();
+            liveSearchChannelWorker.Start(_applicationCancelSource.Token);
+            foundChannelWorker.Start(_applicationCancelSource.Token);
+            whisperChannelWorker.Start(_applicationCancelSource.Token);
+            historyChannelWorker.Start(_applicationCancelSource.Token);
+            orderStartSearchWorker.Start(_applicationCancelSource.Token);
 
             base.OnStartup(e);
         }
 
         protected override void OnExit(ExitEventArgs e)
         {
+            _applicationCancelSource.Cancel();
+
             var appService = Services.GetRequiredService<ApplicationHostService>();
             appService.Stop();
             

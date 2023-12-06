@@ -135,7 +135,7 @@ public partial class LiveSearchViewModel : ViewModelBase
 
     private async Task Da()
     {
-        var searchResponseResult = await _poeTradeApiService.SearchItemsAsync("Ancestor", "10w8Sg");
+        var searchResponseResult = await _poeTradeApiService.SearchItemsAsync("Standard", "Ab3LSL");
         if (!searchResponseResult.IsSuccess || !searchResponseResult.Content.Result.Any())
         {
             return;
@@ -519,7 +519,6 @@ public partial class LiveSearchViewModel : ViewModelBase
         Log.Information("Order {OrderName} has been deleted", order.Name);
     }
 
-    private readonly SemaphoreSlim _enablingSelectedOrderSemaphoreSlim = new(1, 1);
     [ObservableProperty] private bool _isOrdersEnabling;
 
     [RelayCommand]
@@ -527,14 +526,12 @@ public partial class LiveSearchViewModel : ViewModelBase
     {
         try
         {
-            await _enablingSelectedOrderSemaphoreSlim.WaitAsync();
             IsOrdersEnabling = true;
             await InternalEnableSelectedOrders();
         }
         finally
         {
             IsOrdersEnabling = false;
-            _enablingSelectedOrderSemaphoreSlim.Release();
         }
     }
 

@@ -8,35 +8,59 @@ using Serilog;
 
 namespace Poe.LiveSearch.WebSocket;
 
-public class LiveSearcherWebSocketClient
+public class LiveSearcherWebSocketClient : IDisposable
 {
-    private Order _order;
+    private readonly Order _order;
     private readonly PoeApiOptions _poeApiOptions;
     private readonly ServiceState _serviceState;
-    private ClientWebSocket _clientWebSocket;
+    private readonly ClientWebSocket _clientWebSocket;
     private readonly ChannelWriter<ItemLiveResponse> _liveResponseChannelWriter;
     private readonly ChannelWriter<OrderError> _orderErrorChannelWriter;
     private bool _isConnected;
 
     public EventHandler OnConnected;
     public EventHandler OnConnectionFailed;
+    public EventHandler<OrderProcessingFailedEventArgs> OnProcessingFailed;
 
-    public LiveSearcherWebSocketClient(PoeApiOptions poeApiOptions, ServiceState serviceState)
+    public LiveSearcherWebSocketClient(Order order, PoeApiOptions poeApiOptions, ServiceState serviceState)
     {
         _poeApiOptions = poeApiOptions;
         _serviceState = serviceState;
         _liveResponseChannelWriter = serviceState.LiveSearchChannel.Writer;
         _orderErrorChannelWriter = serviceState.OrderErrorChannel.Writer;
-    }
 
-    public async Task ConnectAsync(Order order, CancellationToken token = default)
-    {
         _order = order;
         _clientWebSocket = new ClientWebSocket();
 
         SetHeaders();
+    }
 
-        await ConnectAsync(token);
+    public Task<bool> TryConnectAsync(CancellationToken token = default)
+    {
+        return ConnectCoreAsync(token);
+    }
+
+    public async Task<bool> ConnectAsync(CancellationToken token = default)
+    {
+        for (var retryCount = 1; retryCount < 4; retryCount++)
+        {
+            var isConnected = await ConnectCoreAsync(token);
+            if (isConnected)
+            {
+                return true;
+            }
+
+            if (retryCount == 3)
+            {
+                return false;
+            }
+
+            var timeout = Math.Pow(3, retryCount);
+
+            await Task.Delay(TimeSpan.FromSeconds(timeout), token);
+        }
+
+        return false;
     }
 
     public async Task StartReceiveAsync(CancellationToken token)
@@ -72,7 +96,7 @@ public class LiveSearcherWebSocketClient
                 {
                     break;
                 }
-                
+
                 outputStream.Position = 0;
 
                 await ProcessReceivedMessageAsync(outputStream, token);
@@ -87,6 +111,8 @@ public class LiveSearcherWebSocketClient
             _orderErrorChannelWriter.TryWrite(new OrderError(_order.Id, e.Message, OrderErrorType.Process));
 
             Log.Error(e, "Error receiving data from web socket for order {OrderName}", _order.Name);
+
+            OnProcessingFailed?.Invoke(this, new OrderProcessingFailedEventArgs(_order.Id));
         }
     }
 
@@ -98,27 +124,30 @@ public class LiveSearcherWebSocketClient
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36");
     }
 
-    private async Task ConnectAsync(CancellationToken token = default)
+    private async Task<bool> ConnectCoreAsync(CancellationToken token = default)
     {
         var uri = new Uri($"{_poeApiOptions.BaseWssAddress}/{_order.LeagueName}/{_order.QueryHash}");
         try
         {
             await _clientWebSocket.ConnectAsync(uri, token);
-            
+
             _isConnected = true;
-            OnConnected?.Invoke(this, EventArgs.Empty);
 
-            Log.Information("Connected to web socket for order {OrderName}", _order.Name);
+            Log.Information("Successfully connected to web socket for order {OrderName}", _order.Name);
 
-            return;
+            return true;
         }
-        catch (WebSocketException e) when(e.WebSocketErrorCode == WebSocketError.NotAWebSocket && e.Message.Contains("404"))
+        catch (WebSocketException e) when (e.WebSocketErrorCode == WebSocketError.NotAWebSocket &&
+                                           e.Message.Contains("404"))
         {
             _orderErrorChannelWriter.TryWrite(new OrderError(_order.Id, "Invalid link"));
 
             Log.Error(e, "The URI {Uri} not a correct websocket address", uri);
+
+            return true;
         }
-        catch (WebSocketException e) when(e.WebSocketErrorCode == WebSocketError.NotAWebSocket && e.Message.Contains("429"))
+        catch (WebSocketException e) when (e.WebSocketErrorCode == WebSocketError.NotAWebSocket &&
+                                           e.Message.Contains("429"))
         {
             _orderErrorChannelWriter.TryWrite(new OrderError(_order.Id, "Rate limit exceed. Wait a little time."));
 
@@ -126,13 +155,15 @@ public class LiveSearcherWebSocketClient
         }
         catch (WebSocketException e)
         {
-            _orderErrorChannelWriter.TryWrite(new OrderError(_order.Id, "Invalid link"));
+            _orderErrorChannelWriter.TryWrite(new OrderError(_order.Id, $"Connection error: {e.Message}"));
 
-            Log.Error(e, "The URI {Uri} occured error", uri);
+            Log.Error(e, "The URI {Uri} occured error {Error}", uri, e.Message);
         }
         catch (TaskCanceledException)
         {
             Log.Information("Connecting to web socket for order {OrderName} was cancelled", _order.Name);
+
+            return true;
         }
         catch (Exception e)
         {
@@ -140,8 +171,8 @@ public class LiveSearcherWebSocketClient
 
             Log.Error(e, "Error connecting to web socket for order {OrderName}", _order.Name);
         }
-        
-        OnConnectionFailed?.Invoke(this, EventArgs.Empty);
+
+        return false;
     }
 
     private async Task ProcessReceivedMessageAsync(Stream messageStream, CancellationToken cancellationToken)
@@ -161,5 +192,10 @@ public class LiveSearcherWebSocketClient
         }
 
         await messageStream.DisposeAsync();
+    }
+
+    public void Dispose()
+    {
+        _clientWebSocket?.Dispose();
     }
 }

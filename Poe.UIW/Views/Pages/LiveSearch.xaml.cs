@@ -43,7 +43,7 @@ public partial class LiveSearch : INavigableView<LiveSearchViewModel>
         ViewModel.DialogControl.ButtonRightClick += DialogControlOnButtonRightClick;
         ViewModel.DialogControl.ButtonLeftClick += DialogControlOnButtonRightClick;
 
-        ViewModel.OrdersChanged += OrderAdded;
+        ViewModel.FilteredOrdersChanged += OrderAdded;
     }
 
     private void OrderAdded(object sender, EventArgs e)

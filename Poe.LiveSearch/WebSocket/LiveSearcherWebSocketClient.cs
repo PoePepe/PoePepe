@@ -133,7 +133,7 @@ public class LiveSearcherWebSocketClient : IDisposable
 
             _isConnected = true;
 
-            Log.Information("Successfully connected to web socket for order {OrderName}", _order.Name);
+            Log.Information("Successfully connected to web socket for order {OrderName} on {LeagueName}", _order.Name, _serviceState.LeagueName);
 
             return true;
         }

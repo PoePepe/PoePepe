@@ -246,42 +246,39 @@
             </DataGrid>
             <Grid Grid.Row="3">
                 <StackPanel Orientation="Horizontal">
-                    
-                  
-
-                    <TextBlock  
+                    <TextBlock  Visibility="{Binding IsOrdersEnabling, Converter={StaticResource BooleanToVisibilityConverter}}"
                                 VerticalAlignment="Center"
                                 FontWeight="DemiBold"
                                 Text="Updating..." />
                 </StackPanel>
+
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 1 13 2">
-                    <!--Green-->
+                    <!--ActiveOrders-->
                     <StackPanel  Orientation="Horizontal"
                                  Margin="0 0 3 0">
 
                         <TextBlock  Foreground="#15cb6f"
                                     FontWeight="DemiBold"
-                                    Text="15 Active "/>
+                                    Text="{Binding StringFormat={}{0} active, Path=ActiveOrders}"/>
                     </StackPanel>
-                    <!--Red-->
+                    <!--FailedOrders-->
                     <StackPanel  Orientation="Horizontal"
                                  Margin=" 0 0 4 0">
                         <TextBlock Foreground="Red"
                                    FontWeight="DemiBold"
-                                   Text="15 Errors" />
+                                   Text="{Binding StringFormat={}{0} failed, Path=FailedOrders}" />
                     </StackPanel>
-                    <!--Red-->
+                    <!--TotalOrders-->
                     <StackPanel  Orientation="Horizontal"
                                  Margin=" 0 0 4 0">
                         <TextBlock Foreground="#a9a9a9"
                                    FontWeight="DemiBold"
-                                   Text="15 Total" />
+                                   Text="{Binding StringFormat={}{0} total, Path=TotalOrders}" />
                     </StackPanel>
-
-
                 </StackPanel>
             </Grid>
         </Grid>
+
         <Border
             Visibility="{Binding IsRowsSelected, Converter={StaticResource BooleanToVisibilityConverter}}"
             CornerRadius="5"

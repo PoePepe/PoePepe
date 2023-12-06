@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="" width="150" height="150">
+   <img src="https://github.com/PoePepe/PoePepe/blob/main/Poe.UIW/Resources/Icons/logo.png" width="150" height="150">
 </p>
 <h1>
   PoePepe 
@@ -9,7 +9,16 @@
 </p>
 
 <p>
-If you enjoy PoePepe. Support us on Patreon with just $2 a month. Your support keeps PoePepe strong!
+If you enjoy PoePepe. Support us on <a href="https://www.patreon.com/PoePepe">Patreon</a> with just $3 a month. Your support keeps PoePepe strong!
+</p>
+<p align="center">
+   <a href="https://www.patreon.com/PoePepe">
+   <img src="https://github.com/PoePepe/PoePepe/assets/152653866/8c2c25a2-a634-4dbd-a676-77ef030d6a7f" width="80" height="80">
+     </a>
+  &nbsp
+     <a href="https://www.patreon.com/PoePepe">
+  <img src="https://github.com/PoePepe/PoePepe/assets/152653866/a5fcf83d-f46a-4eaa-890c-49531ebab9d8" width="80" height="80">
+    </a>
 </p>
 <h1>
   What can it do?

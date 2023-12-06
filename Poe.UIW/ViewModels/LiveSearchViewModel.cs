@@ -82,17 +82,20 @@ public partial class LiveSearchViewModel : ViewModelBase
         Start(CancellationToken.None);
     }
 
-    public void LoadOrders(string leagueName = null)
+    private void LoadOrders()
     {
-        var orders = _service.GetOrdersByLeague(leagueName ?? UserSettings.Default.LeagueName).ToArray();
+        var orders = _service.GetOrders().ToArray();
         ThreadPool.QueueUserWorkItem(async _ => { await _service.StartLiveSearchAsync(orders); });
         Orders = new ObservableCollection<OrderViewModel>(orders.ToOrderModel());
         FilteredOrders = new ObservableCollection<OrderViewModel>(Orders.Sort(ActualSort));
     }
 
-    public void StopSearchingForOrders(string leagueName = null)
+    public void ChangeLeagueSearchingOrders()
     {
-        _service.StopSearchingForOrders(leagueName ?? UserSettings.Default.LeagueName);
+        _service.StopSearchingForOrders();
+        _serviceState.LeagueName = UserSettings.Default.LeagueName;
+        var orders = _service.GetOrders().ToArray();
+        ThreadPool.QueueUserWorkItem(async _ => { await _service.StartLiveSearchAsync(orders); });
     }
 
     private void Start(CancellationToken token)
@@ -242,8 +245,7 @@ public partial class LiveSearchViewModel : ViewModelBase
 
         order.Id = id;
 
-        var activeOrderCount =
-            _service.GetOrdersByLeague(order.LeagueName).Count(x => x.Activity == OrderActivity.Enabled);
+        var activeOrderCount = _service.GetOrders().Count(x => x.Activity == OrderActivity.Enabled);
         if (activeOrderCount >= 20)
         {
             order.IsActive = false;
@@ -258,12 +260,9 @@ public partial class LiveSearchViewModel : ViewModelBase
         order.CreatedAt = DateTimeOffset.UtcNow;
         _service.CreateOrder(order.ToOrder());
 
-        if (order.LeagueName == UserSettings.Default.LeagueName)
-        {
-            Orders.Add(order);
-            FilteredOrders.Add(order);
-            FilteredOrders = new ObservableCollection<OrderViewModel>(FilteredOrders.Sort(ActualSort));
-        }
+        Orders.Add(order);
+        FilteredOrders.Add(order);
+        FilteredOrders = new ObservableCollection<OrderViewModel>(FilteredOrders.Sort(ActualSort));
 
         if (order.IsActive)
         {
@@ -341,8 +340,7 @@ public partial class LiveSearchViewModel : ViewModelBase
             return;
         }
 
-        var activeOrderCount =
-            _service.GetOrdersByLeague(order.LeagueName).Count(x => x.Activity == OrderActivity.Enabled);
+        var activeOrderCount = _service.GetOrders().Count(x => x.Activity == OrderActivity.Enabled);
         if (activeOrderCount >= 20)
         {
             order.IsActive = false;
@@ -439,14 +437,14 @@ public partial class LiveSearchViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private void CopyOrderLink(string orderQueryLink)
+    private void CopyOrderLink(string queryHash)
     {
-        if (orderQueryLink is null)
+        if (queryHash is null)
         {
             return;
         }
 
-        Clipboard.SetText(orderQueryLink);
+        Clipboard.SetText($"https://www.pathofexile.com/trade/search/{UserSettings.Default.LeagueName}/{queryHash}");
     }
 
     [RelayCommand]

@@ -139,10 +139,8 @@ public partial class ImportOrdersViewModel : ViewModelValidatableBase, IModalDia
             {
                 Id = ++lastId,
                 CreatedAt = DateTimeOffset.UtcNow,
-                LeagueName = UserSettings.Default.LeagueName,
                 QueryHash = item.QueryHash,
                 Name = item.Name,
-                Link = $"https://www.pathofexile.com/trade/search/{UserSettings.Default.LeagueName}/{item.QueryHash}",
                 Activity = OrderActivity.Disabled,
                 Mod = OrderMod.Notify,
                 IsActive = false

@@ -17,6 +17,9 @@ namespace Poe.UIW.Views.Pages;
 
 public partial class LiveSearch : INavigableView<LiveSearchViewModel>
 {
+    public LiveSearchViewModel ViewModel { get; }
+    private readonly LeagueService _leagueService;
+
     public LiveSearch(LiveSearchViewModel viewModel, LeagueService leagueService)
     {
         ViewModel = viewModel;
@@ -59,9 +62,6 @@ public partial class LiveSearch : INavigableView<LiveSearchViewModel>
         var dialogControl = (IDialogControl)sender;
         dialogControl.Hide();
     }
-
-    public LiveSearchViewModel ViewModel { get; }
-    private readonly LeagueService _leagueService;
 
     private void SelectingItemsControl_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
     {
@@ -122,11 +122,7 @@ public partial class LiveSearch : INavigableView<LiveSearchViewModel>
             return;
         }
 
-        var newLeague = e.AddedItems[0].ToString();
-        var oldLeague = e.RemovedItems[0].ToString();
-
-        ViewModel.StopSearchingForOrders(oldLeague);
-        ViewModel.LoadOrders(newLeague);
+        ViewModel.ChangeLeagueSearchingOrders();
 
         UserSettings.Default.Save();
     }

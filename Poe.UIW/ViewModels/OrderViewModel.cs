@@ -18,7 +18,6 @@ public partial class OrderViewModel : ViewModelValidatableBase
     [ObservableProperty] private long _id;
 
     [ObservableProperty] private DateTimeOffset _createdAt;
-    [ObservableProperty] private string _leagueName;
 
     [ObservableProperty] private string _queryHash;
 

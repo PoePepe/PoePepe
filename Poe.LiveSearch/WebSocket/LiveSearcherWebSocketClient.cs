@@ -126,7 +126,7 @@ public class LiveSearcherWebSocketClient : IDisposable
 
     private async Task<bool> ConnectCoreAsync(CancellationToken token = default)
     {
-        var uri = new Uri($"{_poeApiOptions.BaseWssAddress}/{_order.LeagueName}/{_order.QueryHash}");
+        var uri = new Uri($"{_poeApiOptions.BaseWssAddress}/{_serviceState.LeagueName}/{_order.QueryHash}");
         try
         {
             await _clientWebSocket.ConnectAsync(uri, token);

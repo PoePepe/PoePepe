@@ -223,7 +223,7 @@
                                             <ContextMenu>
                                                 <MenuItem Header="Copy link"
                                                           Command="{Binding Source={StaticResource Proxy}, Path=Data.CopyOrderLinkCommand}"
-                                                          CommandParameter="{Binding Link}" />
+                                                          CommandParameter="{Binding QueryHash}" />
                                                 <MenuItem Header="History"
                                                           Command="{Binding Source={StaticResource Proxy}, Path=Data.ShowOrderHistoryCommand}"
                                                           CommandParameter="{Binding Id}" />

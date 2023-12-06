@@ -12,10 +12,8 @@ public static class OrderMapper
         return new OrderViewModel
         {
             Id = order.Id,
-            LeagueName = order.LeagueName,
             QueryHash = order.QueryHash,
             Name = order.Name,
-            Link = order.QueryLink,
             Activity = order.Activity,
             Mod = order.Mod,
             IsActive = order.Activity == OrderActivity.Enabled,
@@ -29,9 +27,7 @@ public static class OrderMapper
         {
             Id = order.Id,
             Name = order.Name,
-            LeagueName = order.LeagueName,
             QueryHash = order.QueryHash,
-            QueryLink = order.Link,
             Activity = order.Activity,
             Mod = order.Mod,
             CreatedAt = order.CreatedAt

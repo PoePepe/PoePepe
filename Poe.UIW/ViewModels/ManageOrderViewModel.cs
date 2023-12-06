@@ -6,6 +6,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using HanumanInstitute.MvvmDialogs;
 using Poe.LiveSearch.Models;
+using Poe.UIW.Properties;
 
 namespace Poe.UIW.ViewModels;
 
@@ -35,7 +36,7 @@ public partial class ManageOrderViewModel : ViewModelBase, IModalDialogViewModel
             EditOrderModel = order;
             ManageOrderModel.Id = order.Id;
             ManageOrderModel.Name = order.Name;
-            ManageOrderModel.Link = order.Link;
+            ManageOrderModel.Link = $"https://www.pathofexile.com/trade/search/{UserSettings.Default.LeagueName}/{order.QueryHash}";
             ManageOrderModel.Mod = order.Mod;
             IsEditing = true;
             HeaderText = "Edit order";
@@ -82,11 +83,8 @@ public partial class ManageOrderViewModel : ViewModelBase, IModalDialogViewModel
             return;
         }
 
-        var leagueName = match.Groups[1].Value;
         var hash = match.Groups[2].Value;
 
-        ManageOrderModel.Link = decodedUrl;
-        ManageOrderModel.LeagueName = leagueName;
         ManageOrderModel.QueryHash = hash;
         ManageOrderModel.IsActive = true;
 

@@ -8,6 +8,7 @@ namespace Poe.LiveSearch.Services;
 
 public class ServiceState
 {
+    public string LeagueName { get; set; }
     public string Session { get; set; }
     public ConcurrentDictionary<long, SubscriptionData> LiveSearches { get; } = new();
     public Channel<ItemLiveResponse> LiveSearchChannel { get; } = Channel.CreateUnbounded<ItemLiveResponse>();

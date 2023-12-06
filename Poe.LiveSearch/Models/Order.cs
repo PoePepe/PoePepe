@@ -3,7 +3,6 @@
 public class Order
 {
     public long Id { get; set; }
-    public string LeagueName { get; set; }
     public string QueryHash { get; set; }
     public string Name { get; set; }
     public string QueryLink { get; set; }

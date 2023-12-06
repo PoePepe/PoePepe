@@ -53,11 +53,6 @@ public class Service
         return _orderRepository.GetAll();
     }
 
-    public IEnumerable<Order> GetOrdersByLeague(string leagueName)
-    {
-        return _orderRepository.GetAll().Where(x => x.LeagueName == leagueName);
-    }
-    
     public async Task StartLiveSearchAsync(IEnumerable<Order> orders)
     {
         foreach (var order in orders.Where(x => x.Activity == OrderActivity.Enabled))
@@ -90,9 +85,9 @@ public class Service
         await AddLiveSearchOrderAsync(order);
     }
     
-    public void StopSearchingForOrders(string leagueName = null)
+    public void StopSearchingForOrders()
     {
-        var orders = _orderRepository.GetAll().Where(x => x.LeagueName == leagueName);
+        var orders = _orderRepository.GetAll();
         foreach (var order in orders)
         {
             StopSearchingForOrder(order.Id);

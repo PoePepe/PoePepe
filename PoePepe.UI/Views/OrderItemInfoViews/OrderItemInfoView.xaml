@@ -1,0 +1,381 @@
+﻿<Window x:Class="PoePepe.UI.Views.OrderItemInfoViews.OrderItemInfoView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:orderItemInfoViewModels="clr-namespace:PoePepe.UI.ViewModels.OrderItemInfoViewModels"
+        xmlns:orderItemInfoViews="clr-namespace:PoePepe.UI.Views.OrderItemInfoViews"
+        mc:Ignorable="d"
+        WindowStyle="None"
+        ResizeMode="NoResize"
+        SizeToContent="WidthAndHeight"
+        ShowInTaskbar="False"
+        WindowStartupLocation="CenterScreen"
+        Background="Transparent"
+        AllowsTransparency="True"
+        Topmost="True"
+        d:DesignHeight="300" d:DesignWidth="300"
+        d:DataContext="{d:DesignInstance orderItemInfoViewModels:OrderItemInfoViewModel, IsDesignTimeCreatable=True}">
+
+    <Grid x:Name="ItemInfoGrid" SizeChanged="ItemInfoGrid_OnSizeChanged">
+        <Border Background="Black"
+                Opacity="0.8" />
+
+        <!--Adjust size grid-->
+        <Grid Visibility="Collapsed"
+              Width="450"
+              Height="450">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                </Grid.RowDefinitions>
+                <Border Background="#393939" />
+                <TextBlock Text="Item Details"
+                           FontSize="20"
+                           Margin="5 5 5 8"
+                           Foreground="White"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Top" />
+            </Grid>
+            <ui:Button Content="Accept"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       Background="#393939"
+                       Margin="0 0 0 35" />
+        </Grid>
+
+        <Grid SnapsToDevicePixels="True">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+            </Grid.RowDefinitions>
+
+            <!-- Title -->
+            <orderItemInfoViews:ItemInfoTitle OrderItem="{Binding OrderItem}"
+                                              MouseLeftButtonDown="UIElement_OnMouseLeftButtonDown" />
+
+            <!--MainContent-->
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="30*" />
+                    <ColumnDefinition Width="70*" />
+                </Grid.ColumnDefinitions>
+
+                <!-- ImageColumn -->
+                <StackPanel Orientation="Horizontal" Margin="5,0,5,0">
+                    <Grid MouseEnter="ItemImagePanel_OnMouseEnter" MouseLeave="ItemImagePanel_OnMouseLeave"
+                          x:Name="ItemImagePanel" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <Image Width="{Binding OrderItemInfo.ImageWidth}" x:Name="ItemBackImage" />
+
+                        <RelativePanel x:Name="ItemSocketImageRelativePanel" />
+
+                        <Canvas x:Name="ItemLinkImageCanvas" />
+                    </Grid>
+                </StackPanel>
+
+                <!-- Properties -->
+                <StackPanel Grid.Column="1" Orientation="Vertical"
+                            HorizontalAlignment="Center" Margin="15,0,15,3">
+
+                    <!-- BasicProperties -->
+                    <StackPanel HorizontalAlignment="Center">
+                        <ItemsControl ItemsSource="{Binding OrderItemInfo.Properties}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+
+                                        <TextBlock HorizontalAlignment="Center"
+                                                   Style="{StaticResource baseProperty_name}"
+                                                   Visibility="{Binding NonValue, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                            <TextBlock.Text>
+                                                <Binding Path="Name" />
+                                            </TextBlock.Text>
+                                        </TextBlock>
+
+                                        <TextBlock HorizontalAlignment="Center"
+                                                   Style="{StaticResource baseProperty_name}"
+                                                   Visibility="{Binding NonValue, Converter={StaticResource BooleanToInvertedVisibilityConverter}}">
+                                            <TextBlock.Text>
+                                                <Binding StringFormat="{}{0}:" Path="Name" />
+                                            </TextBlock.Text>
+                                        </TextBlock>
+
+                                        <TextBlock Style="{StaticResource baseProperty_value}"
+                                                   Visibility="{Binding NonValue, Converter={StaticResource BooleanToInvertedVisibilityConverter}}"
+                                                   Text="{Binding Path=Value}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+
+                    <!-- Requirements -->
+                    <StackPanel HorizontalAlignment="Center"
+                                Visibility="{Binding RequirementExists, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <orderItemInfoViews:ItemInfoSeparator />
+
+                        <!-- ItemLevel -->
+                        <StackPanel
+                            Visibility="{Binding OrderItemInfo.HasItemLevel, Converter={StaticResource BooleanToVisibilityConverter}}"
+                            Orientation="Horizontal" HorizontalAlignment="Center">
+                            <TextBlock Style="{StaticResource baseProperty_name}" Text="Item Level:" />
+                            <TextBlock Style="{StaticResource baseProperty_value}">
+                                <TextBlock.Text>
+                                    <Binding StringFormat="{}{0}" Path="OrderItemInfo.ItemLevel" />
+                                </TextBlock.Text>
+                            </TextBlock>
+                        </StackPanel>
+
+                        <!-- ItemRequirements -->
+                        <StackPanel
+                            Visibility="{Binding RequirementPropertiesExists, Converter={StaticResource BooleanToVisibilityConverter}}"
+                            Orientation="Horizontal"
+                            HorizontalAlignment="Center">
+
+                            <TextBlock Style="{StaticResource baseProperty_name}">
+                                Requires
+                            </TextBlock>
+                            <ItemsControl ItemsSource="{Binding OrderItemInfo.Requirements}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Orientation="Horizontal" />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Style="{StaticResource baseProperty_name}">
+                                                <TextBlock.Text>
+                                                    <Binding StringFormat="{} {0}" Path="Name" />
+                                                </TextBlock.Text>
+                                            </TextBlock>
+                                            <TextBlock Style="{StaticResource baseProperty_value}"
+                                                       Text="{Binding Path=Value}" />
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <!-- EnchantMods -->
+                    <StackPanel
+                        Visibility="{Binding OrderItemInfo.ExistsEnchantMods, Converter={StaticResource BooleanToVisibilityConverter}}"
+                        HorizontalAlignment="Center">
+                        <orderItemInfoViews:ItemInfoSeparator />
+
+                        <ItemsControl ItemsSource="{Binding OrderItemInfo.EnchantMods}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Style="{StaticResource enchantMods}" HorizontalAlignment="Center"
+                                               Text="{Binding }" />
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+
+                    <!-- ImplicitMods -->
+                    <StackPanel
+                        Visibility="{Binding OrderItemInfo.ExistsImplicitMods, Converter={StaticResource BooleanToVisibilityConverter}}"
+                        HorizontalAlignment="Center">
+                        <orderItemInfoViews:ItemInfoSeparator />
+
+                        <ItemsControl ItemsSource="{Binding OrderItemInfo.ImplicitMods}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Style="{StaticResource mods}" HorizontalAlignment="Center"
+                                               Text="{Binding }" />
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+
+                    <!-- ExplicitMods -->
+                    <StackPanel
+                        Visibility="{Binding OrderItemInfo.ExistsExplicitMods, Converter={StaticResource BooleanToVisibilityConverter}}"
+                        HorizontalAlignment="Center">
+                        <orderItemInfoViews:ItemInfoSeparator />
+
+                        <ItemsControl ItemsSource="{Binding OrderItemInfo.FracturedMods}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock HorizontalAlignment="Center" Text="{Binding  }" />
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        <ItemsControl ItemsSource="{Binding OrderItemInfo.ExplicitMods}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Style="{StaticResource mods}" HorizontalAlignment="Center"
+                                               Text="{Binding  }" />
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        <ItemsControl ItemsSource="{Binding OrderItemInfo.CraftedMods}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Style="{StaticResource mods_Crafted}"
+                                               HorizontalAlignment="Center" Text="{Binding  }"/>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+
+                    <!-- SpecialModifiers -->
+                    <StackPanel
+                        Visibility="{Binding HasMiscellaneous, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <orderItemInfoViews:ItemInfoSeparator />
+
+                        <!-- Split -->
+                        <StackPanel
+                            Visibility="{Binding OrderItemInfo.IsSplitted, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <TextBlock Style="{StaticResource flag_Split}">Split</TextBlock>
+                        </StackPanel>
+
+                        <!-- Mirrored -->
+                        <StackPanel
+                            Visibility="{Binding OrderItemInfo.IsDuplicated, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <TextBlock Style="{StaticResource flag_Mirrored}">Mirrored</TextBlock>
+                        </StackPanel>
+
+                        <!-- Unidentified -->
+                        <StackPanel
+                            Visibility="{Binding OrderItemInfo.IsIdentified, Converter={StaticResource BooleanToInvertedVisibilityConverter}}">
+                            <TextBlock Style="{StaticResource flag_Unidentified}">Unidentified</TextBlock>
+                        </StackPanel>
+
+                        <!-- Corrupted -->
+                        <StackPanel
+                            Visibility="{Binding OrderItemInfo.IsCorrupted, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <TextBlock Style="{StaticResource flag_Corrupted}">Corrupted</TextBlock>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <!-- NotableProperties -->
+                    <StackPanel
+                        Visibility="{Binding OrderItemInfo.ExistsNotableProperties, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <ItemsControl ItemsSource="{Binding OrderItemInfo.NotableProperties}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel>
+                                        <TextBlock Style="{StaticResource notableProperties_title}"
+                                                   HorizontalAlignment="Center" Text="{Binding  Name}" />
+                                        <ItemsControl ItemsSource="{Binding Values}">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Style="{StaticResource notableProperties_desc}"
+                                                               HorizontalAlignment="Center" Text="{Binding }" />
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+
+                    <!-- Logbook -->
+                    <StackPanel
+                        Visibility="{Binding OrderItemInfo.IsLogBook, Converter={StaticResource BooleanToVisibilityConverter}}"
+                        Name="LogbookMods"
+                        HorizontalAlignment="Center">
+                        <orderItemInfoViews:ItemInfoSeparator />
+
+                        <ItemsControl ItemsSource="{Binding OrderItemInfo.LogbookMods}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel HorizontalAlignment="Center">
+                                        <TextBlock Style="{StaticResource logbook_area}" HorizontalAlignment="Center"
+                                                   Text="{Binding Name}" />
+
+                                        <TextBlock Style="{StaticResource logbook_faction}"
+                                                   HorizontalAlignment="Center"
+                                                   Text="{Binding FactionName}" />
+
+                                        <ItemsControl ItemsSource="{Binding Mods}">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Style="{StaticResource logbook_mod}"
+                                                               HorizontalAlignment="Center"
+                                                               Text="{Binding }" />
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+
+
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </StackPanel>
+            </Grid>
+
+            <!-- AdditionalProperties -->
+            <StackPanel Grid.Row="2">
+                <StackPanel HorizontalAlignment="Center" Margin="5,0,5,0">
+                    <ItemsControl ItemsSource="{Binding OrderItemInfo.ExtendedProperties}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                    <TextBlock Style="{StaticResource additionalProperties_name}"
+                                               Text="{Binding Path=Name}" />
+
+                                    <TextBlock Style="{StaticResource additionalProperties_value}">
+                                        <TextBlock.Text>
+                                            <Binding StringFormat="{}{0}  " Path="Value" />
+                                        </TextBlock.Text>
+                                    </TextBlock>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </StackPanel>
+
+            <!-- Button Panel -->
+            <StackPanel Grid.Row="3">
+                <Separator Background="#232425"
+                           Height="2"
+                           VerticalAlignment="Top" />
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Price -->
+                    <StackPanel HorizontalAlignment="Left" Orientation="Horizontal"
+                                Margin="5,0,0,0">
+                        <TextBlock VerticalAlignment="Center" Style="{StaticResource currencyPrice}"
+                                   Text="{Binding OrderItem.Price.Amount}" />
+                        <TextBlock VerticalAlignment="Center" Style="{StaticResource currencyPrice}">x </TextBlock>
+                        <Image x:Name="PriceImage" VerticalAlignment="Center" Height="35" />
+                    </StackPanel>
+
+                    <!-- Whisper Button -->
+                    <StackPanel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <Button Style="{StaticResource actionButtons}" Click="ButtonBase_OnClick"
+                                Command="{Binding WhisperCommand}">
+                            Whisper
+                        </Button>
+                    </StackPanel>
+
+                    <!-- Close Button -->
+                    <StackPanel Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center">
+                        <Button Click="ButtonClose_OnClick" IsCancel="True" Style="{StaticResource actionButtons}">Close</Button>
+                    </StackPanel>
+                </Grid>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>

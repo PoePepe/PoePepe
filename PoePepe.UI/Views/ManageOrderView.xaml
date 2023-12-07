@@ -1,0 +1,143 @@
+﻿<ui:UiWindow x:Class="PoePepe.UI.Views.ManageOrderView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:vm="clr-namespace:PoePepe.UI.ViewModels"
+             xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+             xmlns:viewModels="clr-namespace:PoePepe.UI.ViewModels"
+             Background="{ui:ThemeResource ApplicationBackgroundBrush}"
+             WindowCornerPreference="Round"
+             WindowStartupLocation="CenterOwner"
+             
+             ExtendsContentIntoTitleBar="True"
+             WindowBackdropType="Mica"
+             ResizeMode="NoResize"
+             Width="500"
+             
+             SizeToContent="Height"
+             MinWidth="250"
+             MinHeight="200"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance vm:ManageOrderViewModel, IsDesignTimeCreatable=True}"
+             d:DesignHeight="200" d:DesignWidth="200">
+    <Grid>
+        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <ui:TitleBar
+            Icon="pack://application:,,,/Resources/Icons/logo.png"
+            Grid.Row="0"
+            ForceShutdown="False"
+            FontSize="15"
+            MinimizeToTray="False"
+            ShowHelp="False"
+            ShowMaximize="False"
+            ShowMinimize="False"
+            ShowClose="True" />
+        <TextBlock x:Name="TitleTextBlock" Grid.Row="0" HorizontalAlignment="Center" FontSize="20" Margin="0 10 10 0" Text="Add new order" />
+        <StackPanel Grid.Row="1" Margin="20 15 20  0">
+
+            <StackPanel
+                Margin="0 0 0 4">
+                <!-- Name -->
+                <TextBlock
+                   
+                    Text="Name:" />
+                <!-- NameEdit -->
+                <ui:TextBox
+                    PlaceholderText="Name"
+                            x:Name="NameTextBox"
+                            HorizontalAlignment="Stretch"
+                            Text="{Binding ManageOrderModel.Name, ValidatesOnNotifyDataErrors=False}"/>
+                <StackPanel x:Name="NameErrorStackPanel" Visibility="Hidden" Orientation="Horizontal" Margin="0 1 0 0 ">
+                    <ui:SymbolIcon Symbol="ErrorCircle12"
+                                   Margin="0 0 4 0"
+                                   Foreground="#d50000"/>
+                    <TextBlock  VerticalAlignment="Center"
+                                Foreground="#d50000" FontSize="13" />
+                </StackPanel>
+            </StackPanel>
+
+            <StackPanel Margin="0 0 0 4">
+                <!-- Link -->
+                <TextBlock
+                    Style="{StaticResource textBlock_ManageOrder}"
+                           Text="Link:" />
+                <!-- LinkEdit -->
+                <ui:TextBox
+                    x:Name="LinkTextBox"
+                            IsEnabled="{Binding IsEditing, Converter={StaticResource InvertedBoolConverter}}"
+                            PlaceholderText="Link"
+                            HorizontalAlignment="Stretch"
+                            Text="{Binding ManageOrderModel.Link, ValidatesOnNotifyDataErrors=False}"/>
+                <StackPanel x:Name="LinkErrorStackPanel"
+                            Visibility="Hidden"
+                            Orientation="Horizontal"
+                            Margin="0 1 0 0 ">
+                    <ui:SymbolIcon Symbol="ErrorCircle12"
+                                   Margin="0 0 4 0"
+                                   Foreground="#d50000" />
+                    <TextBlock VerticalAlignment="Center"
+                                Foreground="#d50000"
+                                FontSize="13" />
+                </StackPanel>
+            </StackPanel>
+            <!-- Mod -->
+            <StackPanel HorizontalAlignment="Stretch"
+                        Margin="0 0 0 0">
+                <TextBlock
+                    Style="{StaticResource textBlock_ManageOrder}"
+                    VerticalAlignment="Center"
+                    Margin=" 0 0 5 0"
+                    Text="Choose mod:" />
+                <!-- ModEdit -->
+                <ComboBox
+                    VerticalAlignment="Stretch"
+                          Width="{Binding ActualWidth, ElementName=LinkTextBox}"
+                          SelectedValue="{Binding ManageOrderModel.Mod}"
+                          ItemsSource="{x:Static viewModels:ManageOrderViewModel.AvailableMods}"
+                          FontSize="15">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock HorizontalAlignment="Stretch" Text="{Binding }" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+            </StackPanel>
+
+            <!-- </StackPanel> -->
+            <!-- SubmitButton -->
+
+            <!-- <ui:Button -->
+            <!--     BorderThickness="0" -->
+            <!--     Appearance="Transparent" -->
+            <!--     HorizontalAlignment="Center" -->
+            <!--     VerticalAlignment="Bottom" -->
+            <!--     HorizontalContentAlignment="Center" -->
+            <!--     VerticalContentAlignment="Center" -->
+            <!--     Command="{Binding CancelCommand}" -->
+            <!--     Content="Cancel" /> -->
+        </StackPanel>
+        <StackPanel Grid.Row="2" Margin="20 25 20 15">
+
+            <ui:Button
+                Appearance="Primary"
+                Height="38"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Bottom"
+                HorizontalContentAlignment="Center"
+                VerticalContentAlignment="Center"
+                FontSize="16"
+                FontWeight="DemiBold"
+                Foreground="White"
+                Background="#2562d1"
+                Command="{Binding SubmitCommand}"
+                Content="Submit" /><!-- IsEnabled="{Binding OrderModel.Validator.IsValid}" -->
+        </StackPanel>
+
+    </Grid>
+</ui:UiWindow>

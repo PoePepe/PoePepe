@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)">
+  <Profiles>
+    <Profile Name="(Default)" />
+  </Profiles>
+  <Settings>
+    <Setting Name="Session" Type="System.String" Scope="User">
+      <Value Profile="(Default)">POESESSID=f1fd821495aee1b1630d4027ee16bbc7</Value>
+    </Setting>
+    <Setting Name="LeagueName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Standard</Value>
+    </Setting>
+    <Setting Name="HideIfPoeUnfocused" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="NotificationPositionTop" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="NotificationPositionLeft" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="LiveSearchSort" Type="System.String" Scope="User">
+      <Value Profile="(Default)">NameAsc</Value>
+    </Setting>
+    <Setting Name="NotificationSoundPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Simple ping.mp3</Value>
+    </Setting>
+    <Setting Name="PlayNotificationSound" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
+

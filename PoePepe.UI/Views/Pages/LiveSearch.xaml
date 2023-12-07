@@ -76,6 +76,12 @@
 
                         <ui:Button.ContextMenu>
                             <ContextMenu>
+                                <!-- ReSharper disable Xaml.RedundantResource -->
+                                <MenuItem Header="Clear all" Command="{Binding ClearOrdersCommand}" />
+                                <Separator />
+                                <MenuItem Header="Import" Command="{Binding ImportOrdersCommand}" />
+                                <MenuItem Header="Export" Command="{Binding ExportOrdersCommand}" />
+                                <!-- ReSharper restore Xaml.RedundantResource -->
                             </ContextMenu>
                         </ui:Button.ContextMenu>
                     </ui:Button>
@@ -223,6 +229,21 @@
                                         </ui:Button.Resources>
                                         <ui:Button.ContextMenu>
                                             <ContextMenu>
+                                                <!-- ReSharper disable Xaml.RedundantResource -->
+                                                <MenuItem Header="Copy link"
+                                                          Command="{Binding Source={StaticResource Proxy}, Path=Data.CopyOrderLinkCommand}"
+                                                          CommandParameter="{Binding QueryHash}" />
+                                                <MenuItem Header="History"
+                                                          Command="{Binding Source={StaticResource Proxy}, Path=Data.ShowOrderHistoryCommand}"
+                                                          CommandParameter="{Binding Id}" />
+                                                <Separator />
+                                                <MenuItem Header="Edit"
+                                                          Command="{Binding Source={StaticResource Proxy}, Path=Data.EditOrderCommand}"
+                                                          CommandParameter="{Binding Id}" />
+                                                <MenuItem Header="Delete"
+                                                          Command="{Binding Source={StaticResource Proxy}, Path=Data.DeleteOrderCommand}"
+                                                          CommandParameter="{Binding Id}" />
+                                                <!-- ReSharper restore Xaml.RedundantResource -->
                                             </ContextMenu>
                                         </ui:Button.ContextMenu>
                                     </ui:Button>

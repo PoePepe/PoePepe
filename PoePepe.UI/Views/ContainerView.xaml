@@ -103,6 +103,11 @@
 
             <ui:NotifyIcon.Menu>
                 <ContextMenu>
+                    <!-- ReSharper disable Xaml.RedundantResource -->
+                    <MenuItem Header="Open" Click="MenuItem_OnClick_Open"/>
+                    <Separator />
+                    <MenuItem Header="Close" Click="MenuItem_OnClick_Close"/>
+                    <!-- ReSharper restore Xaml.RedundantResource -->
                 </ContextMenu>
             </ui:NotifyIcon.Menu>
         </ui:NotifyIcon>

@@ -1,16 +1,25 @@
 using PoePepe.LiveSearch.Models;
 
-namespace PoePepe.LiveSearch.WebSocket
+namespace PoePepe.LiveSearch.WebSocket;
+
+/// <summary>
+/// Represents a subscription data object.
+/// </summary>
+public class SubscriptionData
 {
     /// <summary>
-    /// Данные\состояние подписки.
+    /// Gets or sets the order for the property.
     /// </summary>
-    public class SubscriptionData
-    {
-        public Order Order { get; set; }
+    /// <value>The order.</value>
+    public Order Order { get; set; }
 
-        public CancellationTokenSource CancellationTokenSource { get; set; }
+    /// <summary>
+    /// Gets or sets the cancellation token source associated with this object.
+    /// </summary>
+    public CancellationTokenSource CancellationTokenSource { get; set; }
 
-        public LiveSearcherWebSocketClient Client { get; set; }
-    }
+    /// <summary>
+    /// Represents a LiveSearcherWebSocketClient instance.
+    /// </summary>
+    public LiveSearcherWebSocketClient Client { get; set; }
 }

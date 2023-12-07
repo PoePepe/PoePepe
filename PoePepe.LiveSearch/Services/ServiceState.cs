@@ -6,6 +6,9 @@ using PoePepe.LiveSearch.WebSocket;
 
 namespace PoePepe.LiveSearch.Services;
 
+/// <summary>
+/// Represents the state of a service.
+/// </summary>
 public class ServiceState
 {
     public string LeagueName { get; set; }

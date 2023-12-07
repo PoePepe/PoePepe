@@ -29,6 +29,7 @@ public partial class SettingsViewModel : ViewModelValidatableBase
     private readonly PoeTradeApiService _poeTradeApiService;
 
     private readonly ServiceState _serviceState;
+    private readonly LeagueService _leagueService;
     private readonly ISnackbarService _snackbarService;
     private readonly SoundService _soundService;
 
@@ -53,12 +54,13 @@ public partial class SettingsViewModel : ViewModelValidatableBase
     private IDialogStorageFile _soundFile;
 
     public SettingsViewModel(PoeTradeApiService poeTradeApiService, ServiceState serviceState,
-        ISnackbarService snackbarService, IDialogService dialogService, SoundService soundService)
+        ISnackbarService snackbarService, IDialogService dialogService, SoundService soundService, LeagueService leagueService)
     {
         _serviceState = serviceState;
         _snackbarService = snackbarService;
         _dialogService = dialogService;
         _soundService = soundService;
+        _leagueService = leagueService;
         _poeTradeApiService = poeTradeApiService;
 
         if (!string.IsNullOrEmpty(UserSettings.Default.Session))
@@ -181,6 +183,12 @@ public partial class SettingsViewModel : ViewModelValidatableBase
             }
 
             UserSettings.Default.Session = sessValue;
+            _serviceState.Session = UserSettings.Default.Session;
+        }
+
+        if (!_leagueService.IsLoaded)
+        {
+            await _leagueService.LoadActualLeagueNamesAsync();
         }
 
         UserSettings.Default.HideIfPoeUnfocused = IsHide;

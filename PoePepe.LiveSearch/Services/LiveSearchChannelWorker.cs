@@ -6,6 +6,9 @@ using Serilog;
 
 namespace PoePepe.LiveSearch.Services;
 
+/// <summary>
+/// Represents a worker class for live search channel.
+/// </summary>
 public class LiveSearchChannelWorker : IDisposable, IAsyncDisposable
 {
     private readonly IOrderRepository _orderRepository;
@@ -20,16 +23,26 @@ public class LiveSearchChannelWorker : IDisposable, IAsyncDisposable
         _orderRepository = orderRepository;
     }
 
+    /// <summary>
+    /// Disposes the timer asynchronously.
+    /// </summary>
+    /// <returns>A task that represents the asynchronous dispose operation.</returns>
     public async ValueTask DisposeAsync()
     {
         if (_timer != null) await _timer.DisposeAsync();
     }
 
+    /// <summary>
+    /// Performs application-defined tasks associated with freeing unmanaged resources.
+    /// </summary>
     public void Dispose()
     {
         _timer?.Dispose();
     }
 
+    /// <summary>
+    /// Stops the receiving of searched items from the channel.
+    /// </summary>
     public void Stop()
     {
         _timer.Change(Timeout.Infinite, Timeout.Infinite);
@@ -40,6 +53,10 @@ public class LiveSearchChannelWorker : IDisposable, IAsyncDisposable
 
     }
 
+    /// <summary>
+    /// Starts receiving items from the channel of searched items.
+    /// </summary>
+    /// <param name="token">The cancellation token to stop receiving items.</param>
     public void Start(CancellationToken token)
     {
         Log.Information("Started receiving from channel of searched items");
@@ -60,6 +77,11 @@ public class LiveSearchChannelWorker : IDisposable, IAsyncDisposable
         }, token), null, TimeSpan.Zero, TimeSpan.FromMilliseconds(1000));
     }
 
+    /// <summary>
+    /// Receives searched items asynchronously.
+    /// </summary>
+    /// <param name="token">Cancellation token to stop the operation.</param>
+    /// <returns>A task representing the asynchronous operation.</returns>
     private async Task ReceiveSearchedItemsAsync(CancellationToken token)
     {
         try
@@ -90,6 +112,12 @@ public class LiveSearchChannelWorker : IDisposable, IAsyncDisposable
         }
     }
 
+    /// <summary>
+    /// Process a batch of items asynchronously.
+    /// </summary>
+    /// <param name="batch">The list of items to process.</param>
+    /// <param name="token">A cancellation token to stop the process if needed.</param>
+    /// <returns>A Task representing the asynchronous operation.</returns>
     private async Task ProcessItemsAsync(List<ItemLiveResponse> batch, CancellationToken token)
     {
         try
@@ -126,6 +154,11 @@ public class LiveSearchChannelWorker : IDisposable, IAsyncDisposable
         }
     }
 
+    /// <summary>
+    /// Waits for all the tasks in a list of ValueTask objects to complete.
+    /// </summary>
+    /// <param name="tasks">The list of ValueTask objects to wait for.</param>
+    /// <returns>A ValueTask representing the asynchronous operation.</returns>
     public static async ValueTask WhenAll(List<ValueTask> tasks)
     {
         ArgumentNullException.ThrowIfNull(tasks);

@@ -46,6 +46,8 @@ public partial class LiveSearch : INavigableView<LiveSearchViewModel>
         ViewModel.DialogControl.ButtonLeftClick += DialogControlOnButtonRightClick;
 
         ViewModel.FilteredOrdersChanged += OrderAdded;
+
+        LeagueNameComboBox.ItemsSource = _leagueService.ActualLeagueNames;
     }
 
     private void OrderAdded(object sender, EventArgs e)

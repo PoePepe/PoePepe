@@ -21,25 +21,6 @@ If you enjoy PoePepe. Support us on <a href="https://www.patreon.com/PoePepe">Pa
       
 </p>
 
-
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 <h1>
   What can it do?
 </h1>
@@ -53,7 +34,7 @@ If you enjoy PoePepe. Support us on <a href="https://www.patreon.com/PoePepe">Pa
 </h1>
 <ul dir="auto">
   <li>Install and run the latest portable <a href="/nosleepda/PoePepe/releases">release</a>.</li>
-  <li>Add your <a href="https://github.com/Stickymaddness/Procurement/wiki/SessionID">Session ID</a> in the Settings tab.</li>
+  <li>Add your <a href="https://github.com/PoePepe/PoePepe/wiki/SessionID">Session ID</a> in the Settings tab.</li>
 </ul>
 <h1>
   Common Problems 

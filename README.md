@@ -1,3 +1,4 @@
+<meta name="google-site-verification" content="ruLLNqp9tcm6bpMFZAbv1Hx6zvRRjSPct20KWu_Bwzw" />
 <p align="center">
    <img src="https://github.com/PoePepe/PoePepe/blob/main/Poe.UIW/Resources/Icons/logo.png" width="150" height="150">
 </p>

@@ -14,6 +14,7 @@ namespace PoePepe.UI.Services;
 public class LeagueService
 {
     public EventHandler LeagueNamesLoaded;
+    public EventHandler LeagueNamesLoadFailed;
     public string[] ActualLeagueNames { get; set; } = { "Standard", "Hardcore", "SSF Standard", "Ancestor" };
 
     public async Task LoadActualLeagueNamesAsync(CancellationToken cancellationToken = default)
@@ -22,6 +23,9 @@ public class LeagueService
         if (!response.IsSuccess)
         {
             Log.Error("Failed to load actual league names. {ErrorMessage}", response.ErrorMessage);
+
+            LeagueNamesLoadFailed?.Invoke(this, EventArgs.Empty);
+
             return;
         }
 

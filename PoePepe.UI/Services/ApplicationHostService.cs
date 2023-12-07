@@ -18,7 +18,6 @@ public class ApplicationHostService
     private readonly INavigationService _navigationService;
     private readonly IPageService _pageService;
     private readonly IServiceProvider _serviceProvider;
-    private readonly ITaskBarService _taskBarService;
     private AlwaysOnTopView _alwaysOnTopView;
 
     private INavigationWindow _navigationWindow;
@@ -26,15 +25,11 @@ public class ApplicationHostService
     public ApplicationHostService(
         IServiceProvider serviceProvider,
         INavigationService navigationService,
-        IPageService pageService,
-        ITaskBarService taskBarService
-    )
+        IPageService pageService)
     {
-        // If you want, you can do something with these services at the beginning of loading the application.
         _serviceProvider = serviceProvider;
         _navigationService = navigationService;
         _pageService = pageService;
-        _taskBarService = taskBarService;
     }
 
     /// <summary>
@@ -51,14 +46,18 @@ public class ApplicationHostService
         _alwaysOnTopView.Show();
 
         var serviceState = App.Current.Services.GetRequiredService<ServiceState>();
-        serviceState.Session = UserSettings.Default.Session;
         serviceState.LeagueName = UserSettings.Default.LeagueName;
 
-        var leagueService = App.Current.Services.GetRequiredService<LeagueService>();
-        ThreadPool.QueueUserWorkItem(async _ =>
+        if (!string.IsNullOrEmpty(UserSettings.Default.Session))
         {
-            await leagueService.LoadActualLeagueNamesAsync(cancellationToken);
-        });
+            serviceState.Session = UserSettings.Default.Session;
+
+            var leagueService = App.Current.Services.GetRequiredService<LeagueService>();
+            ThreadPool.QueueUserWorkItem(async _ =>
+            {
+                await leagueService.LoadActualLeagueNamesAsync(cancellationToken);
+            });
+        }
     }
 
     /// <summary>
@@ -80,14 +79,6 @@ public class ApplicationHostService
             _navigationWindow = _serviceProvider.GetService<INavigationWindow>();
             _navigationWindow!.ShowWindow();
         }
-
-        // var notifyIconManager = _serviceProvider.GetService<INotifyIconService>();
-        //
-        // if (!notifyIconManager!.IsRegistered)
-        // {
-        //     notifyIconManager!.SetParentWindow(_navigationWindow as Window);
-        //     notifyIconManager.Register();
-        // }
     }
 
     private void PrepareNavigation()

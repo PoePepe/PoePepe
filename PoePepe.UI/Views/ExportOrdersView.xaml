@@ -80,6 +80,7 @@
                 FontWeight="Medium"
                 Command="{Binding ExportToFileCommand}" />
         </StackPanel>
+        
         <StackPanel Grid.Row="2" Margin="20 0 20 15">
 
             <!-- Close -->

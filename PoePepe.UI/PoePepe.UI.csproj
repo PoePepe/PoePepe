@@ -28,6 +28,8 @@
     </ItemGroup>
 
     <ItemGroup>
+        <Resource Include="Resources\Icons\patreon.png" />
+        <Resource Include="Resources\Icons\discord.png" />
         <Resource Include="Resources\Images\divinationCard.png" />
         <Resource Include="Resources\Images\socket.png" />
         <Resource Include="Resources\Images\veiled_mod.png" />

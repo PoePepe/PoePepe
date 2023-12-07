@@ -1,5 +1,6 @@
+<meta name="google-site-verification" content="ruLLNqp9tcm6bpMFZAbv1Hx6zvRRjSPct20KWu_Bwzw" />
 <p align="center">
-  <img src="https://github.com/nosleepda/PoePepe/blob/master/Poe.UIW/Resources/Icons/logo.png" width="150" height="150">
+   <img src="https://github.com/PoePepe/PoePepe/blob/main/Poe.UIW/Resources/Icons/logo.png" width="150" height="150">
 </p>
 <h1>
   PoePepe 
@@ -9,8 +10,18 @@
 </p>
 
 <p>
-If you enjoy PoePepe. Support us on Patreon with just $2 a month. Your support keeps PoePepe strong!
+If you enjoy PoePepe. Support us on <a href="https://www.patreon.com/PoePepe">Patreon</a> with just $3 a month. Your support keeps PoePepe strong!
 </p>
+<p align="center">
+   
+   <a href="https://discord.gg/enMrbEZb" target="_blank" rel="nofollow" style="text-decoration: none;">
+   <img src="https://github.com/PoePepe/PoePepe/assets/152653866/56af7a6c-3b1e-4f3a-93cc-9818f85fa2b7" width="80" height="80"   style="max-width: 100%;">     </a>
+   <a href="https://www.patreon.com/PoePepe">
+  <img src="https://github.com/PoePepe/PoePepe/assets/152653866/a5fcf83d-f46a-4eaa-890c-49531ebab9d8" width="80" height="80">
+      </a>
+      
+</p>
+
 <h1>
   What can it do?
 </h1>
@@ -24,7 +35,7 @@ If you enjoy PoePepe. Support us on Patreon with just $2 a month. Your support k
 </h1>
 <ul dir="auto">
   <li>Install and run the latest portable <a href="/nosleepda/PoePepe/releases">release</a>.</li>
-  <li>Add your <a href="https://github.com/Stickymaddness/Procurement/wiki/SessionID">Session ID</a> in the Settings tab.</li>
+  <li>Add your <a href="https://github.com/PoePepe/PoePepe/wiki/SessionID">Session ID</a> in the Settings tab.</li>
 </ul>
 <h1>
   Common Problems 
@@ -37,3 +48,9 @@ If you enjoy PoePepe. Support us on Patreon with just $2 a month. Your support k
     <li>Your Session ID might change. Keep it valid. Logging in and out refreshes your session ID.</li>
     <li>You can only have 20 connections at once. It's a limit on <code>pathofexile.com/trade</code>, and you can't have more in your browser either.</li>
 </ul>
+<h1>
+  Tags
+</h1
+<p>
+  Path of exile, live search,livesearch, poe tool,poe live search manager,pepe.
+</p>

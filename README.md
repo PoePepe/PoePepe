@@ -1,6 +1,6 @@
 <meta name="google-site-verification" content="ruLLNqp9tcm6bpMFZAbv1Hx6zvRRjSPct20KWu_Bwzw" />
 <p align="center">
-   <img src="https://github.com/PoePepe/PoePepe/assets/152653866/b0efd795-df7a-4e69-a332-b6276440f4a3" width="150" height="150">
+   <img src="https://github.com/PoePepe/PoePepe/assets/152653866/28fe2466-a574-44cb-97e2-a65e638f6b21" width="150" height="150">
 </p>
 <h1>
   PoePepe 

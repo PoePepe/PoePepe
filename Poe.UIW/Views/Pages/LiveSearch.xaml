@@ -27,11 +27,11 @@
             </Grid.RowDefinitions>
 
             <!-- Action buttons -->
-            <Grid Margin="0 25 0 0">
+            <Grid Margin="0 25 0 20">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="Life Search"
                                HorizontalAlignment="Left"
-                               Margin="0 0 25 20"
+                               Margin="0 0 25 0"
                                FontSize="25"
                                FontWeight="SemiBold" />
                     <ComboBox MaxWidth="200"
@@ -40,6 +40,15 @@
                               x:Name="LeagueNameComboBox"
                               SelectionChanged="LeagueNameComboBox_OnSelectionChanged"
                               SelectedValue="{Binding Source={x:Static properties:UserSettings.Default}, Path=LeagueName}" />
+
+                    <ui:SymbolIcon Symbol="QuestionCircle16"
+                                   Margin="1 0 0 0"
+                                   FontSize="22"
+                                   VerticalAlignment="Center"
+                                   ToolTip="Select to change league for all LifeSearches."
+                                   HorizontalAlignment="Center">
+                        
+                    </ui:SymbolIcon>
                 </StackPanel>
 
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">

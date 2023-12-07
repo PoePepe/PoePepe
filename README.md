@@ -47,3 +47,9 @@ If you enjoy PoePepe. Support us on <a href="https://www.patreon.com/PoePepe">Pa
     <li>Your Session ID might change. Keep it valid. Logging in and out refreshes your session ID.</li>
     <li>You can only have 20 connections at once. It's a limit on <code>pathofexile.com/trade</code>, and you can't have more in your browser either.</li>
 </ul>
+<h1>
+  Tags
+</h1
+<p>
+  Path of exile, live search,livesearch, poe tool,poe live search manager,pepe.
+</p>

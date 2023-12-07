@@ -61,7 +61,11 @@ public partial class SettingsViewModel : ViewModelValidatableBase
         _soundService = soundService;
         _poeTradeApiService = poeTradeApiService;
 
-        PoeSessionId = UserSettings.Default.Session[10..];
+        if (!string.IsNullOrEmpty(UserSettings.Default.Session))
+        {
+            PoeSessionId = UserSettings.Default.Session[10..];
+        }
+
         IsHide = UserSettings.Default.HideIfPoeUnfocused;
         PlayNotificationSound = UserSettings.Default.PlayNotificationSound;
 

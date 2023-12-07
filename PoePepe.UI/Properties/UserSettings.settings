@@ -5,7 +5,7 @@
   </Profiles>
   <Settings>
     <Setting Name="Session" Type="System.String" Scope="User">
-      <Value Profile="(Default)">POESESSID=f1fd821495aee1b1630d4027ee16bbc7</Value>
+      <Value Profile="(Default)" />
     </Setting>
     <Setting Name="LeagueName" Type="System.String" Scope="User">
       <Value Profile="(Default)">Standard</Value>

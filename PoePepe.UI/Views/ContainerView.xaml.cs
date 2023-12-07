@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using PoePepe.UI.Properties;
+using PoePepe.UI.Services;
 using PoePepe.UI.ViewModels;
 using Wpf.Ui.Common;
 using Wpf.Ui.Controls.Interfaces;
@@ -14,6 +15,7 @@ namespace PoePepe.UI.Views;
 
 public partial class ContainerView : INavigationWindow
 {
+    private readonly ISnackbarService _snackbarService;
     private bool _isTrayClose;
 
     public ContainerView()
@@ -24,15 +26,17 @@ public partial class ContainerView : INavigationWindow
         INavigationService navigationService,
         IPageService pageService,
         IDialogService dialogService,
-        ISnackbarService snackbarService)
+        ISnackbarService snackbarService, LeagueService leagueService)
     {
+        _snackbarService = snackbarService;
         ViewModel = viewModel;
         DataContext = this;
+        leagueService.LeagueNamesLoadFailed += LeagueNamesLoadFailed;
 
         InitializeComponent();
 
         SetPageService(pageService);
-        snackbarService.SetSnackbarControl(RootSnackbar);
+        _snackbarService.SetSnackbarControl(RootSnackbar);
 
         navigationService.SetNavigationControl(RootNavigation);
         dialogService.SetDialogControl(RootDialogYesNo);
@@ -40,6 +44,21 @@ public partial class ContainerView : INavigationWindow
         Loaded += OnLoaded;
         Closing += OnClosing;
         IsVisibleChanged += OnIsVisibleChanged;
+    }
+
+    private void LeagueNamesLoadFailed(object sender, EventArgs e)
+    {
+        Dispatcher.Invoke(() =>
+        {
+            _snackbarService.Show(
+                "Update your Poe session id!",
+                "",
+                SymbolRegular.Alert24,
+                ControlAppearance.Caution
+            );
+
+            Navigate(typeof(Pages.Settings));
+        });
     }
 
     public ContainerViewModel ViewModel { get; }
@@ -75,9 +94,22 @@ public partial class ContainerView : INavigationWindow
         {
             Dispatcher.Invoke(() =>
             {
+                var startViewType = typeof(Pages.LiveSearch);
+                if (string.IsNullOrEmpty(UserSettings.Default.Session))
+                {
+                    _snackbarService.Show(
+                        "Update your Poe session id!",
+                        "",
+                        SymbolRegular.Alert24,
+                        ControlAppearance.Caution
+                    );
+
+                    startViewType = typeof(Pages.Settings);
+                }
+
                 RootMainGrid.Visibility = Visibility.Visible;
 
-                Navigate(typeof(Pages.LiveSearch));
+                Navigate(startViewType);
             });
         });
     }

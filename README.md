@@ -1,6 +1,6 @@
 <meta name="google-site-verification" content="ruLLNqp9tcm6bpMFZAbv1Hx6zvRRjSPct20KWu_Bwzw" />
 <p align="center">
-   <img src="https://github.com/PoePepe/PoePepe/blob/main/Poe.UIW/Resources/Icons/logo.png" width="150" height="150">
+   <img src="https://github.com/PoePepe/PoePepe/assets/152653866/28fe2466-a574-44cb-97e2-a65e638f6b21" width="150" height="150">
 </p>
 <h1>
   PoePepe 
@@ -34,7 +34,7 @@ If you enjoy PoePepe. Support us on <a href="https://www.patreon.com/PoePepe">Pa
   How to start
 </h1>
 <ul dir="auto">
-  <li>Install and run the latest portable <a href="/nosleepda/PoePepe/releases">release</a>.</li>
+  <li>Install and run the latest portable <a href="https://github.com/PoePepe/PoePepe/releases">release</a>.</li>
   <li>Add your <a href="https://github.com/PoePepe/PoePepe/wiki/SessionID">Session ID</a> in the Settings tab.</li>
 </ul>
 <h1>

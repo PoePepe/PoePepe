@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -131,4 +132,24 @@ public partial class ContainerView : INavigationWindow
     public void CloseWindow() => Close();
 
     #endregion INavigationWindow methods
+
+    private void ButtonPatreon_OnClick(object sender, RoutedEventArgs e)
+    {
+        Process.Start(new ProcessStartInfo
+        {
+            FileName = "https://www.patreon.com/PoePepe",
+            UseShellExecute = true
+        });
+        e.Handled = true;
+    }
+
+    private void ButtonDiscord_OnClick(object sender, RoutedEventArgs e)
+    {
+        Process.Start(new ProcessStartInfo
+        {
+            FileName = "https://discord.com/invite/enMrbEZb",
+            UseShellExecute = true
+        });
+        e.Handled = true;
+    }
 }

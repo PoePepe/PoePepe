@@ -19,11 +19,6 @@
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d"
     DataContext="{Binding Source={StaticResource Locator}, Path=ContainerView}">
-    
-
-    <!--
-        So far Visual Studio has been very reluctant to accept the default window styles.
-    -->
 
     <Grid>
         <Grid.RowDefinitions>
@@ -39,8 +34,7 @@
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-        
-            <!--  This is the main navigation of the application.  -->
+
             <ui:NavigationStore
                 x:Name="RootNavigation"
                 Grid.Column="0"
@@ -61,9 +55,11 @@
                 </ui:NavigationStore.Items>
                 <ui:NavigationStore.Footer>
                     <ui:NavigationItem Content="Discord"
-                                       Image="/Resources/Icons/discord.png" />
+                                       Image="/Resources/Icons/discord.png"
+                                       Click="ButtonDiscord_OnClick" />
                     <ui:NavigationItem Content="Patreon"
-                                        Image="/Resources/Icons/patreon.png" />
+                                       Image="/Resources/Icons/patreon.png"
+                                       Click="ButtonPatreon_OnClick" />
                     <ui:NavigationItem
                         Content="Settings"
                         Icon="Settings24"
@@ -74,7 +70,7 @@
                         Click="NavigationButtonAlert_OnClick"/>
                 </ui:NavigationStore.Footer>
             </ui:NavigationStore>
-            <!--  We display our pages inside this element.  -->
+
             <Border
                 Grid.Column="1"
                 Background="{DynamicResource ControlFillColorDefaultBrush}"
@@ -85,13 +81,6 @@
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
                     <Frame x:Name="RootFrame" Grid.Row="1" />
-                    <!-- <ui:Breadcrumb -->
-                    <!--     Grid.Row="0" -->
-                    <!--     Margin="18" -->
-                    <!--     HorizontalAlignment="Left" -->
-                    <!--     VerticalAlignment="Top" -->
-                    <!--     FontSize="24" -->
-                    <!--     Navigation="{Binding ElementName=RootNavigation}" /> -->
 
                     <ui:Snackbar
                         x:Name="RootSnackbar"
@@ -104,48 +93,20 @@
             </Border>
         </Grid>
 
-
-        <!--
-        <ui:NavigationView Grid.Row="1" Type="Compact" />
-        -->
-
-        <!--  Dialogue is above all controls except the navigation buttons. So it covers all the content, but allows you to close or move the application.  -->
-        <!-- <ui:Dialog -->
-        <!--     x:Name="RootDialog" -->
-        <!--     Title="WPF UI" -->
-        <!--     Grid.Row="0" -->
-        <!--     Grid.RowSpan="2" -->
-        <!--     ButtonLeftName="Click me if you can!" /> -->
-
-        <!--
-            For debugging the focus and the keyboard navigation,
-            please make this view visible.
-        -->
-
-        <!--  The title bar contains window navigation elements and some Tray related extras.  -->
-        <!--  You can put additional controls in the header, such as a search bar.  -->
-        <!--  <ui:TitleBar.Header />  -->
-
-        <!--
-            ButtonsForeground="Aqua"
-            Foreground="Red"
-        -->
-        
         <ui:NotifyIcon
             Grid.Row="0"
-            
+
             FocusOnLeftClick="True"
             Icon="pack://application:,,,/Resources/Icons/logo.png"
             MenuOnRightClick="True"
             TooltipText="PoePepe">
-            
+
             <ui:NotifyIcon.Menu>
                 <ContextMenu>
                 </ContextMenu>
             </ui:NotifyIcon.Menu>
         </ui:NotifyIcon>
-        
-        
+
         <ui:Dialog
             x:Name="RootDialogYesNo"
             Title="WPF UI"

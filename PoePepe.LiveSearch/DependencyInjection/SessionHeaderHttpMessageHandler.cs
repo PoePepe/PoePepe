@@ -21,7 +21,7 @@ public class SessionHeaderHttpMessageHandler : DelegatingHandler
         var requestPath = request.RequestUri.PathAndQuery;
         if (requestPath.StartsWith(PoeApiPath.ApiPathWhisper) || requestPath.StartsWith(PoeApiPath.ApiPathFetch) || requestPath.StartsWith(PoeApiPath.ApiPathSearch) || requestPath.StartsWith(PoeApiPath.ApiPathLeague))
         {
-            if (!request.Headers.Contains(CookieHeaderName))
+            if (!request.Headers.Contains(CookieHeaderName) && !string.IsNullOrWhiteSpace(_serviceState.Session))
             {
                 request.Headers.Add(CookieHeaderName, _serviceState.Session);
             }

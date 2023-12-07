@@ -7,18 +7,57 @@ using Serilog;
 
 namespace PoePepe.LiveSearch.WebSocket;
 
+/// <summary>
+/// Represents a WebSocket client for live searching in the Path of Exile game.
+/// </summary>
 public class LiveSearcherWebSocketClient : IDisposable
 {
+    /// <summary>
+    /// Represents a client-side WebSocket connection.
+    /// </summary>
     private readonly ClientWebSocket _clientWebSocket;
+
+    /// <summary>
+    /// Represents the order object.
+    /// </summary>
     private readonly Order _order;
+
+    /// <summary>
+    /// Holds the options for interacting with the Path of Exile API.
+    /// </summary>
     private readonly PoeApiOptions _poeApiOptions;
+
+    /// <summary>
+    /// Represents the current state of the service.
+    /// </summary>
     private readonly ServiceState _serviceState;
+
+    /// <summary>
+    /// Represents the current state of the connection.
+    /// </summary>
     private bool _isConnected;
 
+    /// <summary>
+    /// Event raised when the connection is established.
+    /// </summary>
     public EventHandler OnConnected;
+
+    /// <summary>
+    /// Event that is raised when a connection attempt fails.
+    /// </summary>
     public EventHandler OnConnectionFailed;
+
+    /// <summary>
+    /// Occurs when the order processing fails.
+    /// </summary>
     public EventHandler<OrderProcessingFailedEventArgs> OnProcessingFailed;
 
+    /// <summary>
+    /// Initializes a new instance of the LiveSearcherWebSocketClient class.
+    /// </summary>
+    /// <param name="order">The Order object.</param>
+    /// <param name="poeApiOptions">The PoeApiOptions object.</param>
+    /// <param name="serviceState">The ServiceState object.</param>
     public LiveSearcherWebSocketClient(Order order, PoeApiOptions poeApiOptions, ServiceState serviceState)
     {
         _poeApiOptions = poeApiOptions;
@@ -30,13 +69,26 @@ public class LiveSearcherWebSocketClient : IDisposable
         SetHeaders();
     }
 
+    /// <summary>
+    /// Disposes the client WebSocket if it is not null.
+    /// </summary>
     public void Dispose()
     {
         _clientWebSocket?.Dispose();
     }
 
+    /// <summary>
+    /// Tries to establish a connection asynchronously.
+    /// </summary>
+    /// <param name="token">Cancellation token to cancel the operation.</param>
+    /// <returns>A task representing the asynchronous operation. The task result contains a boolean indicating whether the connection was successfully established.</returns>
     public Task<bool> TryConnectAsync(CancellationToken token = default) => ConnectCoreAsync(token);
 
+    /// <summary>
+    /// Initiates an asynchronous connection attempt.
+    /// </summary>
+    /// <param name="token">The token to monitor for cancellation requests.</param>
+    /// <returns>A task that represents the asynchronous connection attempt. The task result indicates whether the connection attempt was successful or not.</returns>
     public async Task<bool> ConnectAsync(CancellationToken token = default)
     {
         for (var retryCount = 1; retryCount < 4; retryCount++)
@@ -60,6 +112,11 @@ public class LiveSearcherWebSocketClient : IDisposable
         return false;
     }
 
+    /// <summary>
+    /// Starts receiving data asynchronously from the web socket for the specified order.
+    /// </summary>
+    /// <param name="token">The cancellation token to stop receiving data.</param>
+    /// <returns>A task representing the asynchronous operation.</returns>
     public async Task StartReceiveAsync(CancellationToken token)
     {
         if (!_isConnected)
@@ -113,6 +170,9 @@ public class LiveSearcherWebSocketClient : IDisposable
         }
     }
 
+    /// <summary>
+    /// Sets the headers for the client WebSocket connection.
+    /// </summary>
     private void SetHeaders()
     {
         _clientWebSocket.Options.SetRequestHeader("Cookie", _serviceState.Session);
@@ -121,6 +181,14 @@ public class LiveSearcherWebSocketClient : IDisposable
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36");
     }
 
+    /// <summary>
+    /// Connects to the web socket asynchronously.
+    /// </summary>
+    /// <param name="token">Optional cancellation token (default is <see cref="CancellationToken.None" />).</param>
+    /// <returns>
+    /// Returns a task that represents the asynchronous connection operation. The task will return <c>true</c> if the connection was successful,
+    /// otherwise <c>false</c>.
+    /// </returns>
     private async Task<bool> ConnectCoreAsync(CancellationToken token = default)
     {
         var uri = new Uri($"{_poeApiOptions.BaseWssAddress}/{_serviceState.LeagueName}/{_order.QueryHash}");
@@ -172,6 +240,14 @@ public class LiveSearcherWebSocketClient : IDisposable
         return false;
     }
 
+    /// <summary>
+    /// Processes the received message by deserializing the message stream into a LiveResponse object.
+    /// If the message contains a list of item IDs, it creates an ItemLiveResponse for each ID and writes it to a channel.
+    /// Finally, it disposes the message stream.
+    /// </summary>
+    /// <param name="messageStream">The stream that contains the message to be processed.</param>
+    /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
+    /// <returns>A task representing the asynchronous operation.</returns>
     private async Task ProcessReceivedMessageAsync(Stream messageStream, CancellationToken cancellationToken)
     {
         var message =

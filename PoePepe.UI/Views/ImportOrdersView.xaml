@@ -64,7 +64,7 @@
                             Text="{Binding ImportText, Mode=TwoWay}" />
 
                 <StackPanel
-                    Visibility="{Binding Path=HasValidationErrors, Converter={StaticResource BooleanToVisibilityConverter}}"
+                    Visibility="{Binding Path=HasValidationErrors, Converter={StaticResource BooleanToHiddenVisibilityConverter}}"
                     Orientation="Horizontal"
                     Margin="0 1 0 0 ">
                     <ui:SymbolIcon Symbol="ErrorCircle12"

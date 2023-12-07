@@ -6,6 +6,9 @@ using Serilog;
 
 namespace PoePepe.LiveSearch.Services;
 
+/// <summary>
+/// Represents a worker class responsible for starting orders and performing search operations.
+/// </summary>
 public class OrderStartSearchWorker
 {
     private readonly PoeApiOptions _poeApiOptions;
@@ -15,12 +18,21 @@ public class OrderStartSearchWorker
 
     private Timer _timer;
 
+    /// <summary>
+    /// Constructs a new instance of the OrderStartSearchWorker class.
+    /// </summary>
+    /// <param name="serviceState">The service state.</param>
+    /// <param name="poeApiOptions">The PoE API options.</param>
     public OrderStartSearchWorker(ServiceState serviceState, IOptions<PoeApiOptions> poeApiOptions)
     {
         _serviceState = serviceState;
         _poeApiOptions = poeApiOptions.Value;
     }
 
+    /// <summary>
+    /// Starts the process of processing orders.
+    /// </summary>
+    /// <param name="token">The cancellation token that can be used to cancel the operation.</param>
     public void Start(CancellationToken token = default)
     {
         _timer = new Timer(_ => Task.Run(async () => await TryStartWork(token), token), null, Timeout.Infinite,
@@ -57,6 +69,11 @@ public class OrderStartSearchWorker
         }, token);
     }
 
+    /// <summary>
+    /// Tries to start the work of connecting orders.
+    /// </summary>
+    /// <param name="token">The cancellation token to cancel the async operation.</param>
+    /// <returns>A task representing the asynchronous operation.</returns>
     private async Task TryStartWork(CancellationToken token = default)
     {
         Log.Information("Trying to restart orders connecting...");
@@ -67,6 +84,11 @@ public class OrderStartSearchWorker
         }
     }
 
+    /// <summary>
+    /// Adds a live search order asynchronously.
+    /// </summary>
+    /// <param name="order">The order to add.</param>
+    /// <returns>Returns true if the order was successfully added, otherwise false.</returns>
     private async Task<bool> AddLiveSearchOrderAsync(Order order)
     {
         if (_serviceState.LiveSearches.ContainsKey(order.Id))
@@ -119,6 +141,11 @@ public class OrderStartSearchWorker
         return true;
     }
 
+    /// <summary>
+    /// Handles the event when order processing fails.
+    /// </summary>
+    /// <param name="sender">The object that raised the event.</param>
+    /// <param name="e">The OrderProcessingFailedEventArgs containing information about the failed order processing.</param>
     private void OnProcessingFailed(object sender, OrderProcessingFailedEventArgs e)
     {
         if (!_serviceState.LiveSearches.TryRemove(e.OrderId, out var data))

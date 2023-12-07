@@ -6,6 +6,9 @@ using Serilog;
 
 namespace PoePepe.LiveSearch.Services.RateLimiter;
 
+/// <summary>
+/// Represents an HTTP message handler that applies rate limiting to outgoing requests.
+/// </summary>
 public class RateLimiterHttpMessageHandler : DelegatingHandler
 {
     private static readonly SemaphoreSlim SemaphoreSlim = new(1, 1);
@@ -16,6 +19,12 @@ public class RateLimiterHttpMessageHandler : DelegatingHandler
         _rateLimiterState = rateLimiterState;
     }
 
+    /// <summary>
+    /// Sends an HTTP request asynchronously.
+    /// </summary>
+    /// <param name="request">The HTTP request message to send.</param>
+    /// <param name="cancellationToken">The cancellation token to cancel operation.</param>
+    /// <returns>A task that represents the asynchronous send operation. The task result contains the HTTP response message.</returns>
     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,
         CancellationToken cancellationToken)
     {
@@ -52,6 +61,15 @@ public class RateLimiterHttpMessageHandler : DelegatingHandler
         return await base.SendAsync(request, cancellationToken);
     }
 
+    /// <summary>
+    /// Sends an HTTP request and handles rate limiting, if applicable.
+    /// </summary>
+    /// <param name="request">The HTTP request message to send.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>
+    /// An HTTP response message.
+    /// If rate limiting is active, it returns a 429 Too Many Requests response if the limit is reached.
+    /// </returns>
     private async Task<HttpResponseMessage> CoreSendAsync(HttpRequestMessage request,
         CancellationToken cancellationToken)
     {
@@ -89,6 +107,14 @@ public class RateLimiterHttpMessageHandler : DelegatingHandler
         return response;
     }
 
+    /// <summary>
+    /// Checks if the specified request is rate limited and retrieves the associated policy name.
+    /// </summary>
+    /// <param name="request">The HTTP request message to check for rate limiting.</param>
+    /// <param name="policyName">The name of the rate limit policy associated with the request.</param>
+    /// <returns>
+    /// <c>true</c> if the request is rate limited; otherwise, <c>false</c>.
+    /// </returns>
     private bool IsRateLimited(HttpRequestMessage request, out string policyName)
     {
         policyName = null;
@@ -114,6 +140,12 @@ public class RateLimiterHttpMessageHandler : DelegatingHandler
         return policyName != null;
     }
 
+    /// <summary>
+    /// Waits for a specified delay if it's greater than zero.
+    /// </summary>
+    /// <param name="policy">The <see cref="RateLimiterPolicyState"/> which represents the rate limiter policy state.</param>
+    /// <param name="delay">The delay to wait for.</param>
+    /// <returns>A task representing the asynchronous operation.</returns>
     private Task WaitForLimitAsync(RateLimiterPolicyState policy, TimeSpan delay)
     {
         if (delay == TimeSpan.Zero)
@@ -132,6 +164,11 @@ public class RateLimiterHttpMessageHandler : DelegatingHandler
         return Task.Delay(delay);
     }
 
+    /// <summary>
+    /// Calculates the delay time based on the rate limiter policy state.
+    /// </summary>
+    /// <param name="policy">The rate limiter policy state.</param>
+    /// <returns>The delay time as a TimeSpan.</returns>
     private TimeSpan GetDelayFromRule(RateLimiterPolicyState policy)
     {
         var now = DateTime.Now;
@@ -151,6 +188,12 @@ public class RateLimiterHttpMessageHandler : DelegatingHandler
         return GetDelayFromRule(now, policy);
     }
 
+    /// <summary>
+    /// Calculates the delay based on the given rate limiter policy state.
+    /// </summary>
+    /// <param name="now">The current date and time.</param>
+    /// <param name="policy">The rate limiter policy state.</param>
+    /// <returns>The maximum delay that needs to be imposed based on the policy rules.</returns>
     private TimeSpan GetDelayFromRule(DateTime now, RateLimiterPolicyState policy)
     {
         var maxTimeToWait = TimeSpan.Zero;
@@ -183,6 +226,16 @@ public class RateLimiterHttpMessageHandler : DelegatingHandler
         return maxTimeToWait != TimeSpan.Zero ? maxTimeToWait : TimeSpan.Zero;
     }
 
+    /// <summary>
+    /// Parses the specified headers to extract rate limit related information.
+    /// </summary>
+    /// <param name="headers">The HTTP response headers containing rate limit information.</param>
+    /// <returns>
+    /// A tuple with three elements:
+    /// - The rate limit policy name.
+    /// - The retry-after value in seconds.
+    /// - An array of rate limit rules.
+    /// </returns>
     private (string policyName, string retryAfter, string[] rules) ParseHeaders(HttpResponseHeaders headers)
     {
         string policyName = null;
@@ -209,6 +262,10 @@ public class RateLimiterHttpMessageHandler : DelegatingHandler
         return (policyName, retryAfter, rules);
     }
 
+    /// <summary>
+    /// Updates the state of the rate limiter based on the response from the requested URL.
+    /// </summary>
+    /// <param name="response">The HTTP response message.</param>
     private void UpdateRateLimiterState(HttpResponseMessage response)
     {
         var now = DateTime.Now;
@@ -254,6 +311,11 @@ public class RateLimiterHttpMessageHandler : DelegatingHandler
         }
     }
 
+    /// <summary>
+    /// Update the history of request for the given rate limiter policy state.
+    /// </summary>
+    /// <param name="policy">The rate limiter policy state to update the history of request for.</param>
+    /// <param name="now">The current date and time.</param>
     private void UpdateHistoryOfRequest(RateLimiterPolicyState policy, DateTime now)
     {
         var historyMaximumRequestCount = 0;
@@ -293,6 +355,13 @@ public class RateLimiterHttpMessageHandler : DelegatingHandler
         }
     }
 
+    /// <summary>
+    /// Updates the state of the rate limiter policy based on the provided response headers and rule names.
+    /// </summary>
+    /// <param name="headers">The HTTP response headers.</param>
+    /// <param name="policyState">The current state of the rate limiter policy.</param>
+    /// <param name="ruleNames">The names of the rate limiter rules to update.</param>
+    /// <returns>The updated rate limiter policy state.</returns>
     private RateLimiterPolicyState UpdatePolicyState(HttpResponseHeaders headers, RateLimiterPolicyState policyState,
         string[] ruleNames)
     {
@@ -341,6 +410,17 @@ public class RateLimiterHttpMessageHandler : DelegatingHandler
         return policyState;
     }
 
+    /// <summary>
+    /// Parses and returns an array of objects of type T from the given header.
+    /// </summary>
+    /// <typeparam name="T">The type of objects to parse.</typeparam>
+    /// <param name="header">The header containing the values to parse.</param>
+    /// <param name="creator">A function that creates an object of type T given the header key and values.</param>
+    /// <returns>An array of objects of type T parsed from the header.</returns>
+    /// <remarks>
+    /// The header value should be a comma-separated string, where each element is a key-value pair separated by a colon.
+    /// The creator function is responsible for creating an object of type T by giving it the header key and values.
+    /// </remarks>
     private T[] ParseFromHeader<T>(KeyValuePair<string, IEnumerable<string>> header, Func<string, string[], T> creator)
     {
         var valueOfObjects = header.Value.Single().Split(',');

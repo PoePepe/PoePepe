@@ -13,6 +13,7 @@ namespace PoePepe.UI.Services;
 
 public class LeagueService
 {
+    public bool IsLoaded { get; private set; }
     public EventHandler LeagueNamesLoaded;
     public EventHandler LeagueNamesLoadFailed;
     public string[] ActualLeagueNames { get; set; } = { "Standard", "Hardcore", "SSF Standard", "Ancestor" };
@@ -32,6 +33,8 @@ public class LeagueService
         ActualLeagueNames = response.Content.ToArray();
 
         LeagueNamesLoaded?.Invoke(this, EventArgs.Empty);
+
+        IsLoaded = true;
     }
 
     /// <summary>

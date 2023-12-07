@@ -5,6 +5,9 @@ using Serilog;
 
 namespace PoePepe.LiveSearch.Services;
 
+/// <summary>
+/// Represents a worker class for processing history items.
+/// </summary>
 public class HistoryChannelWorker
 {
     private readonly IItemHistoryRepository _itemHistoryRepository;
@@ -16,6 +19,10 @@ public class HistoryChannelWorker
         _itemHistoryRepository = itemHistoryRepository;
     }
 
+    /// <summary>
+    /// Starts processing the history order queue by reading items from the history items channel.
+    /// </summary>
+    /// <param name="token">The cancellation token used to stop the processing.</param>
     public void Start(CancellationToken token)
     {
         Task.Factory.StartNew(async () =>
@@ -42,6 +49,12 @@ public class HistoryChannelWorker
         Log.Information("Started receiving from channel of found items");
     }
 
+    /// <summary>
+    /// Processes the found items asynchronously.
+    /// </summary>
+    /// <param name="result">The FetchResponseResult containing the information about the found item.</param>
+    /// <param name="token">The cancellation token that can be used to cancel the operation.</param>
+    /// <returns>A ValueTask representing the asynchronous operation.</returns>
     private ValueTask ProcessFoundItemsAsync(FetchResponseResult result, CancellationToken token)
     {
         try

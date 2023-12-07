@@ -6,6 +6,9 @@ using Serilog;
 
 namespace PoePepe.LiveSearch.Services;
 
+/// <summary>
+/// Represents a worker class that processes found channel items.
+/// </summary>
 public class FoundChannelWorker
 {
     private readonly IOrderRepository _orderRepository;
@@ -17,6 +20,10 @@ public class FoundChannelWorker
         _orderRepository = orderRepository;
     }
 
+    /// <summary>
+    /// Starts the receiving process from the channel of found items.
+    /// </summary>
+    /// <param name="token">The cancellation token to stop the receiving process.</param>
     public void Start(CancellationToken token)
     {
         Task.Factory.StartNew(async () =>
@@ -44,6 +51,12 @@ public class FoundChannelWorker
         Log.Information("Started receiving from channel of found items");
     }
 
+    /// <summary>
+    /// Processes the found items asynchronously.
+    /// </summary>
+    /// <param name="result">The fetch response result.</param>
+    /// <param name="token">The cancellation token.</param>
+    /// <returns>A <see cref="ValueTask"/> representing the asynchronous operation.</returns>
     private ValueTask ProcessFoundItemsAsync(FetchResponseResult result, CancellationToken token)
     {
         var tasks = new List<ValueTask>();
@@ -55,6 +68,13 @@ public class FoundChannelWorker
         return WhenAll(tasks);
     }
 
+    /// <summary>
+    /// Process the found items asynchronously.
+    /// </summary>
+    /// <param name="result">The fetch response result.</param>
+    /// <param name="orderInfo">The item live response.</param>
+    /// <param name="token">The cancellation token.</param>
+    /// <returns>A <see cref="ValueTask"/> representing the asynchronous operation.</returns>
     private ValueTask ProcessFoundItemsAsync(FetchResponseResult result,  ItemLiveResponse orderInfo, CancellationToken token)
     {
         try
@@ -109,6 +129,11 @@ public class FoundChannelWorker
         }
     }
 
+    /// <summary>
+    /// Executes a collection of tasks concurrently and returns a task that represents the completion of all the tasks.
+    /// </summary>
+    /// <param name="tasks">The tasks to execute concurrently.</param>
+    /// <returns>A task representing the completion of all the tasks.</returns>
     private static async ValueTask WhenAll(params ValueTask[] tasks)
     {
         ArgumentNullException.ThrowIfNull(tasks);
@@ -123,6 +148,14 @@ public class FoundChannelWorker
         }
     }
 
+    /// <summary>
+    /// Executes multiple <see cref="ValueTask"/> instances concurrently.
+    /// </summary>
+    /// <param name="tasks">The list of <see cref="ValueTask"/> instances to execute.</param>
+    /// <returns>
+    /// A <see cref="ValueTask"/> representing the asynchronous execution of all the tasks.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="tasks"/> is null.</exception>
     private static async ValueTask WhenAll(IReadOnlyList<ValueTask> tasks)
     {
         ArgumentNullException.ThrowIfNull(tasks);

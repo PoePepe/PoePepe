@@ -4,6 +4,9 @@ using Serilog;
 
 namespace PoePepe.LiveSearch.Services;
 
+/// <summary>
+/// Represents a worker class for processing whisper requests in a channel.
+/// </summary>
 public class WhisperChannelWorker
 {
     private readonly PoeTradeApiService _poeTradeApiService;
@@ -15,6 +18,10 @@ public class WhisperChannelWorker
         _poeTradeApiService = poeTradeApiService;
     }
 
+    /// <summary>
+    /// Starts the process of receiving whisper requests from a channel.
+    /// </summary>
+    /// <param name="token">The cancellation token to stop the process.</param>
     public void Start(CancellationToken token)
     {
         Task.Factory.StartNew(async () =>
@@ -42,6 +49,12 @@ public class WhisperChannelWorker
         Log.Information("Started receiving data from channel of whisper requests");
     }
 
+    /// <summary>
+    /// Asynchronously processes a Whisper item request.
+    /// </summary>
+    /// <param name="request">The <see cref="WhisperRequestData"/> object containing the Whisper request details.</param>
+    /// <param name="token">The <see cref="CancellationToken"/> used to cancel the request.</param>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     private async Task ProcessWhisperItemAsync(WhisperRequestData request, CancellationToken token)
     {
         if (token.IsCancellationRequested || (request.CancellationTokenSource?.Token.IsCancellationRequested ?? false))

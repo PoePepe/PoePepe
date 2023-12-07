@@ -12,15 +12,44 @@
 If you enjoy PoePepe. Support us on <a href="https://www.patreon.com/PoePepe">Patreon</a> with just $3 a month. Your support keeps PoePepe strong!
 </p>
 <p align="center">
-   <a href="https://www.google.com/" style="color: black; text-decoration: underline;text-decoration-style: dotted;">custom link</a>
-
-   <a href="https://discord.gg/enMrbEZb" style="text-decoration: none;">
-   <img src="https://github.com/PoePepe/PoePepe/assets/152653866/56af7a6c-3b1e-4f3a-93cc-9818f85fa2b7" width="80" height="80">     </a>
-   &nbsp
+   
+   <a href="https://discord.gg/enMrbEZb" target="_blank" rel="nofollow" style="text-decoration: none;">
+   <img src="https://github.com/PoePepe/PoePepe/assets/152653866/56af7a6c-3b1e-4f3a-93cc-9818f85fa2b7" width="80" height="80"   style="max-width: 100%;">     </a>
    <a href="https://www.patreon.com/PoePepe">
   <img src="https://github.com/PoePepe/PoePepe/assets/152653866/a5fcf83d-f46a-4eaa-890c-49531ebab9d8" width="80" height="80">
       </a>
+      
 </p>
+
+<table align="center">
+<thead>
+<tr>
+<th><a href="https://discord.gg/enMrbEZb" target="_blank" rel="nofollow" style="text-decoration: none;">
+   <img src="https://github.com/PoePepe/PoePepe/assets/152653866/56af7a6c-3b1e-4f3a-93cc-9818f85fa2b7" width="80" height="80"   style="max-width: 100%;">     </a></th>
+<th><a href="https://www.patreon.com/PoePepe">
+  <img src="https://github.com/PoePepe/PoePepe/assets/152653866/a5fcf83d-f46a-4eaa-890c-49531ebab9d8" width="80" height="80">
+      </a></th>
+</tr>
+</thead>
+
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <h1>
   What can it do?
 </h1>

@@ -48,10 +48,9 @@
                     <ui:NavigationItem
                         Cache="True"
                         Content="Live Search"
-                        Icon="Home24"
+                        Icon="Heart24"
                         PageTag="liveSearch"
-                        PageType="{x:Type pages:LiveSearch}" />
-                    <ui:NavigationSeparator />
+                        PageType="{x:Type pages:LiveSearch}" />                    
                 </ui:NavigationStore.Items>
                 <ui:NavigationStore.Footer>
                     <ui:NavigationItem Content="Discord"
@@ -60,6 +59,7 @@
                     <ui:NavigationItem Content="Patreon"
                                        Image="/Resources/Icons/patreon.png"
                                        Click="ButtonPatreon_OnClick" />
+                    <ui:NavigationSeparator />
                     <ui:NavigationItem
                         Content="Settings"
                         Icon="Settings24"

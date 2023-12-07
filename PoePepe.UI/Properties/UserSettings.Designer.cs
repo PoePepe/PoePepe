@@ -24,7 +24,7 @@ namespace PoePepe.UI.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("POESESSID=f1fd821495aee1b1630d4027ee16bbc7")]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string Session {
             get {
                 return ((string)(this["Session"]));

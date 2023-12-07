@@ -22,12 +22,19 @@ public class SoundService
         _player = new MediaPlayer();
         _testPlayer = new MediaPlayer();
         _defaultSoundUri = new Uri("Resources/Sounds/Simple ping.mp3", UriKind.Relative);
+        _player.Volume = 0;
         _player.Open(new Uri($"Resources/Sounds/{UserSettings.Default.NotificationSoundPath}", UriKind.Relative));
+        _player.MediaOpened += PlayerOnMediaOpened;
         _player.MediaFailed += PlayerOnMediaFailed;
         _player.MediaEnded += PlayerOnMediaEnded;
 
         _testPlayer.MediaFailed += TestPlayerOnMediaFailed;
         _testPlayer.MediaEnded += PlayerOnMediaEnded;
+    }
+
+    private void PlayerOnMediaOpened(object sender, EventArgs e)
+    {
+        _player.Volume = 100;
     }
 
     public void TestPlay(string path)

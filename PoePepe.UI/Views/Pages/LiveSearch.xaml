@@ -40,8 +40,9 @@
                               SelectionChanged="LeagueNameComboBox_OnSelectionChanged"
                               SelectedValue="{Binding Source={x:Static properties:UserSettings.Default}, Path=LeagueName}" />
 
-                    <ui:SymbolIcon Symbol="QuestionCircle16"
-                                   Margin="1 0 0 0"
+                    <ui:SymbolIcon Symbol="QuestionCircle32"
+                                   Foreground="#bdbdbd"
+                                   Margin="2 0 0 0"
                                    FontSize="22"
                                    VerticalAlignment="Center"
                                    ToolTip="Select to change league for all LifeSearches."
@@ -87,16 +88,24 @@
                     </ui:Button>
                 </StackPanel>
             </Grid>
+            <StackPanel Grid.Row="1"
+                        Orientation="Horizontal"
+                        HorizontalAlignment="Left"
+                        Margin="0 10 0 20">
+                <ui:AutoSuggestBox x:Name="OrderNameAutoSuggestBox"
+                                   HorizontalAlignment="Left"
+                                   Margin="0,0,5,0"
+                                   Width="300"
+                                   MinWidth="300"
+                                   MaxWidth="300"
+                                   TextChanged="TextBoxBase_OnTextChanged"
+                                   PlaceholderText="Search by name" />
 
+            </StackPanel>
             <StackPanel Grid.Row="1" Orientation="Horizontal"
                         HorizontalAlignment="Right"
                         Margin="0 10 0 20">
-                <ui:AutoSuggestBox
-                    x:Name="OrderNameAutoSuggestBox"
-                    HorizontalAlignment="Left"
-                    Margin="0,0,5,0"
-                    TextChanged="TextBoxBase_OnTextChanged"
-                    PlaceholderText="Search by name" />
+               
 
                 <ComboBox SelectedValue="{Binding ActualSort, Mode=TwoWay}"
                           DisplayMemberPath="Description"

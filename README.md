@@ -54,4 +54,4 @@ If you enjoy PoePepe. Support us on <a href="https://www.patreon.com/PoePepe">Pa
 <p>
   Path of exile, live search,livesearch, poe tool,poe live search manager,pepe.
 </p>
-<img src="https://github.com/PoePepe/PoePepe/assets/152653866/b5000084-fbcb-4ed6-8dac-e510c9099bef"> </img>
+<img src="https://github.com/PoePepe/PoePepe/assets/152653866/8b9f2b70-27a9-445a-95d1-40a6cb5e14c5"> </img>

@@ -78,7 +78,7 @@
                 </StackPanel>
             </StackPanel>
 
-            <StackPanel Margin="0 20 0 4">
+            <StackPanel Margin="0 0 0 0">
 
                 <!-- Import from file -->
                 <Button HorizontalAlignment="Stretch"

@@ -16,7 +16,7 @@ public class LeagueService
     public bool IsLoaded { get; private set; }
     public EventHandler LeagueNamesLoaded;
     public EventHandler LeagueNamesLoadFailed;
-    public string[] ActualLeagueNames { get; set; } = { "Standard", "Hardcore", "SSF Standard", "Ancestor" };
+    public string[] ActualLeagueNames { get; private set; } = { "Standard", "Hardcore", "Ruthless", "Hardcore Ruthless" };
 
     public async Task LoadActualLeagueNamesAsync(CancellationToken cancellationToken = default)
     {

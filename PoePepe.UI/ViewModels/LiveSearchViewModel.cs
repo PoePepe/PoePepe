@@ -185,7 +185,6 @@ public partial class LiveSearchViewModel : ViewModelBase
 
         if (fetchResponseResult is null)
         {
-            Console.WriteLine("null");
             return;
         }
 
@@ -211,9 +210,6 @@ public partial class LiveSearchViewModel : ViewModelBase
     [RelayCommand]
     private async Task ClearOrders()
     {
-        await Test_GetOneItem();
-        return;
-
         if (!Orders.Any())
         {
             return;

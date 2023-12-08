@@ -45,6 +45,12 @@ public static class WindowsInternalFeatureService
 
     public static IntPtr FindPoeGameWindow() => FindWindow("POEWindowClass", "Path of Exile");
 
+    public static bool SetForegroundPoeGameWindow()
+    {
+        var ptr = FindWindow("POEWindowClass", "Path of Exile");
+        return SetForegroundWindow(ptr);
+    }
+
     public static string GetWindowTitle(IntPtr hWnd)
     {
         var length = GetWindowTextLength(hWnd) + 1;

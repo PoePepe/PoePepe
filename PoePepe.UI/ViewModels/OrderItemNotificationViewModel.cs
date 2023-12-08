@@ -2,7 +2,9 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using HanumanInstitute.MvvmDialogs;
+using PoePepe.UI.Helpers;
 using PoePepe.UI.Models;
+using PoePepe.UI.Properties;
 using PoePepe.UI.Views;
 
 namespace PoePepe.UI.ViewModels;
@@ -43,11 +45,21 @@ public partial class OrderItemNotificationViewModel  : ViewModelBase
     private void OnWhispered(object sender, WhisperEventArgs e)
     {
         ClosingRequest?.Invoke(sender, e);
+
+        if (UserSettings.Default.HideIfPoeUnfocused)
+        {
+            WindowsInternalFeatureService.SetForegroundPoeGameWindow();
+        }
     }
 
     private void OnClosed(object sender, EventArgs e)
     {
         InfoClosed?.Invoke(sender, e);
+
+        if (UserSettings.Default.HideIfPoeUnfocused)
+        {
+            WindowsInternalFeatureService.SetForegroundPoeGameWindow();
+        }
     }
 
     public void CloseNotification(object sender, EventArgs e)

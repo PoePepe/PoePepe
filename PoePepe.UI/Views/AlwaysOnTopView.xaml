@@ -43,7 +43,7 @@
                         Width="150"
                         Height="450" />
                 <ui:Button
-                    Click="ButtonBase_OnClick"
+                    Click="ButtonAcceptPosition_OnClick"
                     Content="Accept"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"

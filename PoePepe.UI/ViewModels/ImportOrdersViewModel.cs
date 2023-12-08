@@ -84,6 +84,11 @@ public partial class ImportOrdersViewModel : ViewModelValidatableBase, IModalDia
     {
         var importFile = await _dialogService.OpenImportFileAsync();
 
+        if (importFile is null)
+        {
+            return;
+        }
+
         await using var fileStream = await importFile.OpenReadAsync();
         using var streamReader = new StreamReader(fileStream);
         var importData = await streamReader.ReadLineAsync();
@@ -97,7 +102,15 @@ public partial class ImportOrdersViewModel : ViewModelValidatableBase, IModalDia
     {
         if (data.StartsWith("poepepe:"))
         {
-            var poePepeData = data[8..];
+            var lastIndexBase64 = data.IndexOf('=') + 1;
+
+            if (lastIndexBase64 <= 0)
+            {
+                data += '=';
+                lastIndexBase64 = data.Length;
+            }
+
+            var poePepeData = data[8..lastIndexBase64];
 
             var encodedDataBytes = Convert.FromBase64String(poePepeData);
             poePepeData = Encoding.UTF8.GetString(encodedDataBytes);
@@ -109,7 +122,13 @@ public partial class ImportOrdersViewModel : ViewModelValidatableBase, IModalDia
 
         if (data.StartsWith("2:"))
         {
-            var lastIndexBase64 = data.LastIndexOf('=') + 1;
+            var lastIndexBase64 = data.IndexOf('=');
+
+            if (lastIndexBase64 <= 0)
+            {
+                lastIndexBase64 = data.Length;
+            }
+
             var otherFormatData = data[2..lastIndexBase64];
 
             var encodedDataBytes = Convert.FromBase64String(otherFormatData);

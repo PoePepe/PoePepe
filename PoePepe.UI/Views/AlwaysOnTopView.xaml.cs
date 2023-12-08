@@ -50,6 +50,16 @@ public partial class AlwaysOnTopView
         }
     }
 
+    public void StartModifyNotificationWindow()
+    {
+        if (UserSettings.Default.HideIfPoeUnfocused || _dispatcherTimer.IsEnabled)
+        {
+            _dispatcherTimer.Stop();
+        }
+
+        Show();
+    }
+
     private void OnLoaded(object sender, RoutedEventArgs e)
     {
         SetNoActiveWindow();
@@ -118,12 +128,17 @@ public partial class AlwaysOnTopView
         _soundService.Play();
     }
 
-    private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+    private void ButtonAcceptPosition_OnClick(object sender, RoutedEventArgs e)
     {
         UserSettings.Default.NotificationPositionTop = Top;
         UserSettings.Default.NotificationPositionLeft = Left;
 
         ModifyGrid.Visibility = Visibility.Collapsed;
+
+        if (UserSettings.Default.HideIfPoeUnfocused && !_dispatcherTimer.IsEnabled)
+        {
+            _dispatcherTimer.Start();
+        }
     }
 
     private void ModifyGrid_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)

@@ -81,6 +81,7 @@ public class OrderStartSearchWorker
         if (isConnected)
         {
             _timer.Change(Timeout.Infinite, Timeout.Infinite);
+            Start(token);
         }
     }
 

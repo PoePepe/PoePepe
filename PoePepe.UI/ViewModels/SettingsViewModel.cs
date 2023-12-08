@@ -144,6 +144,7 @@ public partial class SettingsViewModel : ViewModelValidatableBase
     {
         var view = App.Current.Services.GetRequiredService<AlwaysOnTopView>();
         view.ModifyGrid.Visibility = Visibility.Visible;
+        view.StartModifyNotificationWindow();
     }
 
     [RelayCommand]

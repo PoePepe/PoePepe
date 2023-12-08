@@ -50,8 +50,12 @@ If you enjoy PoePepe. Support us on <a href="https://www.patreon.com/PoePepe">Pa
 </ul>
 <h1>
   Demonstration
-</h1
+</h1>
 <img src="https://github.com/PoePepe/PoePepe/assets/152653866/8b9f2b70-27a9-445a-95d1-40a6cb5e14c5"> </img>
+<p align="center">
+   
+<img src="https://github.com/PoePepe/PoePepe/assets/152653866/c8bab661-f73e-4305-919f-f9b6bed3c087"> </img>
+</p>
 <h1>
   Tags
 </h1
